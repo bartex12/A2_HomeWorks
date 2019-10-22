@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_my_location_red_24dp"
+            android:title="@string/show_city" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_business_red_24dp"
+            android:title="@string/add_city" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_settings_red_24dp"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help_outline_black_24dp"
+            android:title="@string/help" />
+    </group>
+
+    <item android:title="@string/addision">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/send" />
+        </menu>
+    </item>
+
+</menu>

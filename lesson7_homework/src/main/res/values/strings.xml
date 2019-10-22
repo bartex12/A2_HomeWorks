@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name" translatable="false">Whether</string>
+    <string name="weather_morning">Weather in the morning</string>
+    <string name="weather_afternoon">Weather in the afternoon</string>
+    <string name="weather_evening">Weather in the evening</string>
+    <string name="weather_night">Weather at night</string>
+    <string name="on">at</string>
+    <string name="weather">Weather</string>
+    <string name="ShowWeather">Weather forecast</string>
+    <string name="WindSpeed">Speed of Wind</string>
+    <string name="Pressure">Pressure</string>
+    <string name="WhetherInCity">Whether In City</string>
+    <string name="CityChoose">Choose а City</string>
+    <string name="city">City</string>
+    <string name="press">Pressure</string>
+    <string name="about">About</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="yes">Yes</string>
+    <string name="about_me">The app is made on relax</string>
+    <string name="dialog">Dialog</string>
+    <string name="aboutApp">About Application</string>
+    <string name="show">Show</string>
+    <string name="NotShow">Not show</string>
+    <string name="addParam">Advanced options</string>
+    <string name="change_city">Change city</string>
+    <string name="place_not_found">Place not found</string>
+    <string name="input_city">Input city name</string>
+    <string name="ok">OK</string>
+    <string name="connecting">Connecting…</string>
+    <string name="hPa">hPa</string>
+    <string name="weather_sunny" translatable="false">&#xf00d;</string>
+    <string name="weather_clear_night" translatable="false">&#xf02e;</string>
+    <string name="weather_foggy" translatable="false">&#xf014;</string>
+    <string name="weather_cloudy" translatable="false">&#xf013;</string>
+    <string name="weather_rainy" translatable="false">&#xf019;</string>
+    <string name="weather_snowy" translatable="false">&#xf01b;</string>
+    <string name="weather_thunder" translatable="false">&#xf01e;</string>
+    <string name="weather_drizzle" translatable="false">&#xf01c;</string>
+    <string name="lastUpdate">Last update:</string>
+    <string name="inputCitiName">Input city name</string>
+    <string name="add">add</string>
+    <string name="remove">remove</string>
+    <string name="clear">clear</string>
+    <string name="cancel">cancel</string>
+    <string name="show_city">Show city</string>
+    <string name="ms">mps</string>
+    <string name="windSpeed">Wind speed</string>
+    <string name="choose_city">Сhoose city</string>
+    <string name="add_city">Add city</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="help">Help</string>
+    <string name="willBeHelp">There will be help here</string>
+    <string name="sh">Show city</string>
+    <string name="aboutAppMessage">GeekBrains weather app Android advanced level</string>
+    <string name="saint_petersburg">Saint Petersburg</string>
+    <string name="stub">Stub</string>
+    <string name="addision">Additionally</string>
+    <string name="share">Share</string>
+    <string name="send">Estimate</string>
+    <string name="willBeLink">There will be a link to the application in PlayMarket
+ 
+</string>
+    <string name="willBeEstimate">There will be a link to the application page in PlayMarket
+ 
+</string>
+    <string name="weather_application">Weather application</string>
+    <string name="geekbrains">GeekBrains Android Advanced</string>
+
+
+</resources>

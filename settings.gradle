@@ -1,0 +1,2 @@
+include  ':lesson7_homework'
+rootProject.name='A1_Whether'
