@@ -182,8 +182,6 @@ public class MainActivity extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = menuItem.getItemId();
 
-        int optionId = R.layout.content_main;
-
         if (id == R.id.nav_camera) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_camera");
             showChangecityDialogFragment();
@@ -207,11 +205,6 @@ public class MainActivity extends AppCompatActivity implements
         // Выделяем выбранный пункт меню в шторке
         menuItem.setChecked(true);
 
-//        ViewGroup parent = (ViewGroup) findViewById(R.id.content);
-////        parent.removeAllViews();
-////        View newContent = getLayoutInflater().inflate(optionId, parent, false);
-////        parent.addView(newContent);
-        // DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;
     }
