@@ -1,7 +1,6 @@
 package com.geekbrains.city_weather.frag;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
@@ -14,12 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.geekbrains.city_weather.MainActivity;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
 import com.geekbrains.city_weather.data_loader.CityWeatherDataLoader;
-import com.geekbrains.city_weather.singltones.CityLab;
+import com.geekbrains.city_weather.singltones.CityListLab;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,8 +37,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
-import static com.geekbrains.city_weather.constants.AppConstants.CITY_MARKED;
-import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_DETAIL;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -99,7 +95,6 @@ public class WeatherFragment extends Fragment {
         initViews(view);
         initFonts();
         updateWeatherData(currentCity);
-        Log.d(TAG, "WeatherFragment onViewCreated after updateWeatherData");
     }
 
     @Override
@@ -149,7 +144,7 @@ public class WeatherFragment extends Fragment {
                         public void run() {
                             Toast.makeText(getActivity(), R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
-                            CityLab.removeSity(city);
+                            CityListLab.removeSity(city);
                             //TODO если город не обнаружен и телефон в альбомной ориентации,
                             // нужно выводить картинку на эту тему - смущённый чел
                          if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation

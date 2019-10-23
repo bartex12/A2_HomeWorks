@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
@@ -17,7 +16,7 @@ import com.geekbrains.city_weather.dialogs.MessageDialog;
 import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
-import com.geekbrains.city_weather.singltones.CityLab;
+import com.geekbrains.city_weather.singltones.CityListLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
@@ -51,28 +49,43 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        city_current = getResources().getString(R.string.saint_petersburg);
-        Log.d(TAG,"MainActivity onCreate city_current = " + city_current);
+        Log.d(TAG,"MainActivity onCreate savedInstanceState = " + savedInstanceState);
+        if (savedInstanceState == null){
+            initSingleton();
+            // Определение, можно ли будет расположить рядом данные в другом фрагменте
+            isExistWhetherFrag = getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            if (isExistWhetherFrag){
+                setChooseCityFrag();
+                setWeatherFragmentland(city_current);
+            }else {
+                setChooseCityFrag();
+            }
+        }else {
+            // Определение, можно ли будет расположить рядом данные в другом фрагменте
+            isExistWhetherFrag = getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            if (isExistWhetherFrag){
+                setChooseCityFrag();
+                //setWeatherFragmentland("Samara");
+            }else {
+                setChooseCityFrag();
+            }
+        }
+
         initFab();
         initPrefDefault();
         initviews();
-        initSingleton();
-        // Определение, можно ли будет расположить рядом данные в другом фрагменте
-        isExistWhetherFrag = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
-        if (isExistWhetherFrag){
-            setChooseCityFrag();
-            // создаем новый фрагмент с текущей позицией для вывода погоды
-            setWeatherFragmentland(city_current);
-        }else {
-            setChooseCityFrag();
-        }
+
+
     }
 
     private void initSingleton() {
+        city_current = getResources().getString(R.string.saint_petersburg);
+        Log.d(TAG,"MainActivity onCreate city_current = " + city_current);
         cityMarked.add(city_current);
         //инициализируем список синглтона значением по умолчанию
-        CityLab.getInstance(cityMarked);
+        CityListLab.getInstance(cityMarked);
     }
 
     private void initviews() {
@@ -222,19 +235,28 @@ public class MainActivity extends AppCompatActivity implements
     public void onCityAdd(String city) {
         Log.d(TAG, "MainActivity onCityAdd city = " + city);
         //добавляем город в список синглтона
-        CityLab.addCity(city);
-        Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
+        CityListLab.addCity(city);
+        Log.d(TAG, "MainActivity onCityAdd CityListLab.size = " + CityListLab.getCitysList().size());
+        //setChooseCityFrag();
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE){
+            setChooseCityFrag();
+            //setWeatherFragmentland(city);
+        }else {
+            //setWeatherFragment(city);
+        }
     }
 
     @Override
     public void onCityChange(String city) {
         Log.d(TAG, "MainActivity onCityChange city = " + city);
         //добавляем город в список синглтона
-        CityLab.addCity(city);
-        Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
+        CityListLab.addCity(city);
+        Log.d(TAG, "MainActivity onCityChange CityListLab.size = " + CityListLab.getCitysList().size());
 
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE){
+            setChooseCityFrag();
             setWeatherFragmentland(city);
         }else {
             setWeatherFragment(city);

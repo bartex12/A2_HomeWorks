@@ -1,6 +1,5 @@
 package com.geekbrains.city_weather.frag;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,17 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Toast;
-
-import com.geekbrains.city_weather.DetailActivity;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
-import com.geekbrains.city_weather.singltones.CityLab;
-
+import com.geekbrains.city_weather.singltones.CityListLab;
 import java.util.ArrayList;
 import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -28,7 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.geekbrains.city_weather.constants.AppConstants.CITY_MARKED;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_MARKED;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
@@ -70,12 +63,13 @@ public class ChooseCityFrag extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.d(TAG, "ChooseCityFrag onActivityCreated");
         // Определение, можно ли будет расположить рядом данные в другом фрагменте
         isExistWhetherFrag = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
         // Если это не первое создание, то восстановим текущую позицию
         if (savedInstanceState != null) {
+            Log.d(TAG, "ChooseCityFrag onActivityCreated savedInstanceState != null");
             this.initRecycledView(); //если не сделать, при повороте теряем список
         }
     }
@@ -83,6 +77,7 @@ public class ChooseCityFrag extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "ChooseCityFrag onResume recyclerViewCityAdapter = " + recyclerViewCityAdapter);
         if (recyclerViewCityAdapter!= null){
             recyclerViewCityAdapter.notifyDataSetChanged();
         }
@@ -102,11 +97,18 @@ public class ChooseCityFrag extends Fragment {
     // Сохраним текущий город (вызывается перед выходом из фрагмента)
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d(TAG, "ChooseCityFrag onSaveInstanceState");
         outState.putString(CURRENT_CITY, city);
         outState.putStringArrayList(CURRENT_CITY_MARKED, cityMarked);
         Log.d(TAG, "ChooseCityFrag savedInstanceState cityMarked.size()= " +
                 cityMarked.size() + " city = " + city);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "ChooseCityFrag onPause");
     }
 
     //************************************************************************************
@@ -139,6 +141,7 @@ public class ChooseCityFrag extends Fragment {
 
     //инициализация RecycledView
     private void initRecycledView() {
+        Log.d(TAG, "ChooseCityFrag initRecycledView");
         //используем встроенный LinearLayoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         //реализуем интерфейс адаптера, в  его методе onCityClick получим имя города и его позицию
@@ -146,6 +149,7 @@ public class ChooseCityFrag extends Fragment {
                 new RecyclerViewCityAdapter.OnCityClickListener() {
                     @Override
                     public void onCityClick(String newCity) {
+                        Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick");
                         //изменяем город
                         city = newCity;
                         // показываем погоду в городе с учётом ориентации экрана
@@ -155,7 +159,7 @@ public class ChooseCityFrag extends Fragment {
         //передадим адаптеру в конструкторе список выбранных городов и ссылку на интерфейс
         //в принципе, надо через adapter.setOnCityClickListener, но хочу попробовать так
         //понятно, что это  неуниверсально, так как адаптер теперь зависит от конкретного интерфейся
-        recyclerViewCityAdapter = new RecyclerViewCityAdapter(CityLab.getCitysList(),
+        recyclerViewCityAdapter = new RecyclerViewCityAdapter(CityListLab.getCitysList(),
                 onCityClickListener, getActivity());
 
         recyclerViewMarked.setLayoutManager(layoutManager);
@@ -197,7 +201,7 @@ public class ChooseCityFrag extends Fragment {
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         //ft.addToBackStack(null);
         ft.commit();
-        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+        Log.d(TAG, "ChooseCityFrag showCityWhether Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));
     }
 
@@ -212,7 +216,7 @@ public class ChooseCityFrag extends Fragment {
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         //ft.addToBackStack(null);
         ft.commit();
-        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+        Log.d(TAG, "ChooseCityFrag showCityWhetherLand Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));
     }
 
