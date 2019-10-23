@@ -48,10 +48,81 @@ public class ChooseCityFrag extends Fragment {
         // Required empty public constructor
     }
 
+    public static ChooseCityFrag newInstance(ArrayList<String> cityMarked) {
+        ChooseCityFrag fragment = new ChooseCityFrag();
+        // Передача параметра
+        Bundle args = new Bundle();
+        //args.putString("city", city);
+        args.putStringArrayList("cityMarked", cityMarked);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    // Получить город из аргументов public - он используется ещё где то
+    public String getCityFromArgs() {
+        return Objects.requireNonNull(getArguments()).getString("city",
+                getActivity().getResources().getString(R.string.saint_petersburg));
+    }
+
+    // Получить список из аргументов public - он используется ещё где то
+    public ArrayList<String> getCityMarkedFromArgs() {
+        return Objects.requireNonNull(getArguments()).getStringArrayList("cityMarked");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //city = getCityFromArgs();
+        cityMarked = getCityMarkedFromArgs();
+        Log.d(TAG, "showCityWhether  onCreate cityMarked =  " + cityMarked);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_city_choose, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViews(view);
+        initRecycledView();
+        registerForContextMenu(recyclerViewMarked);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Определение, можно ли будет расположить рядом данные в другом фрагменте
+        isExistWhetherFrag = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+
+        // Если это не первое создание, то восстановим текущую позицию
+        if (savedInstanceState != null) {
+            // Восстановление текущий город
+            city = savedInstanceState.getString(CURRENT_CITY);
+            //восстанавливаем список выбранных городов
+            cityMarked = savedInstanceState.getStringArrayList(CURRENT_CITY_MARKED);
+            //adapter.notifyDataSetChanged() не работает, придётся так
+            this.initRecycledView(); //если не сделать, при повороте теряем список
+            Log.d(TAG, "ChooseCityFrag onActivityCreated cityMarked.size()= " +
+                    cityMarked.size() + " city = " + city);
+        }
+
+        // Если можно нарисовать рядом данные, то сделаем это
+        if (isExistWhetherFrag) {
+            showCityWhether(city);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (recyclerViewCityAdapter!= null){
+            recyclerViewCityAdapter.notifyDataSetChanged();
+        }
     }
 
     //проверка - если такой город есть в списке- возвращает false
@@ -63,20 +134,6 @@ public class ChooseCityFrag extends Fragment {
             }
         }
         return true;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-        //initRecycledView();
-        registerForContextMenu(recyclerViewMarked);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        recyclerViewCityAdapter.notifyDataSetChanged();
     }
 
     // Сохраним текущий город (вызывается перед выходом из фрагмента)
@@ -106,31 +163,7 @@ public class ChooseCityFrag extends Fragment {
         return super.onContextItemSelected(item);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-        // Определение, можно ли будет расположить рядом данные в другом фрагменте
-        isExistWhetherFrag = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
-
-        // Если это не первое создание, то восстановим текущую позицию
-        if (savedInstanceState != null) {
-            // Восстановление текущий город
-            city = savedInstanceState.getString(CURRENT_CITY);
-            //восстанавливаем список выбранных городов
-            cityMarked = savedInstanceState.getStringArrayList(CURRENT_CITY_MARKED);
-            //adapter.notifyDataSetChanged() не работает, придётся так
-            this.initRecycledView(); //если не сделать, при повороте теряем список
-            Log.d(TAG, "ChooseCityFrag onActivityCreated cityMarked.size()= " +
-                    cityMarked.size() + " city = " + city);
-        }
-
-        // Если можно нарисовать рядом данные, то сделаем это
-        if (isExistWhetherFrag) {
-            showCityWhether(city);
-        }
-    }
 
     //инициализация View
     private void initViews(View view) {
@@ -208,22 +241,22 @@ public class ChooseCityFrag extends Fragment {
         weatherFrag = WeatherFragment.newInstance(city, cityMarked);
         // ... и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.whether_in_citys, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        //ft.addToBackStack(null);
         ft.commit();
+        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+                getFragmentManager().findFragmentById(R.id.content_super));
     }
 
     // показываем погоду в городе с учётом ориентации экрана
     private void showCityWhetherWithOrientation(String city) {
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
-            showCityWhether(city);
+            //showCityWhether(city);
             //а если портретная, то
         } else {
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(CURRENT_CITY, city);
-            intent.putExtra(CITY_MARKED, cityMarked);
-            startActivity(intent);
+            showCityWhether(city);
         }
     }
 
