@@ -17,6 +17,7 @@ import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
 import com.geekbrains.city_weather.data_loader.CityWeatherDataLoader;
+import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
 
 import org.json.JSONException;
@@ -149,7 +150,12 @@ public class WeatherFragment extends Fragment {
                             // нужно выводить картинку на эту тему - смущённый чел
                          if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation
                                    == Configuration.ORIENTATION_LANDSCAPE){
-                             showCityWhetherLand("Saint Petersburg");
+
+                             if (CityLab.getCity()!=null){
+                                 showCityWhetherLand(CityLab.getCity());
+                             }else {
+                                 showCityWhetherLand("Saint Petersburg");
+                             }
                          }else {
                              setChooseCityFrag();
                          }

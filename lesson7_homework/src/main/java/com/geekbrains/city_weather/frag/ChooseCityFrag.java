@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
+import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,7 +33,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
  */
 public class ChooseCityFrag extends Fragment {
     private static final String TAG = "33333";
-    private String city = "";
+   // private String city = "";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
     private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
@@ -98,10 +99,10 @@ public class ChooseCityFrag extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Log.d(TAG, "ChooseCityFrag onSaveInstanceState");
-        outState.putString(CURRENT_CITY, city);
+        //outState.putString(CURRENT_CITY, city);
         outState.putStringArrayList(CURRENT_CITY_MARKED, cityMarked);
         Log.d(TAG, "ChooseCityFrag savedInstanceState cityMarked.size()= " +
-                cityMarked.size() + " city = " + city);
+                cityMarked.size() + " city = " + CityLab.getCity());
         super.onSaveInstanceState(outState);
     }
 
@@ -150,10 +151,11 @@ public class ChooseCityFrag extends Fragment {
                     @Override
                     public void onCityClick(String newCity) {
                         Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick");
-                        //изменяем город
-                        city = newCity;
+                        //изменяем текущий город  в синглтоне
+                        CityLab.setCurrentCity(newCity);
+                        //city = CityLab.getCity();
                         // показываем погоду в городе с учётом ориентации экрана
-                        showCityWhetherWithOrientation(city);
+                        showCityWhetherWithOrientation(CityLab.getCity());
                     }
                 };
         //передадим адаптеру в конструкторе список выбранных городов и ссылку на интерфейс

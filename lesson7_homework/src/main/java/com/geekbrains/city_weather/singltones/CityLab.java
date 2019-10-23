@@ -23,4 +23,7 @@ public class CityLab {
         return currentCity;
     }
 
+    public static void setCurrentCity(String currentCity) {
+        CityLab.currentCity = currentCity;
+    }
 }
