@@ -2,6 +2,7 @@ package com.geekbrains.city_weather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements
     boolean isShowCheckboxes;
     DrawerLayout drawer;
     ArrayList<String> cityMarked = new ArrayList<>();
+    boolean isExistWhetherFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +53,17 @@ public class MainActivity extends AppCompatActivity implements
         initPrefDefault();
         initviews();
         initSingleton();
-        // создаем новый фрагмент с текущей позицией для вывода погоды
-        setChooseCityFrag();
-        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
-                getSupportFragmentManager().findFragmentById(R.id.content_super));
+        // Определение, можно ли будет расположить рядом данные в другом фрагменте
+        isExistWhetherFrag = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        if (isExistWhetherFrag){
+
+        }else {
+            // создаем новый фрагмент с текущей позицией для вывода погоды
+            setChooseCityFrag();
+            Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+                    getSupportFragmentManager().findFragmentById(R.id.content_super));
+        }
     }
 
     private void initSingleton() {
@@ -221,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements
         //добавляем город в список синглтона
         CityLab.addCity(city);
         Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
+
         setWeatherFragment(city);
     }
 
@@ -241,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент со списком ранее выбранных городов
     private void setChooseCityFrag() {
-        ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance(CityLab.getCitysList());
+        ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
