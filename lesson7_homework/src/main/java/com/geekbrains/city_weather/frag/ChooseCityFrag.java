@@ -15,6 +15,7 @@ import com.geekbrains.city_weather.DetailActivity;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
+import com.geekbrains.city_weather.singltones.CityLab;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -151,7 +152,7 @@ public class ChooseCityFrag extends Fragment {
     // 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);
     // 2 делаем метод onContextItemSelected(MenuItem item) как обычно (см ниже)
     // 3 ViewHolder адаптера implements View.OnCreateContextMenuListener и реализуем
-    //onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) интерфейса
+    // onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) интерфейса
     // 4 присваиваем слушатель адаптеру во ViewHolder: itemView.setOnCreateContextMenuListener(this);
     // 5  устанавливаем слушатель для долгих нажатий в onBindViewHolder адаптера
     // holder.textView.setOnLongClickListener(new View.OnLongClickListener()
@@ -162,8 +163,6 @@ public class ChooseCityFrag extends Fragment {
         handleMenuItemClick(item);
         return super.onContextItemSelected(item);
     }
-
-
 
     //инициализация View
     private void initViews(View view) {
@@ -211,11 +210,15 @@ public class ChooseCityFrag extends Fragment {
                 break;
             }
             case R.id.menu_remove: {
+                Log.d(TAG, "menu_remove = "+CityLab.getCitysList().size());
                 recyclerViewCityAdapter.removeElement();
+                Log.d(TAG, "menu_remove = "+CityLab.getCitysList().size());
                 break;
             }
             case R.id.menu_clear: {
+                Log.d(TAG, "menu_clear = "+CityLab.getCitysList().size());
                 recyclerViewCityAdapter.clearList();
+                Log.d(TAG, "menu_clear = "+CityLab.getCitysList().size());
                 break;
             }
             case R.id.menu_cancel: {

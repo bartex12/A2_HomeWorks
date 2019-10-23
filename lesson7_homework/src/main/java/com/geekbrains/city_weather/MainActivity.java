@@ -212,9 +212,6 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "MainActivity onCityAdd city = " + city);
         //добавляем город в список синглтона
         CityLab.addCity(city);
-        if (!CityLab.isNotCityInList(city)){
-            Toast.makeText(this, R.string.place_not_found, Toast.LENGTH_LONG).show();
-        }
         Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
     }
 
