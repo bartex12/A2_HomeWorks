@@ -7,8 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
@@ -19,10 +19,8 @@ import com.geekbrains.city_weather.preferences.SettingsActivity;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-
 import java.util.ArrayList;
 import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,13 +28,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
-import static com.geekbrains.city_weather.constants.AppConstants.CITY_MARKED;
-import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
+
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, DialogCityAdd.OnCityAddListener,
@@ -52,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //передаём фрагменту из интента название города и список ранее выбранных городов
-        //initFragWithExtra();
         initFab();
         initPrefDefault();
         initviews();
@@ -156,27 +149,6 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void initFragWithExtra() {
-        String currentCity = getIntent().getStringExtra(CURRENT_CITY);
-        ArrayList<String> cityMarked = getIntent().getStringArrayListExtra(CITY_MARKED);
-        //при первой загрузке currentCity=null, поэтому страхуемся
-        if (currentCity == null) {
-            currentCity = getResources().getString(R.string.saint_petersburg);
-        }
-        //при первой загрузке cityMarked=null, поэтому страхуемся
-        if (cityMarked == null) {
-            cityMarked = new ArrayList<>();
-        }
-//        //находим фрагмент
-//        ChooseCityFrag chooseCityFrag = (ChooseCityFrag) getSupportFragmentManager().
-//                findFragmentById(R.id.citiesWhether);
-//        //вызываем из активности метод фрагмента для передачи актуальной позиции и списка городов
-//        Objects.requireNonNull(chooseCityFrag).getCurrentPositionAndList(currentCity, cityMarked);
-//
-//        Log.d(TAG, "MainActivity onCreate currentCity = " + currentCity +
-//                " cityMarked = " + cityMarked);
-    }
-
     //диалог сохранения, оформленный как класс с указанием имени файла
     private void showChangecityDialogFragment() {
         DialogFragment dialogFragment = new DialogCityChange();
@@ -207,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        // Handle navigation view item clicks here.
+
         int id = menuItem.getItemId();
 
         if (id == R.id.nav_camera) {
@@ -229,10 +201,8 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_send");
             showMessageDialogFfagment(getResources().getString(R.string.willBeEstimate));
         }
-
         // Выделяем выбранный пункт меню в шторке
         menuItem.setChecked(true);
-
         drawer.closeDrawer(GravityCompat.START);
         return false;
     }
@@ -242,27 +212,19 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "MainActivity onCityAdd city = " + city);
         //добавляем город в список синглтона
         CityLab.addCity(city);
+        if (!CityLab.isNotCityInList(city)){
+            Toast.makeText(this, R.string.place_not_found, Toast.LENGTH_LONG).show();
+        }
         Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
     }
 
     @Override
     public void onCityChange(String city) {
         Log.d(TAG, "MainActivity onCityChange city = " + city);
-
         //добавляем город в список синглтона
         CityLab.addCity(city);
         Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
-
-        // создаем новый фрагмент с текущей позицией для вывода погоды
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city, CityLab.getCitysList());
-        // ... и выполняем транзакцию по замене фрагмента
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        //ft.addToBackStack(null);
-        ft.commit();
-        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
-                getSupportFragmentManager().findFragmentById(R.id.content_super));
+        setWeatherFragment(city);
     }
 
     @Override
@@ -280,10 +242,20 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    // создаем новый фрагмент со списком ранее выбранных городов
     private void setChooseCityFrag() {
         ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance(CityLab.getCitysList());
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        ft.commit();
+    }
+
+    // создаем новый фрагмент с текущей позицией для вывода погоды
+    private void setWeatherFragment(String city) {
+        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
     }

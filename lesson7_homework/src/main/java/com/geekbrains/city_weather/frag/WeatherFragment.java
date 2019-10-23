@@ -19,6 +19,7 @@ import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
 import com.geekbrains.city_weather.data_loader.CityWeatherDataLoader;
+import com.geekbrains.city_weather.singltones.CityLab;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,12 +66,11 @@ public class WeatherFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static WeatherFragment newInstance(String city, ArrayList<String> cityMarked) {
+    public static WeatherFragment newInstance(String city) {
         WeatherFragment fragment = new WeatherFragment();
         // Передача параметра
         Bundle args = new Bundle();
         args.putString("city", city);
-        args.putStringArrayList("cityMarked", cityMarked);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,11 +78,6 @@ public class WeatherFragment extends Fragment {
     // Получить город из аргументов public - он используется ещё где то
     public String getCity() {
         return Objects.requireNonNull(getArguments()).getString("city", "Moscow");
-    }
-
-    // Получить список из аргументов public - он используется ещё где то
-    public ArrayList<String> getCityMarkedArray() {
-        return Objects.requireNonNull(getArguments()).getStringArrayList("cityMarked");
     }
 
     @Override
@@ -148,11 +143,8 @@ public class WeatherFragment extends Fragment {
                             // нужно выводить картинку на эту тему - смущённый чел
                             Toast.makeText(getActivity(), R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
-                            ArrayList<String> cityMarked = getCityMarkedArray();
-                            cityMarked.remove(city);
+                            CityLab.removeSity(city);
                             Intent intent = new Intent(getActivity(), MainActivity.class);
-                            intent.putExtra(CURRENT_CITY_DETAIL, "Moscow");
-                            intent.putExtra(CITY_MARKED, cityMarked);
                             startActivity(intent);
                         }
                     });

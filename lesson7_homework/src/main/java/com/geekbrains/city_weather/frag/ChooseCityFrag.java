@@ -61,11 +61,11 @@ public class ChooseCityFrag extends Fragment {
     // Получить город из аргументов public - он используется ещё где то
     public String getCityFromArgs() {
         return Objects.requireNonNull(getArguments()).getString("city",
-                getActivity().getResources().getString(R.string.saint_petersburg));
+                Objects.requireNonNull(getActivity()).getResources().getString(R.string.saint_petersburg));
     }
 
-    // Получить список из аргументов public - он используется ещё где то
-    public ArrayList<String> getCityMarkedFromArgs() {
+    // Получить список из аргументов
+    private ArrayList<String> getCityMarkedFromArgs() {
         return Objects.requireNonNull(getArguments()).getStringArrayList("cityMarked");
     }
 
@@ -238,7 +238,7 @@ public class ChooseCityFrag extends Fragment {
             Log.d(TAG, "weatherFrag.getCity() = " + weatherFrag.getCity());
         }
         // создаем новый фрагмент с текущей позицией для вывода погоды
-        weatherFrag = WeatherFragment.newInstance(city, cityMarked);
+        weatherFrag = WeatherFragment.newInstance(city);
         // ... и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента

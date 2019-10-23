@@ -78,7 +78,7 @@ public class DetailActivity extends AppCompatActivity {
         // то перенаправим параметр фрагменту
         if (savedInstanceState == null) {
             //создаём фрагмент, передавая индекс в аргументы фрагмента
-            WeatherFragment details = WeatherFragment.newInstance(currentCity, cityMarked);
+            WeatherFragment details = WeatherFragment.newInstance(currentCity);
             // Добавим фрагмент на activity
             getSupportFragmentManager()
                     .beginTransaction()
