@@ -49,33 +49,8 @@ public class ChooseCityFrag extends Fragment {
         // Required empty public constructor
     }
 
-    public static ChooseCityFrag newInstance(ArrayList<String> cityMarked) {
-        ChooseCityFrag fragment = new ChooseCityFrag();
-        // Передача параметра
-        Bundle args = new Bundle();
-        //args.putString("city", city);
-        args.putStringArrayList("cityMarked", cityMarked);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    // Получить город из аргументов public - он используется ещё где то
-    public String getCityFromArgs() {
-        return Objects.requireNonNull(getArguments()).getString("city",
-                Objects.requireNonNull(getActivity()).getResources().getString(R.string.saint_petersburg));
-    }
-
-    // Получить список из аргументов
-    private ArrayList<String> getCityMarkedFromArgs() {
-        return Objects.requireNonNull(getArguments()).getStringArrayList("cityMarked");
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //city = getCityFromArgs();
-        cityMarked = getCityMarkedFromArgs();
-        Log.d(TAG, "showCityWhether  onCreate cityMarked =  " + cityMarked);
+    public static ChooseCityFrag newInstance() {
+        return  new ChooseCityFrag();
     }
 
     @Override
@@ -99,22 +74,9 @@ public class ChooseCityFrag extends Fragment {
         // Определение, можно ли будет расположить рядом данные в другом фрагменте
         isExistWhetherFrag = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
-
         // Если это не первое создание, то восстановим текущую позицию
         if (savedInstanceState != null) {
-            // Восстановление текущий город
-            city = savedInstanceState.getString(CURRENT_CITY);
-            //восстанавливаем список выбранных городов
-            cityMarked = savedInstanceState.getStringArrayList(CURRENT_CITY_MARKED);
-            //adapter.notifyDataSetChanged() не работает, придётся так
             this.initRecycledView(); //если не сделать, при повороте теряем список
-            Log.d(TAG, "ChooseCityFrag onActivityCreated cityMarked.size()= " +
-                    cityMarked.size() + " city = " + city);
-        }
-
-        // Если можно нарисовать рядом данные, то сделаем это
-        if (isExistWhetherFrag) {
-            showCityWhether(city);
         }
     }
 
@@ -193,8 +155,8 @@ public class ChooseCityFrag extends Fragment {
         //передадим адаптеру в конструкторе список выбранных городов и ссылку на интерфейс
         //в принципе, надо через adapter.setOnCityClickListener, но хочу попробовать так
         //понятно, что это  неуниверсально, так как адаптер теперь зависит от конкретного интерфейся
-        recyclerViewCityAdapter = new RecyclerViewCityAdapter(cityMarked, onCityClickListener,
-                getActivity());
+        recyclerViewCityAdapter = new RecyclerViewCityAdapter(CityLab.getCitysList(),
+                onCityClickListener, getActivity());
 
         recyclerViewMarked.setLayoutManager(layoutManager);
         recyclerViewMarked.setAdapter(recyclerViewCityAdapter);
@@ -210,15 +172,11 @@ public class ChooseCityFrag extends Fragment {
                 break;
             }
             case R.id.menu_remove: {
-                Log.d(TAG, "menu_remove = "+CityLab.getCitysList().size());
                 recyclerViewCityAdapter.removeElement();
-                Log.d(TAG, "menu_remove = "+CityLab.getCitysList().size());
                 break;
             }
             case R.id.menu_clear: {
-                Log.d(TAG, "menu_clear = "+CityLab.getCitysList().size());
                 recyclerViewCityAdapter.clearList();
-                Log.d(TAG, "menu_clear = "+CityLab.getCitysList().size());
                 break;
             }
             case R.id.menu_cancel: {
@@ -228,23 +186,29 @@ public class ChooseCityFrag extends Fragment {
         }
     }
 
-    // Показать погоду во фрагменте рядом со спиннером в альбомной ориентации
+    // Показать погоду во фрагменте  в портретной ориентации
     private void showCityWhether(String city) {
 
-        Log.d(TAG, "showCityWhether  isExistWhetherFrag =  " + isExistWhetherFrag);
-        // Проверим, что фрагмент с погодой существует в activity - обращение по id фрагмента
-        WeatherFragment weatherFrag = (WeatherFragment)
-                Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.whether_in_citys);
-
-        //для отладки
-        if (weatherFrag != null) {
-            Log.d(TAG, "weatherFrag.getCity() = " + weatherFrag.getCity());
-        }
         // создаем новый фрагмент с текущей позицией для вывода погоды
-        weatherFrag = WeatherFragment.newInstance(city);
+        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         // ... и выполняем транзакцию по замене фрагмента
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
         ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        //ft.addToBackStack(null);
+        ft.commit();
+        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+                getFragmentManager().findFragmentById(R.id.content_super));
+    }
+
+    // Показать погоду во фрагменте в альбомной ориентации
+    private void showCityWhetherLand(String city) {
+
+        // создаем новый фрагмент с текущей позицией для вывода погоды
+        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        // ... и выполняем транзакцию по замене фрагмента
+        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         //ft.addToBackStack(null);
         ft.commit();
@@ -256,41 +220,13 @@ public class ChooseCityFrag extends Fragment {
     private void showCityWhetherWithOrientation(String city) {
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
-            //showCityWhether(city);
+            showCityWhetherLand(city);
             //а если портретная, то
         } else {
             showCityWhether(city);
         }
     }
 
-    //получаем актуальное значение currentPosition и cityMarked при перевороте экрана в DetailActivity
-    //хотя в погодном приложении работает и без этого метода - обновление же по кнопке
-    public void getCurrentPositionAndList(String currentCity, ArrayList<String> cityMarked) {
-        city = currentCity;
-        this.cityMarked = cityMarked;
-        if (isNotCityInList(city, cityMarked)) {
-            //если нет, добавляем его
-            cityMarked.add(city); //добавляем город в список ранее выбранных городов
-        }
-        this.initRecycledView();
-    }
 
-    public void prepareData(String city) {
-        this.city = city;
-        //проверяем есть ли город в списке cityMarked
-        if (isNotCityInList(city, cityMarked)) {
-            //если нет, добавляем его
-            cityMarked.add(city); //добавляем город в список ранее выбранных городов
-        }
-        Log.d(TAG, "cityMarked.add(city) cityMarked.size() = " + cityMarked.size());
-        recyclerViewCityAdapter.notifyDataSetChanged(); // - перерисует сразу весь список
-        Toast.makeText(getActivity(), city, Toast.LENGTH_LONG).show();
-        // показываем погоду в городе с учётом ориентации экрана
-        showCityWhetherWithOrientation(city);
-    }
-
-    public void addNewCity(String city) {
-        recyclerViewCityAdapter.addItem(city);
-    }
 }
 

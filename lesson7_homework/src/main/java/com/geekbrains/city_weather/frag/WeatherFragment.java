@@ -34,11 +34,14 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_MARKED;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_DETAIL;
+import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +64,7 @@ public class WeatherFragment extends Fragment {
     private String[] iconArray = new String[5];
     private long sunrise;
     private long sunset;
+    private String currentCity;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -75,9 +79,11 @@ public class WeatherFragment extends Fragment {
         return fragment;
     }
 
-    // Получить город из аргументов public - он используется ещё где то
-    public String getCity() {
-        return Objects.requireNonNull(getArguments()).getString("city", "Moscow");
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        currentCity = Objects.requireNonNull(getArguments()).getString("city", "Saint Petersburg");
+        Log.d(TAG, "WeatherFragment onCreate currentCity = " + currentCity);
     }
 
     @Override
@@ -92,7 +98,8 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         initFonts();
-        updateWeatherData(getCity());
+        updateWeatherData(currentCity);
+        Log.d(TAG, "WeatherFragment onViewCreated after updateWeatherData");
     }
 
     @Override
@@ -102,9 +109,9 @@ public class WeatherFragment extends Fragment {
 
         SharedPreferences prefSetting = androidx.preference.PreferenceManager
                 .getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        //получаем из файла настроек количество знаков после запятой
+        //получаем из файла настроек состояние чекбоксов
         boolean isShowCheckboxes = prefSetting.getBoolean("showCheckBoxes", true);
-        Log.d(TAG, "WeatherFragment initViews isShowCheckboxes = " + isShowCheckboxes);
+        Log.d(TAG, "WeatherFragment onResume isShowCheckboxes = " + isShowCheckboxes);
 
         // показываем/скрываем данные о ветре и давлении
         showWindAndPressure(isShowCheckboxes);
@@ -130,6 +137,7 @@ public class WeatherFragment extends Fragment {
     //TODO перенести всё в отдельный класс
     //получаем погодные данные с сервера  в JSON формате
     private void updateWeatherData(final String city) {
+        Log.d(TAG, "WeatherFragment updateWeatherData city = " +city);
         new Thread() {
             @Override
             public void run() {
@@ -139,13 +147,17 @@ public class WeatherFragment extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            //TODO если город не обнаружен и телефон в альбомной ориентации,
-                            // нужно выводить картинку на эту тему - смущённый чел
                             Toast.makeText(getActivity(), R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
                             CityLab.removeSity(city);
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            startActivity(intent);
+                            //TODO если город не обнаружен и телефон в альбомной ориентации,
+                            // нужно выводить картинку на эту тему - смущённый чел
+                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation
+                                   == Configuration.ORIENTATION_LANDSCAPE){
+                             showCityWhetherLand("Saint Petersburg");
+                         }else {
+                             setChooseCityFrag();
+                         }
                         }
                     });
                 } else {
@@ -159,6 +171,31 @@ public class WeatherFragment extends Fragment {
                 }
             }
         }.start();
+    }
+
+    // Показать погоду во фрагменте в альбомной ориентации
+    private void showCityWhetherLand(String city) {
+
+        // создаем новый фрагмент с текущей позицией для вывода погоды
+        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        // ... и выполняем транзакцию по замене фрагмента
+        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        //ft.addToBackStack(null);
+        ft.commit();
+        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+                getFragmentManager().findFragmentById(R.id.content_super));
+    }
+
+    // создаем новый фрагмент со списком ранее выбранных городов
+    private void setChooseCityFrag() {
+        ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
+        FragmentTransaction ft = Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        ft.commit();
     }
 
     private void renderForecast(JSONObject jsonObjectForecast) {

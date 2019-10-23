@@ -29,6 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
@@ -39,16 +40,19 @@ public class MainActivity extends AppCompatActivity implements
         DialogCityChange.OnCityChangeListener{
 
     private static final String TAG = "33333";
-    boolean isShowCheckboxes;
-    DrawerLayout drawer;
-    ArrayList<String> cityMarked = new ArrayList<>();
-    boolean isExistWhetherFrag;
+    private boolean isShowCheckboxes;
+    private DrawerLayout drawer;
+    private  ArrayList<String> cityMarked = new ArrayList<>();
+    private boolean isExistWhetherFrag;
+    private String city_current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        city_current = getResources().getString(R.string.saint_petersburg);
+        Log.d(TAG,"MainActivity onCreate city_current = " + city_current);
         initFab();
         initPrefDefault();
         initviews();
@@ -57,18 +61,16 @@ public class MainActivity extends AppCompatActivity implements
         isExistWhetherFrag = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
         if (isExistWhetherFrag){
-
-        }else {
-            // создаем новый фрагмент с текущей позицией для вывода погоды
             setChooseCityFrag();
-            Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
-                    getSupportFragmentManager().findFragmentById(R.id.content_super));
+            // создаем новый фрагмент с текущей позицией для вывода погоды
+            setWeatherFragmentland(city_current);
+        }else {
+            setChooseCityFrag();
         }
     }
 
     private void initSingleton() {
-        String city_default = getResources().getString(R.string.saint_petersburg);
-        cityMarked.add(city_default);
+        cityMarked.add(city_current);
         //инициализируем список синглтона значением по умолчанию
         CityLab.getInstance(cityMarked);
     }
@@ -150,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initFab() {
         FloatingActionButton fab = findViewById(R.id.fab_main);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showChangecityDialogFragment();
@@ -231,7 +233,12 @@ public class MainActivity extends AppCompatActivity implements
         CityLab.addCity(city);
         Log.d(TAG, "MainActivity onCityChange CityLab.size = " + CityLab.getCitysList().size());
 
-        setWeatherFragment(city);
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE){
+            setWeatherFragmentland(city);
+        }else {
+            setWeatherFragment(city);
+        }
     }
 
     @Override
@@ -263,6 +270,15 @@ public class MainActivity extends AppCompatActivity implements
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        ft.commit();
+    }
+
+    // создаем новый фрагмент с текущей позицией для вывода погоды
+    private void setWeatherFragmentland(String city) {
+        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
     }
