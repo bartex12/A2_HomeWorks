@@ -8,9 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 
-import com.geekbrains.city_weather.custom_views.CustomTemp;
+import com.geekbrains.city_weather.custom_views.CustomSlogan;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -22,7 +21,7 @@ import com.geekbrains.city_weather.singltones.CityListLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
-import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -90,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initviews() {
 
-        CustomTemp customTemp = findViewById(R.id.customViewTemp);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -116,13 +113,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"MainActivity onResume");
-        //получаем настройки из активности настроек
-        SharedPreferences prefSetting = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        //получаем из файла настроек состояние чекбокса
-        isShowCheckboxes = prefSetting.getBoolean("showCheckBoxes", true);
-        Log.d(TAG,"MainActivity onResume isShowCheckboxes = " + isShowCheckboxes);
-        // показываем/скрываем чекбоксы на экране выбора города
-       // setCheckboxesInFragment(isShowCheckboxes);
     }
 
     @Override
@@ -187,22 +177,6 @@ public class MainActivity extends AppCompatActivity implements
         DialogFragment dialogFragment = new DialogCityAdd();
         dialogFragment.show(getSupportFragmentManager(), "addCity");
     }
-
-//    // показываем/скрываем чекбоксы на экране выбора города
-//    private void setCheckboxesInFragment(boolean isShowCheckboxes) {
-//        ChooseCityFrag fr = (ChooseCityFrag) getSupportFragmentManager().
-//                findFragmentById(R.id.citiesWhether);
-//        View view = Objects.requireNonNull(fr).getView();
-//        CheckBox checkBoxWind = Objects.requireNonNull(view).findViewById(R.id.checkBoxWind);
-//        CheckBox checkBoxPressure = Objects.requireNonNull(view).findViewById(R.id.checkBoxPressure);
-//        if (isShowCheckboxes) {
-//            checkBoxWind.setVisibility(View.VISIBLE);
-//            checkBoxPressure.setVisibility(View.VISIBLE);
-//        } else {
-//            checkBoxWind.setVisibility(View.GONE);
-//            checkBoxPressure.setVisibility(View.GONE);
-//        }
-//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

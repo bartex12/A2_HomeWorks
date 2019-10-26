@@ -19,14 +19,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.060000002">
 
-        <com.geekbrains.city_weather.custom_views.CustomTemp
-            android:id="@+id/customViewTemp"
-            android:layout_width="50dp"
+        <com.geekbrains.city_weather.custom_views.CustomSlogan
+            android:id="@+id/customViewSlogan"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:cv_Color="@color/colorPrimaryDark"
-            app:cv_Radius="60"
-            android:visibility="gone"/>
+            app:cv_Radius="60" />
+
+        <TextView
+            android:id="@+id/textTempHere"
+            style="@style/TitleTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/texHumidityHere"
+            style="@style/TitleTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycledViewMarked"

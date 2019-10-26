@@ -54,6 +54,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="TitleTextViewStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="CustomStroke">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>

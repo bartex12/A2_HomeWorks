@@ -14,29 +14,29 @@ import com.geekbrains.city_weather.R;
 
 import androidx.annotation.Nullable;
 
-public class CustomTemp extends View {
+public class CustomSlogan extends View {
 
     private static final String TAG = "33333";
     private Paint paint;
     private int radius = 100;
     private int color = Color.BLACK;
-    private boolean pressed = false;
+    //private boolean pressed = false;
     private View.OnClickListener listener;
 
-    public CustomTemp(Context context) {
+    public CustomSlogan(Context context) {
         super(context);
         initView();
     }
 
     //если через макет, то нужен такой конструктор для добавления аттрибутов
-    public CustomTemp(Context context, @Nullable AttributeSet attrs) {
+    public CustomSlogan(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initAttr(context, attrs);
         initView();
     }
 
     //если через макет, то нужен такой конструктор для добавления аттрибутов и стилей
-    public CustomTemp(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CustomSlogan(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttr(context, attrs);
         initView();
@@ -56,7 +56,7 @@ public class CustomTemp extends View {
         paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10);
+        paint.setStrokeWidth(3);
     }
 
     public void setRadius(int radius){
@@ -73,24 +73,16 @@ public class CustomTemp extends View {
         Log.d(TAG, "onDraw");
         super.onDraw(canvas);
 
-        canvas.drawCircle(radius, radius, radius, paint);
-//        if(pressed) {
-//            canvas.drawCircle(radius, radius, radius/10, paint);
-//        } else {
-//            canvas.drawCircle(radius, radius, radius, paint);
-//        }
+        canvas.drawCircle(radius, radius, (float)(radius/1.2), paint);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
         int action = event.getAction();
         if(action == MotionEvent.ACTION_DOWN) { // Нажали
-            pressed = true;
             invalidate();           // Перерисовка элемента
             if (listener != null) listener.onClick(this);
-        } else if(action == MotionEvent.ACTION_UP) { // Отпустили
-            pressed = false;
-            invalidate();           // Перерисовка элемента
         }
         return true;
     }

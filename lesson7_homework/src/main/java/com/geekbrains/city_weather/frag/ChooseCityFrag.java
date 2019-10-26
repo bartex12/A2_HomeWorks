@@ -1,16 +1,22 @@
 package com.geekbrains.city_weather.frag;
 
+import android.content.Context;
 import android.content.res.Configuration;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.TextView;
+
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
-import com.geekbrains.city_weather.custom_views.CustomTemp;
+import com.geekbrains.city_weather.custom_views.CustomSlogan;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
@@ -24,7 +30,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_MARKED;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
@@ -32,14 +37,20 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
  * A simple {@link Fragment} subclass.
  *
  */
-public class ChooseCityFrag extends Fragment {
+public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private static final String TAG = "33333";
    // private String city = "";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
     private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
-    private CustomTemp customView;
+    private CustomSlogan customSlogan;
+
+    private SensorManager sensorManager;
+    private Sensor sensorTemp;
+    private Sensor sensorHumidity;
+    private TextView textTempHere;
+    private TextView textHumidity;
 
     public ChooseCityFrag() {
         // Required empty public constructor
@@ -61,6 +72,11 @@ public class ChooseCityFrag extends Fragment {
         initViews(view);
         initRecycledView();
         registerForContextMenu(recyclerViewMarked);
+
+        sensorManager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
+        sensorTemp = Objects.requireNonNull(sensorManager).getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+        Log.d(TAG, "ChooseCityFrag onActivityCreated");
     }
 
     @Override
@@ -84,6 +100,21 @@ public class ChooseCityFrag extends Fragment {
         if (recyclerViewCityAdapter!= null){
             recyclerViewCityAdapter.notifyDataSetChanged();
         }
+        //регистрируем слушатель сенсора, при этом  слушатель - фрагмент
+        sensorManager.registerListener(this, sensorTemp,
+                SensorManager.SENSOR_DELAY_NORMAL);
+        //регистрируем слушатель сенсора, при этом  слушатель - фрагмент
+        sensorManager.registerListener(this, sensorHumidity,
+                SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "ChooseCityFrag onPause");
+        // Если приложение свернуто, то не будем тратить энергию на получение информации по датчикам
+        sensorManager.unregisterListener(this, sensorTemp);
+        sensorManager.unregisterListener(this, sensorHumidity);
     }
 
     //проверка - если такой город есть в списке- возвращает false
@@ -108,12 +139,6 @@ public class ChooseCityFrag extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "ChooseCityFrag onPause");
-    }
-
     //************************************************************************************
     //Действия по подключению контекстного меню для пунктов списка RecyclerView во фрагменте
     // 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);
@@ -133,14 +158,10 @@ public class ChooseCityFrag extends Fragment {
 
     //инициализация View
     private void initViews(View view) {
-        customView = view.findViewById(R.id.customViewTemp);
+        textTempHere = view.findViewById(R.id.textTempHere);
+        textHumidity = view.findViewById(R.id.texHumidityHere);
+        customSlogan = view.findViewById(R.id.customViewSlogan);
         recyclerViewMarked = view.findViewById(R.id.recycledViewMarked);
-//        CheckBox checkBoxWind = view.findViewById(R.id.checkBoxWind);
-//        checkBoxWind.setChecked(true);
-//        checkBoxWind.setEnabled(false);
-//        CheckBox checkBoxPressure = view.findViewById(R.id.checkBoxPressure);
-//        checkBoxPressure.setChecked(true);
-//        checkBoxPressure.setEnabled(false);
     }
 
     //инициализация RecycledView
@@ -237,5 +258,25 @@ public class ChooseCityFrag extends Fragment {
     }
 
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        int type = event.sensor.getType();
+        Log.d(TAG, "ChooseCityFrag onSensorChanged type =  " + type);
+
+        if (type == 13){
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Температура ").append(event.values[0]).append(" \u00B0C");
+            textTempHere.setText(stringBuilder);
+        }else if (type == 12){
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Отн. влажность ").append(event.values[0]).append(" %");
+            textHumidity.setText(stringBuilder);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }
 
