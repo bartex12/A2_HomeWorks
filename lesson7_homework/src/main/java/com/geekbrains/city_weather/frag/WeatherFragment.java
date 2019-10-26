@@ -149,18 +149,19 @@ public class WeatherFragment extends Fragment {
                         public void run() {
                             Toast.makeText(getActivity(), R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
-                            CityListLab.removeSity(city);
+                            CityListLab.removeSity(city); //удаляем город из списка
+                            CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
                             //TODO если город не обнаружен и телефон в альбомной ориентации,
-                            // нужно выводить картинку на эту тему - смущённый чел
-                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation
-                                   == Configuration.ORIENTATION_LANDSCAPE){
-
-                             if (CityLab.getCity()!=null){
-                                 showCityWhetherLand(CityLab.getCity());
-                             }else {
-                                 showCityWhetherLand("Saint Petersburg");
-                             }
+                            // нужно выводить картинку на эту тему - смущённый чел. Пока сделал проще -
+                            // вывожу Saint Petersburg
+                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
+                                 .orientation  == Configuration.ORIENTATION_LANDSCAPE){
+                             //показываем фрагмент с погодой с городом по умолчанию
+                             showCityWhetherLand(CityLab.getCity());
+                             //перегружаем фрагмент со списком для обновления списка
+                             setChooseCityFrag();
                          }else {
+                             //показываем фрагмент со списком
                              setChooseCityFrag();
                          }
                         }

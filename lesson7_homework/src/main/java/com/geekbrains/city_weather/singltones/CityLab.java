@@ -26,4 +26,8 @@ public class CityLab {
     public static void setCurrentCity(String currentCity) {
         CityLab.currentCity = currentCity;
     }
+
+    public static void setCityDefault() {
+        CityLab.currentCity = "Saint Petersburg";
+    }
 }
