@@ -1,6 +1,7 @@
 package com.geekbrains.city_weather.frag;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
-import com.geekbrains.city_weather.custom_views.CustomSlogan;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
@@ -39,12 +39,10 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
  */
 public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private static final String TAG = "33333";
-   // private String city = "";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
     private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
-    private CustomSlogan customSlogan;
 
     private SensorManager sensorManager;
     private Sensor sensorTemp;
@@ -69,14 +67,13 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "ChooseCityFrag onActivityCreated");
+
+        initSensors();
         initViews(view);
         initRecycledView();
-        registerForContextMenu(recyclerViewMarked);
 
-        sensorManager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
-        sensorTemp = Objects.requireNonNull(sensorManager).getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        Log.d(TAG, "ChooseCityFrag onActivityCreated");
+        registerForContextMenu(recyclerViewMarked);
     }
 
     @Override
@@ -100,7 +97,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         if (recyclerViewCityAdapter!= null){
             recyclerViewCityAdapter.notifyDataSetChanged();
         }
-        //регистрируем слушатель сенсора, при этом  слушатель - фрагмент
+        getPreferensis();
+        registerListenersOfSensors();
+    }
+
+    private void registerListenersOfSensors() {
+        //регистрируем слушатель сенсора, при этом  слушатель - сам фрагмент
         sensorManager.registerListener(this, sensorTemp,
                 SensorManager.SENSOR_DELAY_NORMAL);
         //регистрируем слушатель сенсора, при этом  слушатель - фрагмент
@@ -108,11 +110,32 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    private void getPreferensis() {
+        SharedPreferences prefSetting = androidx.preference.PreferenceManager
+                .getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
+        //получаем из файла настроек состояние чекбоксов
+        boolean isShowTempHumidHere = prefSetting.getBoolean("showSensors", true);
+        Log.d(TAG, "WeatherFragment onResume isShowTempHumidHere = " + isShowTempHumidHere);
+
+        showTempAndHumiditySensors(isShowTempHumidHere);
+    }
+
+    // показываем/скрываем данные о температуре/влажности
+    private void showTempAndHumiditySensors(boolean isShowTempHumidHere) {
+        if (isShowTempHumidHere) {
+            textTempHere.setVisibility(View.VISIBLE);
+            textHumidity.setVisibility(View.VISIBLE);
+        } else {
+            textTempHere.setVisibility(View.GONE);
+            textHumidity.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "ChooseCityFrag onPause");
-        // Если приложение свернуто, то не будем тратить энергию на получение информации по датчикам
+        // Если приложение свернуто, отключаем слушатели
         sensorManager.unregisterListener(this, sensorTemp);
         sensorManager.unregisterListener(this, sensorHumidity);
     }
@@ -139,7 +162,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         super.onSaveInstanceState(outState);
     }
 
-    //************************************************************************************
+    //********************************** Жесть **************************************************
     //Действия по подключению контекстного меню для пунктов списка RecyclerView во фрагменте
     // 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);
     // 2 делаем метод onContextItemSelected(MenuItem item) как обычно (см ниже)
@@ -156,11 +179,28 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         return super.onContextItemSelected(item);
     }
 
+    private void initSensors() {
+        sensorManager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
+        sensorTemp = Objects.requireNonNull(sensorManager).getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+        Log.d(TAG, "ChooseCityFrag initSemsors sensorTemp = " + sensorTemp +
+                " sensorHumidity = " + sensorHumidity);
+    }
+
     //инициализация View
     private void initViews(View view) {
+
         textTempHere = view.findViewById(R.id.textTempHere);
         textHumidity = view.findViewById(R.id.texHumidityHere);
-        customSlogan = view.findViewById(R.id.customViewSlogan);
+        if (sensorTemp == null){
+            textTempHere.setText(Objects.requireNonNull(getActivity()).getResources().
+                    getString(R.string.No_temperature_sensor));
+        }
+        if (sensorHumidity == null){
+            textHumidity.setText(Objects.requireNonNull(getActivity()).getResources().
+                    getString(R.string.No_humidity_sensor));
+        }
+
         recyclerViewMarked = view.findViewById(R.id.recycledViewMarked);
     }
 
@@ -260,17 +300,18 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        int type = event.sensor.getType();
-        Log.d(TAG, "ChooseCityFrag onSensorChanged type =  " + type);
 
+        int type = event.sensor.getType();
         if (type == 13){
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Температура ").append(event.values[0]).append(" \u00B0C");
-            textTempHere.setText(stringBuilder);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(Objects.requireNonNull(getActivity()).getResources()
+                        .getString(R.string.temperature)).append(event.values[0]).append(" \u00B0C");
+                textTempHere.setText(stringBuilder);
         }else if (type == 12){
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Отн. влажность ").append(event.values[0]).append(" %");
-            textHumidity.setText(stringBuilder);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(Objects.requireNonNull(getActivity()).getResources()
+                        .getString(R.string.Relative_humidity)).append(event.values[0]).append(" %");
+                textHumidity.setText(stringBuilder);
         }
     }
 

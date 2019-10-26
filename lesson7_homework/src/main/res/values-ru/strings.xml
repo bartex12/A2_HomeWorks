@@ -56,5 +56,13 @@
     <string name="willBeEstimate">Здесь будет ссылка на страницу приложения в PlayMarket</string>
     <string name="weather_application">Погодное приложение</string>
     <string name="geekbrains">GeekBrains Андроид-продвинутый уровень</string>
+    <string name="addParamTempHumid">Данные с сенсоров</string>
+    <string name="showTempHumid">Показывать температуру и влажность</string>
+    <string name="NotShowTempHumid">Не показывать температуру и влажность</string>
+    <string name="will_be_fine">ВСЁ БУДЕТ ХОРОШО</string>
+    <string name="No_temperature_sensor">Датчик температуры отсутствует</string>
+    <string name="No_humidity_sensor">Датчик влажности отсутствует</string>
+    <string name="temperature">Температура</string>
+    <string name="Relative_humidity">Отн. влажность</string>
 
 </resources>

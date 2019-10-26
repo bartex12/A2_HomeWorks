@@ -7,11 +7,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-
 import com.geekbrains.city_weather.R;
-
 import androidx.annotation.Nullable;
 
 public class CustomSlogan extends View {
@@ -20,8 +17,6 @@ public class CustomSlogan extends View {
     private Paint paint;
     private int radius = 100;
     private int color = Color.BLACK;
-    //private boolean pressed = false;
-    private View.OnClickListener listener;
 
     public CustomSlogan(Context context) {
         super(context);
@@ -72,24 +67,8 @@ public class CustomSlogan extends View {
     protected void onDraw(Canvas canvas) {
         Log.d(TAG, "onDraw");
         super.onDraw(canvas);
-
-        canvas.drawCircle(radius, radius, (float)(radius/1.2), paint);
-
+            paint.setTextSize(70);
+            canvas.drawText(getContext().getString(R.string.will_be_fine),radius,radius, paint);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        int action = event.getAction();
-        if(action == MotionEvent.ACTION_DOWN) { // Нажали
-            invalidate();           // Перерисовка элемента
-            if (listener != null) listener.onClick(this);
-        }
-        return true;
-    }
-
-    @Override
-    public void setOnClickListener(@Nullable View.OnClickListener lis)
-    {
-        listener = lis;
-    }
 }

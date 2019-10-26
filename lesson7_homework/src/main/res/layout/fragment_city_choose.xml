@@ -24,21 +24,21 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             app:cv_Color="@color/colorPrimaryDark"
             app:cv_Radius="60" />
 
         <TextView
             android:id="@+id/textTempHere"
-            style="@style/TitleTextViewStyle"
+            style="@style/WhetherCityStyleMiddle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp" />
 
         <TextView
             android:id="@+id/texHumidityHere"
-            style="@style/TitleTextViewStyle"
+            style="@style/WhetherCityStyleMiddle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp" />
