@@ -39,6 +39,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
+import static com.geekbrains.city_weather.data_loader.CityWeatherDataLoader.OPEN_FORECAST_API_URL;
+import static com.geekbrains.city_weather.data_loader.CityWeatherDataLoader.OPEN_WEATHER_API_URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -137,8 +139,10 @@ public class WeatherFragment extends Fragment {
         new Thread() {
             @Override
             public void run() {
-                final JSONObject jsonObject = CityWeatherDataLoader.getJSONData(city);
-                final JSONObject jsonObjectForecast = CityWeatherDataLoader.getJSONDataForecast(city);
+                final JSONObject jsonObject = CityWeatherDataLoader
+                        .getJSONDataWithCityAndApiUrl(city, OPEN_WEATHER_API_URL);
+                final JSONObject jsonObjectForecast = CityWeatherDataLoader
+                        .getJSONDataWithCityAndApiUrl(city, OPEN_FORECAST_API_URL);
                 if (jsonObject == null) {
                     handler.post(new Runnable() {
                         @Override

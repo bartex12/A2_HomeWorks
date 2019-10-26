@@ -27,6 +27,10 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     private long posItem = 0;
     private Context context;
 
+    public interface OnCityClickListener {
+        void onCityClick(String city);
+    }
+
     public RecyclerViewCityAdapter(ArrayList<String> data,
                                    OnCityClickListener onCityClickListener, Activity activity) {
         if (data != null) {
@@ -103,10 +107,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         View view = LayoutInflater.from(context).inflate(R.layout.item_list,
                 parent, false);
         return new ViewHolder(view);
-    }
-
-    public interface OnCityClickListener {
-        void onCityClick(String city);
     }
 
     @Override

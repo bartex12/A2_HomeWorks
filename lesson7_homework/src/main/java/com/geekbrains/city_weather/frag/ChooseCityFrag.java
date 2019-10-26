@@ -217,7 +217,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                         Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick");
                         //изменяем текущий город  в синглтоне
                         CityLab.setCurrentCity(newCity);
-                        //city = CityLab.getCity();
                         // показываем погоду в городе с учётом ориентации экрана
                         showCityWhetherWithOrientation(CityLab.getCity());
                     }
@@ -256,29 +255,14 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         }
     }
 
-    // Показать погоду во фрагменте  в портретной ориентации
-    private void showCityWhether(String city) {
+    // Показать погоду во фрагменте в зависимости от  города и ориентации
+    private void showCityWhether(String city, int frame_id) {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         // ... и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
-        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        //ft.addToBackStack(null);
-        ft.commit();
-        Log.d(TAG, "ChooseCityFrag showCityWhether Фрагмент = " +
-                getFragmentManager().findFragmentById(R.id.content_super));
-    }
-
-    // Показать погоду во фрагменте в альбомной ориентации
-    private void showCityWhetherLand(String city) {
-
-        // создаем новый фрагмент с текущей позицией для вывода погоды
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
-        // ... и выполняем транзакцию по замене фрагмента
-        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
-        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.replace(frame_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         //ft.addToBackStack(null);
         ft.commit();
@@ -290,13 +274,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private void showCityWhetherWithOrientation(String city) {
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
-            showCityWhetherLand(city);
+            showCityWhether(city, R.id.content_super_r);
             //а если портретная, то
         } else {
-            showCityWhether(city);
+            showCityWhether(city,R.id.content_super);
         }
     }
-
 
     @Override
     public void onSensorChanged(SensorEvent event) {
