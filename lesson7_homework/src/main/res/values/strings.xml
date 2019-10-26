@@ -20,8 +20,8 @@
     <string name="about_me">The app is made on relax</string>
     <string name="dialog">Dialog</string>
     <string name="aboutApp">About Application</string>
-    <string name="show">Show</string>
-    <string name="NotShow">Not show</string>
+    <string name="show">Show wind pressure and speed</string>
+    <string name="NotShow">Do not show pressure and wind speed</string>
     <string name="addParam">Advanced options</string>
     <string name="change_city">Change city</string>
     <string name="place_not_found">Place not found</string>

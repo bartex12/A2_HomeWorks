@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
+import com.geekbrains.city_weather.custom_views.CustomTemp;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
@@ -38,6 +39,7 @@ public class ChooseCityFrag extends Fragment {
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
     private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
+    private CustomTemp customView;
 
     public ChooseCityFrag() {
         // Required empty public constructor
@@ -131,13 +133,14 @@ public class ChooseCityFrag extends Fragment {
 
     //инициализация View
     private void initViews(View view) {
+        customView = view.findViewById(R.id.customViewTemp);
         recyclerViewMarked = view.findViewById(R.id.recycledViewMarked);
-        CheckBox checkBoxWind = view.findViewById(R.id.checkBoxWind);
-        checkBoxWind.setChecked(true);
-        checkBoxWind.setEnabled(false);
-        CheckBox checkBoxPressure = view.findViewById(R.id.checkBoxPressure);
-        checkBoxPressure.setChecked(true);
-        checkBoxPressure.setEnabled(false);
+//        CheckBox checkBoxWind = view.findViewById(R.id.checkBoxWind);
+//        checkBoxWind.setChecked(true);
+//        checkBoxWind.setEnabled(false);
+//        CheckBox checkBoxPressure = view.findViewById(R.id.checkBoxPressure);
+//        checkBoxPressure.setChecked(true);
+//        checkBoxPressure.setEnabled(false);
     }
 
     //инициализация RecycledView
