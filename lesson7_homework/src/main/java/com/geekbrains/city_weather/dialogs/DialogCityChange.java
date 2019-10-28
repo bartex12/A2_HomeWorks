@@ -2,6 +2,7 @@ package com.geekbrains.city_weather.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -24,6 +25,19 @@ public class DialogCityChange extends DialogFragment {
     public DialogCityChange() {
         super();
     }
+
+    OnCityChangeListener onCityChangeListener;
+
+    public interface OnCityChangeListener{
+        void onCityChange(String city);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        onCityChangeListener = (OnCityChangeListener)context;
+    }
+
 
     @NonNull
     @Override
@@ -50,10 +64,7 @@ public class DialogCityChange extends DialogFragment {
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
                             Snackbar.LENGTH_SHORT).show();
                 } else {
-                    ChooseCityFrag fr = (ChooseCityFrag) Objects.requireNonNull(getFragmentManager()).
-                            findFragmentById(R.id.citiesWhether);
-                    //передаём во фрагмент введённый город
-                    Objects.requireNonNull(fr).prepareData(city);
+                    onCityChangeListener.onCityChange(city);
                     Objects.requireNonNull(getDialog()).dismiss();  //закрывает только диалог
                 }
             }

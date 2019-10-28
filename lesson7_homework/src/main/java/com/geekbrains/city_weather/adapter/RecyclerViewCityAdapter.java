@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.frag.ChooseCityFrag;
+import com.geekbrains.city_weather.singltones.CityListLab;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,10 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     private Activity activity;
     private long posItem = 0;
     private Context context;
+
+    public interface OnCityClickListener {
+        void onCityClick(String city);
+    }
 
     public RecyclerViewCityAdapter(ArrayList<String> data,
                                    OnCityClickListener onCityClickListener, Activity activity) {
@@ -52,6 +57,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         if (data.size() > 0) {
             data.remove((int) posItem);
             notifyItemRemoved((int) posItem);
+            Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         }
     }
 
@@ -101,10 +107,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         View view = LayoutInflater.from(context).inflate(R.layout.item_list,
                 parent, false);
         return new ViewHolder(view);
-    }
-
-    public interface OnCityClickListener {
-        void onCityClick(String city);
     }
 
     @Override

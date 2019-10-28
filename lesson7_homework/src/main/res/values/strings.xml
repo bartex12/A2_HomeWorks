@@ -20,8 +20,8 @@
     <string name="about_me">The app is made on relax</string>
     <string name="dialog">Dialog</string>
     <string name="aboutApp">About Application</string>
-    <string name="show">Show</string>
-    <string name="NotShow">Not show</string>
+    <string name="show">Show wind pressure and speed</string>
+    <string name="NotShow">Do not show pressure and wind speed</string>
     <string name="addParam">Advanced options</string>
     <string name="change_city">Change city</string>
     <string name="place_not_found">Place not found</string>
@@ -70,6 +70,13 @@
 </string>
     <string name="weather_application">Weather application</string>
     <string name="geekbrains">GeekBrains Android Advanced</string>
-
+    <string name="addParamTempHumid">Show data from sensors</string>
+    <string name="showTempHumid">Show temperature and humidity</string>
+    <string name="NotShowTempHumid">Do not show temperature and humidity</string>
+    <string name="will_be_fine">ALL WILL BE ALRIGHT</string>
+    <string name="No_temperature_sensor">No temperature sensor</string>
+    <string name="No_humidity_sensor">No humidity sensor</string>
+    <string name="temperature">Temperature</string>
+    <string name="Relative_humidity">Relative humidity</string>
 
 </resources>

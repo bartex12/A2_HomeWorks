@@ -10,4 +10,12 @@
         android:summaryOn="@string/show"
         android:title="@string/addParam" />
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/ic_add_param_red_24dp"
+        android:key="showSensors"
+        android:summaryOff="@string/NotShowTempHumid"
+        android:summaryOn="@string/showTempHumid"
+        android:title="@string/addParamTempHumid" />
+
 </androidx.preference.PreferenceScreen>
