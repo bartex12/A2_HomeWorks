@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements
         initFab();
         initPrefDefault();
         initviews();
-        initBottomNavigation();
     }
 
     private void initSingleton() {
@@ -110,10 +109,6 @@ public class MainActivity extends AppCompatActivity implements
         //устанавливаем из настроек значения по умолчанию для первой загрузки
         androidx.preference.PreferenceManager
                 .setDefaultValues(this, R.xml.pref_setting, false);
-    }
-
-    private void initBottomNavigation(){
-
     }
 
     @Override
@@ -293,29 +288,4 @@ public class MainActivity extends AppCompatActivity implements
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
     }
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    finish();
-                    return true;
-                case R.id.navigation_about:
-                    AboutDialog aboutDialog = new AboutDialog();
-                    aboutDialog.show(getSupportFragmentManager(),
-                            getResources().getString(R.string.dialog));
-                    return true;
-                case R.id.navigation_settings:
-                    Log.d(TAG, "onNavigationItemSelected");
-                    Intent intentSettings = new Intent(MainActivity.this,
-                            SettingsActivity.class);
-                    startActivity(intentSettings);
-                    finish();
-                    return true;
-            }
-            return false;
-        }
-    };
 }
