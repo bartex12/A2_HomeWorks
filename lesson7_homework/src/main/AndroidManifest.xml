@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/sun_smail2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service android:name=".services.BackgroundWeatherService" />
+
         <activity
             android:name=".MainActivity"
             android:icon="@mipmap/ic_launcher"

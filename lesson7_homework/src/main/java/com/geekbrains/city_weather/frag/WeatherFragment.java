@@ -1,35 +1,34 @@
 package com.geekbrains.city_weather.frag;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
-import com.geekbrains.city_weather.data_loader.CityWeatherDataLoader;
+import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -37,10 +36,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
+import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
+import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
-import static com.geekbrains.city_weather.data_loader.CityWeatherDataLoader.OPEN_FORECAST_API_URL;
-import static com.geekbrains.city_weather.data_loader.CityWeatherDataLoader.OPEN_WEATHER_API_URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,14 +58,11 @@ public class WeatherFragment extends Fragment {
     private TextView textViewWind;
     private TextView textViewPressure;
     private TextView textViewIcon;
-    private Handler handler = new Handler();
     private String[] dates = new String[5];
     private double[] temperuteres = new double[5];
-    private int[] idArray = new int[5];
     private String[] iconArray = new String[5];
-    private long sunrise;
-    private long sunset;
     private String currentCity;
+    private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -97,7 +96,21 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         initFonts();
-        updateWeatherData(currentCity);
+
+        //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+        intent.putExtra(CURRENT_CITY,currentCity);
+        Objects.requireNonNull(getActivity()).startService(intent);
+        Log.d(TAG, "WeatherFragment onViewCreated intent = " + intent);
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(TAG, "WeatherFragment onStart");
+        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION
+        Objects.requireNonNull(getActivity())
+                .registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
+        super.onStart();
     }
 
     @Override
@@ -115,6 +128,12 @@ public class WeatherFragment extends Fragment {
         showWindAndPressure(isShowCheckboxes);
     }
 
+    @Override
+    public void onStop() {
+        Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
+        super.onStop();
+    }
+
     private void initViews(View view) {
         recyclerViewForecast = view.findViewById(R.id.recyclerViewForecast);
         cityTextView = view.findViewById(R.id.greetingsTextView);
@@ -130,53 +149,6 @@ public class WeatherFragment extends Fragment {
         Typeface weatherFont = Typeface.createFromAsset(
                 Objects.requireNonNull(getActivity()).getAssets(), "fonts/weather.ttf");
         textViewIcon.setTypeface(weatherFont);
-    }
-
-    //TODO перенести всё в отдельный класс
-    //получаем погодные данные с сервера  в JSON формате
-    private void updateWeatherData(final String city) {
-        Log.d(TAG, "WeatherFragment updateWeatherData city = " +city);
-        new Thread() {
-            @Override
-            public void run() {
-                final JSONObject jsonObject = CityWeatherDataLoader
-                        .getJSONDataWithCityAndApiUrl(city, OPEN_WEATHER_API_URL);
-                final JSONObject jsonObjectForecast = CityWeatherDataLoader
-                        .getJSONDataWithCityAndApiUrl(city, OPEN_FORECAST_API_URL);
-                if (jsonObject == null) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), R.string.place_not_found,
-                                    Toast.LENGTH_LONG).show();
-                            CityListLab.removeSity(city); //удаляем город из списка
-                            CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
-                            //TODO если город не обнаружен и телефон в альбомной ориентации,
-                            // нужно выводить картинку на эту тему - смущённый чел. Пока сделал проще -
-                            // вывожу Saint Petersburg
-                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
-                                 .orientation  == Configuration.ORIENTATION_LANDSCAPE){
-                             //показываем фрагмент с погодой с городом по умолчанию
-                             showCityWhetherLand(CityLab.getCity());
-                             //перегружаем фрагмент со списком для обновления списка
-                             setChooseCityFrag();
-                         }else {
-                             //показываем фрагмент со списком
-                             setChooseCityFrag();
-                         }
-                        }
-                    });
-                } else {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            renderWeather(jsonObject);
-                            renderForecast(jsonObjectForecast);
-                        }
-                    });
-                }
-            }
-        }.start();
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
@@ -204,13 +176,17 @@ public class WeatherFragment extends Fragment {
         ft.commit();
     }
 
+    /**
+     * @param jsonObjectForecast
+     * данные для 5 дневного прогноза
+     */
     private void renderForecast(JSONObject jsonObjectForecast) {
         try {
             dates = getDateArray(jsonObjectForecast);
             temperuteres = getTempArray(jsonObjectForecast);
-            idArray = getIdArray(jsonObjectForecast);
-            sunrise = getSunrise(jsonObjectForecast);
-            sunset = getSunset(jsonObjectForecast);
+            int[] idArray = getIdArray(jsonObjectForecast);
+            long sunrise = getSunrise(jsonObjectForecast);
+            long sunset = getSunset(jsonObjectForecast);
             iconArray = getIconsArray(idArray, sunrise, sunset);
             //после формирования данных для адаптера инициализируем сам адаптер
             initRecyclerView();
@@ -485,5 +461,52 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    private class ServiceFinishedReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //сначала смотрим, а удалось ли сервису получить JSON объект
+                    boolean is_JSON_null =  intent.getBooleanExtra(IS_JSON_NULL, true);
+                    //если не удалось, то is_JSON_null = true
+                    if (is_JSON_null){
+                        String currentCity = intent.getStringExtra(CURRENT_CITY);
+                        Toast.makeText(getActivity(), R.string.place_not_found,
+                                Toast.LENGTH_LONG).show();
+                        CityListLab.removeSity(currentCity); //удаляем город из списка
+                        CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
+
+                        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
+                                .orientation  == Configuration.ORIENTATION_LANDSCAPE){
+                            //показываем фрагмент с погодой с городом по умолчанию
+                            showCityWhetherLand(CityLab.getCity());
+                            //перегружаем фрагмент со списком для обновления списка
+                            setChooseCityFrag();
+                        }else {
+                            //показываем фрагмент со списком
+                            setChooseCityFrag();
+                        }
+                        //если JSON объект получен, то переводим строки в JSON объекты и получаем данные
+                    }else {
+                        String jsonObjectString = intent.getStringExtra(JSON_OBJECT);
+                        String jsonObjectForecastString = intent.getStringExtra(JSON_OBJECT_FORECAST);
+                        JSONObject jsonObject = null;
+                        JSONObject jsonObjectForecast = null;
+                        try {
+                            jsonObject = new JSONObject(Objects.requireNonNull(jsonObjectString));
+                            jsonObjectForecast = new JSONObject(Objects.requireNonNull(jsonObjectForecastString));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        renderWeather(jsonObject);
+                        renderForecast(jsonObjectForecast);
+                    }
+                    Log.d(TAG, "WeatherFragment ServiceFinishedReceiver onReceive" );
+                }
+            });
+        }
+    }
 }
 //1 hPa = 0.75006375541921 mmHg
