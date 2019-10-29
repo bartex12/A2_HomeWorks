@@ -214,10 +214,12 @@ public class MainActivity extends AppCompatActivity implements
         //добавляем город в список синглтона
         CityListLab.addCity(city);
         Log.d(TAG, "MainActivity onCityAdd CityListLab.size = " + CityListLab.getCitysList().size());
-        //setChooseCityFrag();
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE){
             setChooseCityFrag();
+            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_LANDSCAPE");
+        }else {
+            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_PORTRAIT");
         }
     }
 
@@ -257,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент со списком ранее выбранных городов
     private void setChooseCityFrag() {
+        Log.d(TAG, "MainActivity setChooseCityFrag");
         ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
@@ -266,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент с текущей позицией для вывода погоды
     private void setWeatherFragment(String city) {
+        Log.d(TAG, "MainActivity setWeatherFragment");
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
@@ -275,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент с текущей позицией для вывода погоды
     private void setWeatherFragmentland(String city) {
+        Log.d(TAG, "MainActivity setWeatherFragmentland");
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента

@@ -67,7 +67,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "ChooseCityFrag onActivityCreated");
+        Log.d(TAG, "ChooseCityFrag onViewCreated");
 
         initSensors();
         initViews(view);
@@ -231,7 +231,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         recyclerViewMarked.setAdapter(recyclerViewCityAdapter);
     }
 
-    //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    //обработка для контекстного меню
     private void handleMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
