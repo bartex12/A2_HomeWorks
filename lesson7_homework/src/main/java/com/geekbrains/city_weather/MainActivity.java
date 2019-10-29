@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.geekbrains.city_weather.custom_views.CustomSlogan;
+import com.geekbrains.city_weather.dialogs.AboutDialog;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -18,6 +19,7 @@ import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
