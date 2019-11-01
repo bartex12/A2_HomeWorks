@@ -9,13 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.google.android.material.snackbar.Snackbar;
-
 import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -26,7 +22,7 @@ public class DialogCityChange extends DialogFragment {
         super();
     }
 
-    OnCityChangeListener onCityChangeListener;
+    private OnCityChangeListener onCityChangeListener;
 
     public interface OnCityChangeListener{
         void onCityChange(String city);

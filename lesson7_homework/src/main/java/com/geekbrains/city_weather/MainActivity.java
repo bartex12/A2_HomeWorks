@@ -1,7 +1,6 @@
 package com.geekbrains.city_weather;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,8 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.geekbrains.city_weather.custom_views.CustomSlogan;
-import com.geekbrains.city_weather.dialogs.AboutDialog;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -19,7 +16,6 @@ import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
@@ -32,6 +28,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
+
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
@@ -41,9 +39,7 @@ public class MainActivity extends AppCompatActivity implements
         DialogCityChange.OnCityChangeListener{
 
     private static final String TAG = "33333";
-    private boolean isShowCheckboxes;
     private DrawerLayout drawer;
-    private boolean isExistWhetherFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         Log.d(TAG,"MainActivity onCreate savedInstanceState = " + savedInstanceState);
+        boolean isExistWhetherFrag;
         if (savedInstanceState == null){
             initSingleton();
             // Определение, можно ли будет расположить рядом данные в другом фрагменте
@@ -105,10 +102,11 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setItemIconTintList(null);
     }
 
+
     private void initPrefDefault() {
         //устанавливаем из настроек значения по умолчанию для первой загрузки
-        androidx.preference.PreferenceManager
-                .setDefaultValues(this, R.xml.pref_setting, false);
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
     }
 
     @Override

@@ -17,4 +17,6 @@ public class AppConstants {
     public static final String IS_JSON_NULL = "IS_JSON_NULL";
     public static final String JSON_OBJECT = "JSON_OBJECT";
     public static final String JSON_OBJECT_FORECAST = "JSON_OBJECT_FORECAST";
+    public static final String SHOW_SENSORS = "SHOW_SENSORS";
+    public static final String SHOW_CHECK_BOXES = "SHOW_CHECK_BOXES";
 }

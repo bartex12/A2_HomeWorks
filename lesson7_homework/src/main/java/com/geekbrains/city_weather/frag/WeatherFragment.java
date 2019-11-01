@@ -36,12 +36,14 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
+import static com.geekbrains.city_weather.constants.AppConstants.SHOW_CHECK_BOXES;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -117,11 +119,11 @@ public class WeatherFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "WeatherFragment onResume");
-
-        SharedPreferences prefSetting = androidx.preference.PreferenceManager
-                .getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        SharedPreferences prefSetting =
+                getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
         //получаем из файла настроек состояние чекбоксов
-        boolean isShowCheckboxes = prefSetting.getBoolean("showCheckBoxes", true);
+        boolean isShowCheckboxes = prefSetting.getBoolean(SHOW_CHECK_BOXES, true);
         Log.d(TAG, "WeatherFragment onResume isShowCheckboxes = " + isShowCheckboxes);
 
         // показываем/скрываем данные о ветре и давлении
