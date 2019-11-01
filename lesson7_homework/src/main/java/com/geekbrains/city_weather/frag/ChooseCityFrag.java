@@ -30,7 +30,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_MARKED;
+import static com.geekbrains.city_weather.constants.AppConstants.SHOW_SENSORS;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -67,7 +69,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "ChooseCityFrag onActivityCreated");
+        Log.d(TAG, "ChooseCityFrag onViewCreated");
 
         initSensors();
         initViews(view);
@@ -111,12 +113,13 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     private void getPreferensis() {
-        SharedPreferences prefSetting = androidx.preference.PreferenceManager
-                .getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        //получаем из файла настроек состояние чекбоксов
-        boolean isShowTempHumidHere = prefSetting.getBoolean("showSensors", true);
-        Log.d(TAG, "WeatherFragment onResume isShowTempHumidHere = " + isShowTempHumidHere);
 
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        SharedPreferences prefSetting =
+                getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
+        //получаем из файла настроек состояние чекбоксов
+        boolean isShowTempHumidHere = prefSetting.getBoolean(SHOW_SENSORS, true);
+        Log.d(TAG, "WeatherFragment onResume isShowTempHumidHere = " + isShowTempHumidHere);
         showTempAndHumiditySensors(isShowTempHumidHere);
     }
 
@@ -231,7 +234,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         recyclerViewMarked.setAdapter(recyclerViewCityAdapter);
     }
 
-    //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    //обработка для контекстного меню
     private void handleMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         switch (id) {

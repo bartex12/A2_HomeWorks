@@ -33,9 +33,8 @@ public class CityListLab {
     }
 
     //удаление данных из списка
-    public static ArrayList<String> removeSity(String city){
+    public static void removeSity(String city){
         cityMarked.remove(city);
-        return cityMarked;
     }
 
     //очистка списка

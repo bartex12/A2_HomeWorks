@@ -1,7 +1,6 @@
 package com.geekbrains.city_weather;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.geekbrains.city_weather.custom_views.CustomSlogan;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -30,6 +28,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
+
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
@@ -39,9 +39,7 @@ public class MainActivity extends AppCompatActivity implements
         DialogCityChange.OnCityChangeListener{
 
     private static final String TAG = "33333";
-    private boolean isShowCheckboxes;
     private DrawerLayout drawer;
-    private boolean isExistWhetherFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         Log.d(TAG,"MainActivity onCreate savedInstanceState = " + savedInstanceState);
+        boolean isExistWhetherFrag;
         if (savedInstanceState == null){
             initSingleton();
             // Определение, можно ли будет расположить рядом данные в другом фрагменте
@@ -103,10 +102,11 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setItemIconTintList(null);
     }
 
+
     private void initPrefDefault() {
         //устанавливаем из настроек значения по умолчанию для первой загрузки
-        androidx.preference.PreferenceManager
-                .setDefaultValues(this, R.xml.pref_setting, false);
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
     }
 
     @Override
@@ -214,10 +214,12 @@ public class MainActivity extends AppCompatActivity implements
         //добавляем город в список синглтона
         CityListLab.addCity(city);
         Log.d(TAG, "MainActivity onCityAdd CityListLab.size = " + CityListLab.getCitysList().size());
-        //setChooseCityFrag();
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE){
             setChooseCityFrag();
+            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_LANDSCAPE");
+        }else {
+            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_PORTRAIT");
         }
     }
 
@@ -257,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент со списком ранее выбранных городов
     private void setChooseCityFrag() {
+        Log.d(TAG, "MainActivity setChooseCityFrag");
         ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
@@ -266,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент с текущей позицией для вывода погоды
     private void setWeatherFragment(String city) {
+        Log.d(TAG, "MainActivity setWeatherFragment");
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
@@ -275,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // создаем новый фрагмент с текущей позицией для вывода погоды
     private void setWeatherFragmentland(String city) {
+        Log.d(TAG, "MainActivity setWeatherFragmentland");
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента

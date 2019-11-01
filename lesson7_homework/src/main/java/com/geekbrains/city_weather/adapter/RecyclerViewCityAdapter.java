@@ -52,8 +52,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
 
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
-        //TODO если удалить текущий элемент, в альбоме отображаются данные удалённого города
-        //в принципе, это даже прикольно, если случайно удалили
         if (data.size() > 0) {
             data.remove((int) posItem);
             notifyItemRemoved((int) posItem);
@@ -65,15 +63,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         Log.d(TAG, "RecyclerViewCityAdapter clearList");
         data.clear();
         notifyDataSetChanged();
-    }
-
-    private boolean isNotCityInList(String city) {
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).toUpperCase().equals(city.toUpperCase())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
