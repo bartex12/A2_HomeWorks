@@ -32,7 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_MARKED;
-import static com.geekbrains.city_weather.constants.AppConstants.SHOW_SENSORS;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -117,8 +116,8 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting =
                 getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        //получаем из файла настроек состояние чекбоксов
-        boolean isShowTempHumidHere = prefSetting.getBoolean(SHOW_SENSORS, true);
+        //получаем из файла настроек состояние чекбоксов Ключ не менять!
+        boolean isShowTempHumidHere = prefSetting.getBoolean("showSensors", true);
         Log.d(TAG, "WeatherFragment onResume isShowTempHumidHere = " + isShowTempHumidHere);
         showTempAndHumiditySensors(isShowTempHumidHere);
     }

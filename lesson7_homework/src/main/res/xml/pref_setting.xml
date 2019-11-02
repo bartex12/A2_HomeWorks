@@ -2,9 +2,19 @@
 
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:entries="@array/city_entryName"
+        android:entryValues="@array/аccurancy_entryValues"
+        android:key="typeOfCitysList"
+        android:defaultValue="3"
+        android:icon="@drawable/ic_list__red_24dp"
+        android:title="Список городов"
+        android:summary="Список городов для быстрого выбора">
+    </ListPreference>
+
     <CheckBoxPreference
         android:defaultValue="true"
-        android:icon="@drawable/ic_add_param_red_24dp"
+        android:icon="@drawable/ic_toys_red_24dp"
         android:key="showCheckBoxes"
         android:summaryOff="@string/NotShow"
         android:summaryOn="@string/show"
@@ -12,7 +22,7 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:icon="@drawable/ic_add_param_red_24dp"
+        android:icon="@drawable/termometr50"
         android:key="showSensors"
         android:summaryOff="@string/NotShowTempHumid"
         android:summaryOn="@string/showTempHumid"

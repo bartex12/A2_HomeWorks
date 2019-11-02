@@ -3,10 +3,13 @@ package com.geekbrains.city_weather.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import com.geekbrains.city_weather.R;
@@ -15,6 +18,9 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import static androidx.core.content.ContextCompat.getSystemService;
+import static androidx.core.content.ContextCompat.getSystemServiceName;
 
 public class DialogCityChange extends DialogFragment {
 
@@ -50,6 +56,17 @@ public class DialogCityChange extends DialogFragment {
         builder.setTitle(R.string.show_city);
         builder.setIcon(R.drawable.ic_my_location_red_24dp);
 
+        final Dialog dialog = builder.create();
+
+//        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+//            @Override
+//            public void onShow(DialogInterface dialog) {
+//                InputMethodManager imm = getSystemService(getActivity(), InputMethodManager.class);
+//                imm.showSoftInput(etCity, 0);
+//
+//            }
+//        });
+
         //действия при нажатии кнопки OK
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +82,13 @@ public class DialogCityChange extends DialogFragment {
                 }
             }
         });
-        return builder.create();
+        return dialog;
+    }
+
+    //принудительно вызываем клавиатуру - повторный вызов ее скроет
+    private void takeOnAndOffSoftInput(){
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        Objects.requireNonNull(imm).toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 }

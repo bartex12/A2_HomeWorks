@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="city_entryName">
+    <item>Крупнейшие города мира</item>
+    <item>Крупнейшие города России</item>
+    <item>Ранее выбранные города</item>
+</string-array>
+
+</resources>

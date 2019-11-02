@@ -39,10 +39,11 @@ public class CityListLab {
 
     //очистка списка
     public static void clearSityList(){
+        //очищаем список
         cityMarked.clear();
     }
 
-    public static boolean isNotCityInList(String city) {
+    private static boolean isNotCityInList(String city) {
         for (int i = 0; i < cityMarked.size(); i++) {
             if (cityMarked.get(i).toUpperCase().equals(city.toUpperCase())) {
                 return false;

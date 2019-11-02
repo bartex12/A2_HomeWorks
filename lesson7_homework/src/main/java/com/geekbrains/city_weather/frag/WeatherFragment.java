@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +44,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
-import static com.geekbrains.city_weather.constants.AppConstants.SHOW_CHECK_BOXES;
+import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -122,8 +123,8 @@ public class WeatherFragment extends Fragment {
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting =
                 getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        //получаем из файла настроек состояние чекбоксов
-        boolean isShowCheckboxes = prefSetting.getBoolean(SHOW_CHECK_BOXES, true);
+        //получаем из файла настроек состояние чекбоксов Ключ не менять!
+        boolean isShowCheckboxes = prefSetting.getBoolean("showCheckBoxes", true);
         Log.d(TAG, "WeatherFragment onResume isShowCheckboxes = " + isShowCheckboxes);
 
         // показываем/скрываем данные о ветре и давлении
@@ -132,8 +133,24 @@ public class WeatherFragment extends Fragment {
 
     @Override
     public void onStop() {
+        Log.d(TAG, "WeatherFragment onStop");
         Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "WeatherFragment onDestroy");
+        SharedPreferences defaultPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        saveLastCity(defaultPrefs);
+        super.onDestroy();
+    }
+
+    private void saveLastCity(SharedPreferences preferences){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(LAST_CITY, currentCity);
+        editor.commit();
     }
 
     private void initViews(View view) {

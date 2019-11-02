@@ -31,6 +31,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
+import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 
@@ -46,44 +47,51 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initFab();
+        initPrefs();
+        initviews();
+
         Log.d(TAG,"MainActivity onCreate savedInstanceState = " + savedInstanceState);
-        boolean isExistWhetherFrag;
+        //если первый вызов, инициализируем синглтон значениями по умолчанию
         if (savedInstanceState == null){
             initSingleton();
-            // Определение, можно ли будет расположить рядом данные в другом фрагменте
-            isExistWhetherFrag = getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_LANDSCAPE;
-            if (isExistWhetherFrag){
-                setChooseCityFrag();
-                setWeatherFragmentland(CityLab.getCity());
-            }else {
-                setChooseCityFrag();
-            }
+            doOrientationBasedActions();
         }else {
-            // Определение, можно ли будет расположить рядом данные в другом фрагменте
-            isExistWhetherFrag = getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_LANDSCAPE;
-            if (isExistWhetherFrag){
-                setChooseCityFrag();
-                setWeatherFragmentland(CityLab.getCity());
-            }else {
-                setChooseCityFrag();
-            }
+            doOrientationBasedActions();
         }
-        initFab();
-        initPrefDefault();
-        initviews();
     }
 
     private void initSingleton() {
+        //инициализируем пустой список городов
         ArrayList<String> cityMarked = new ArrayList<>();
-        String city_current = getResources().getString(R.string.saint_petersburg);
-        //инициализируем значение  синглтона CityLab значением по умолчанию
-        CityLab.getInstance(city_current);
-        cityMarked.add(city_current);
-        //инициализируем список синглтона CityListLab значением по умолчанию
+        //Этот город - saint_petersburg - должен быть всегда
+        String cityDefault = getResources().getString(R.string.saint_petersburg);
+        //это последний запомненный город из Preferences
+        String cityCurrent = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(LAST_CITY, getResources().getString(R.string.saint_petersburg));
+        //инициализируем значение  синглтона CityLab последним городом из Preferences
+        CityLab.getInstance(cityCurrent);
+        //добавляем в список город по умолчанию (если его там нет)
+        cityMarked.add(cityDefault);
+        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
         CityListLab.getInstance(cityMarked);
+        //добавляем в список последний запомненный город, если его там нет
+        CityListLab.addCity(cityCurrent);
         Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
+    }
+
+    //действия с фрагментами в зависимости от ориентации телефона
+    private void doOrientationBasedActions() {
+        // Определение, можно ли будет расположить рядом данные в другом фрагменте
+        boolean isExistWhetherFrag = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        if (isExistWhetherFrag) {
+            setChooseCityFrag();
+            setWeatherFragment(CityLab.getCity(), R.id.content_super_r);
+        } else {
+            //setChooseCityFrag();
+            setWeatherFragment(CityLab.getCity(), R.id.content_super);
+        }
     }
 
     private void initviews() {
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private void initPrefDefault() {
+    private void initPrefs() {
         //устанавливаем из настроек значения по умолчанию для первой загрузки
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
@@ -236,9 +244,9 @@ public class MainActivity extends AppCompatActivity implements
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE){
             setChooseCityFrag();
-            setWeatherFragmentland(city);
+            setWeatherFragment(city, R.id.content_super_r);
         }else {
-            setWeatherFragment(city);
+            setWeatherFragment(city, R.id.content_super);
         }
     }
 
@@ -267,22 +275,32 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    // создаем новый фрагмент с текущей позицией для вывода погоды
-    private void setWeatherFragment(String city) {
+//    // создаем новый фрагмент с текущей позицией для вывода погоды
+//    private void setWeatherFragment(String city) {
+//        Log.d(TAG, "MainActivity setWeatherFragment");
+//        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+//        ft.commit();
+//    }
+
+//    // создаем новый фрагмент с текущей позицией для вывода погоды
+//    private void setWeatherFragmentLand(String city) {
+//        Log.d(TAG, "MainActivity setWeatherFragmentland");
+//        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+//        ft.commit();
+//    }
+
+    // создаем новый фрагмент с текущей позицией города  для вывода погоды
+    private void setWeatherFragment(String city, int container_id) {
         Log.d(TAG, "MainActivity setWeatherFragment");
         WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        ft.commit();
-    }
-
-    // создаем новый фрагмент с текущей позицией для вывода погоды
-    private void setWeatherFragmentland(String city) {
-        Log.d(TAG, "MainActivity setWeatherFragmentland");
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.replace(container_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
     }
