@@ -192,9 +192,9 @@ public class MainActivity extends AppCompatActivity implements
                 == Configuration.ORIENTATION_LANDSCAPE;
         if (isExistWhetherFrag) {
             setChooseCityFrag();
-            setWeatherFragment(CityLab.getCity(), R.id.content_super_r);
+            setWeatherFragment(R.id.content_super_r);
         } else {
-            setWeatherFragment(CityLab.getCity(), R.id.content_super);
+            setWeatherFragment(R.id.content_super);
         }
     }
 
@@ -322,9 +322,9 @@ public class MainActivity extends AppCompatActivity implements
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE){
             setChooseCityFrag();
-            setWeatherFragment(city, R.id.content_super_r);
+            setWeatherFragment(R.id.content_super_r);
         }else {
-            setWeatherFragment(city, R.id.content_super);
+            setWeatherFragment(R.id.content_super);
         }
     }
 
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // создаем новый фрагмент с текущей позицией города  для вывода погоды
-    private void setWeatherFragment(String city, int container_id) {
+    private void setWeatherFragment(int container_id) {
         Log.d(TAG, "MainActivity setWeatherFragment");
         WeatherFragment weatherFrag = WeatherFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

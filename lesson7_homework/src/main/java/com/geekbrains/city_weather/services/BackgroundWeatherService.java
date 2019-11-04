@@ -2,13 +2,9 @@ package com.geekbrains.city_weather.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-
 import com.geekbrains.city_weather.data_loader.CityWeatherDataLoader;
-
 import org.json.JSONObject;
-
 import java.util.Objects;
-
 import androidx.annotation.Nullable;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;

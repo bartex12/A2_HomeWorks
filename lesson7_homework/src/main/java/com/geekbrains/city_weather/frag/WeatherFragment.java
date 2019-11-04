@@ -64,7 +64,6 @@ public class WeatherFragment extends Fragment {
     private String[] dates = new String[5];
     private double[] temperuteres = new double[5];
     private String[] iconArray = new String[5];
-    private String currentCity;
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
     public WeatherFragment() {
@@ -159,7 +158,7 @@ public class WeatherFragment extends Fragment {
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
-    private void showCityWhetherLand(String city) {
+    private void showCityWhetherLand() {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
         WeatherFragment weatherFrag = WeatherFragment.newInstance();
@@ -167,7 +166,6 @@ public class WeatherFragment extends Fragment {
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
         ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        //ft.addToBackStack(null);
         ft.commit();
         Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));
@@ -492,7 +490,7 @@ public class WeatherFragment extends Fragment {
                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
                                 .orientation  == Configuration.ORIENTATION_LANDSCAPE){
                             //показываем фрагмент с погодой с городом по умолчанию
-                            showCityWhetherLand(CityLab.getCity());
+                            showCityWhetherLand();
                             //перегружаем фрагмент со списком для обновления списка
                             setChooseCityFrag();
                         }else {

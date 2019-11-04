@@ -40,7 +40,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private static final String TAG = "33333";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
-    //private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
 
     private SensorManager sensorManager;
