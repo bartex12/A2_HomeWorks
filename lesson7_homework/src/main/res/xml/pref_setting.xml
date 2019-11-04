@@ -4,7 +4,7 @@
 
     <ListPreference
         android:entries="@array/city_entryName"
-        android:entryValues="@array/аccurancy_entryValues"
+        android:entryValues="@array/accuracy_entryValues"
         android:key="typeOfCitysList"
         android:defaultValue="3"
         android:icon="@drawable/ic_list__red_24dp"

@@ -6,7 +6,7 @@
         <item>User list</item>
     </string-array>
 
-    <string-array name="аccurancy_entryValues">
+    <string-array name="accuracy_entryValues">
         <item>1</item>
         <item>2</item>
         <item>3</item>

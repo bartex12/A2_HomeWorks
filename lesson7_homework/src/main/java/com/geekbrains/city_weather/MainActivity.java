@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Log.d(TAG, "ListOfSmetasNames onOptionsItemSelected id = " + id);
+        Log.d(TAG, "MainActivity onOptionsItemSelected id = " + id);
         switch (id) {
             case R.id.navigation_choose_city:
                 showChangecityDialogFragment();

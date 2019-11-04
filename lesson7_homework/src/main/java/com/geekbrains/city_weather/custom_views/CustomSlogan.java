@@ -55,11 +55,11 @@ public class CustomSlogan extends View {
         paint.setStrokeWidth(3);
     }
 
-    public void setRadius(int radius){
+    private void setRadius(int radius){
         this.radius = radius;
     }
 
-    public void setColor(int color)
+    private void setColor(int color)
     {
         this.color = color;
     }
