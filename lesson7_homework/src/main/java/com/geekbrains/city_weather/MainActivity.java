@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -47,39 +46,25 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = "33333";
     private DrawerLayout drawer;
     private int typeOfCityList ;
-    public int request = 111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG,"MainActivity onCreate");
 
         initFab();
         initPrefs();
         initviews();
-
-        Log.d(TAG,"MainActivity onCreate savedInstanceState = " + savedInstanceState);
-//        //если первый вызов, инициализируем синглтон
-//        if (savedInstanceState == null){
-//            initSingletons();
-//            doOrientationBasedActions();
-//        }else {
-//            doOrientationBasedActions();
-//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"MainActivity onResume");
+
         initSingletons();
         doOrientationBasedActions();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG,"MainActivity onPause");
     }
 
     @Override
@@ -91,18 +76,6 @@ public class MainActivity extends AppCompatActivity implements
             SharedPreferences defaultPrefs =
                     PreferenceManager.getDefaultSharedPreferences(this);
             saveLastMarkedList(defaultPrefs);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK){
-            if (requestCode == 111){
-                initSingletons();
-                doOrientationBasedActions();
-            }
         }
     }
 
@@ -144,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
         //это последний запомненный город из Preferences
         String cityCurrent = prefSetting.getString(LAST_CITY,
                 getResources().getString(R.string.saint_petersburg));
+        //это тип первоначального списка на экране
         typeOfCityList =  Integer.parseInt(prefSetting.getString("typeOfCitysList", "3"));
         Log.d(TAG,"MainActivity initSingletons typeOfCityList = " + typeOfCityList) ;
 
@@ -151,10 +125,16 @@ public class MainActivity extends AppCompatActivity implements
         initCitySinglton(cityCurrent);
 
         //инициализируем синглтон списка
-        initSingltonList(cityCurrent);
+        initSingltonList(cityCurrent, typeOfCityList);
     }
 
-    private void initSingltonList(String cityCurrent) {
+    private void initCitySinglton(String cityCurrent) {
+        Log.d(TAG,"MainActivity initCitySinglton");
+        //инициализируем значение  синглтона CityLab последним городом из Preferences
+        CityLab.getInstance(cityCurrent);
+    }
+
+    private void initSingltonList(String cityCurrent, int typeOfCityList) {
         Log.d(TAG,"MainActivity initSingltonList");
         if (typeOfCityList == 1){
             initWithFixList(cityCurrent, R.array.cities_of_the_world);
@@ -165,6 +145,22 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void initWithFixList(String cityCurrent, int stringArray) {
+        Log.d(TAG,"MainActivity initWithFixList");
+        String[] citys = getResources().getStringArray(stringArray);
+        ArrayList<String> cityMarked = new ArrayList(Arrays.asList(citys));
+        //если не первая загрузка, то очищаем список и делаем CityListLab=null
+        // чтобы поменять список в синглтоне
+        if (CityListLab.getInstance(cityMarked)!=null){
+            CityListLab.clearCityListLab();
+        }
+        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
+        CityListLab.getInstance(cityMarked);
+        //добавляем в список последний запомненный город, если его там нет
+        CityListLab.addCity(cityCurrent);
+        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
+    }
+
     private void initWithUserList(String cityCurrent) {
         Log.d(TAG,"MainActivity initWithUserList");
         String cityDefault = getResources().getString(R.string.saint_petersburg);
@@ -173,33 +169,24 @@ public class MainActivity extends AppCompatActivity implements
         Set<String> hs = PreferenceManager.getDefaultSharedPreferences(this)
                 .getStringSet(LAST_LIST, hsDefault);
         ArrayList<String> cityMarked = new ArrayList<>(hs);
-        cityMarked.add(0, cityDefault);
-        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
+        Log.d(TAG,"MainActivity initWithUserList cityMarked.size() = "+cityMarked.size());
+       //если не первая загрузка, то очищаем список и делаем CityListLab=null
+        // чтобы поменять список в синглтоне
+        if (CityListLab.getCitysList()!=null){
+            CityListLab.clearCityListLab();
+        }
+        //инициализируем список синглтона CityListLab новым списком cityMarked
         CityListLab.getInstance(cityMarked);
         //добавляем в список последний запомненный город, если его там нет
         CityListLab.addCity(cityCurrent);
+        //добавляем город по умолчанию. если его там нет
+        CityListLab.addCityInPosition(0, cityDefault);
         Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
-    }
-
-    private void initWithFixList(String cityCurrent, int stringArray) {
-        Log.d(TAG,"MainActivity initWithFixList");
-        String[] citys = getResources().getStringArray(stringArray);
-        ArrayList<String> cityMarked = new ArrayList(Arrays.asList(citys));
-        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
-        CityListLab.getInstance(cityMarked);
-        //добавляем в список последний запомненный город, если его там нет
-        CityListLab.addCity(cityCurrent);
-        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
-    }
-
-    private void initCitySinglton(String cityCurrent) {
-        Log.d(TAG,"MainActivity initCitySinglton");
-        //инициализируем значение  синглтона CityLab последним городом из Preferences
-        CityLab.getInstance(cityCurrent);
     }
 
     //действия с фрагментами в зависимости от ориентации телефона
     private void doOrientationBasedActions() {
+        Log.d(TAG,"MainActivity doOrientationBasedActions");
         // Определение, можно ли будет расположить рядом данные в другом фрагменте
         boolean isExistWhetherFrag = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
@@ -234,11 +221,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void saveLastMarkedList(SharedPreferences preferences) {
+        Log.d(TAG,"MainActivity saveLastMarkedList");
         SharedPreferences.Editor editor = preferences.edit();
         ArrayList<String> markedList = CityListLab.getCitysList();
+        Log.d(TAG,"MainActivity saveLastMarkedList markedList.size() = " + markedList.size());
         Set<String> set = new HashSet<>();
         set.addAll(markedList);
         editor.putStringSet(LAST_LIST, set);
+        Log.d(TAG,"MainActivity saveLastMarkedList set.size() = " + set.size());
         editor.apply();
     }
 
@@ -249,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showSettingsActivity() {
         Intent intentSettings = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intentSettings, request);
+        startActivity(intentSettings);
     }
 
     private void initFab() {

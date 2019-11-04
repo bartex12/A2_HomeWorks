@@ -20,7 +20,6 @@ import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
-import java.util.ArrayList;
 import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +30,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.preference.PreferenceManager.*;
-import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY_MARKED;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -42,7 +40,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private static final String TAG = "33333";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
-    private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
+    //private ArrayList<String> cityMarked = new ArrayList<>(); //список ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
 
     private SensorManager sensorManager;
@@ -58,6 +56,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "ChooseCityFrag onCreateView");
         return inflater.inflate(R.layout.fragment_city_choose, container, false);
     }
 
@@ -80,16 +79,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         // Определение, можно ли будет расположить рядом данные в другом фрагменте
         isExistWhetherFrag = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
-        // Если это не первое создание, то восстановим текущую позицию
-        if (savedInstanceState != null) {
-            Log.d(TAG, "ChooseCityFrag onActivityCreated savedInstanceState != null");
-            this.initRecycledView(); //если не сделать, при повороте теряем список
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        initRecycledView();
         Log.d(TAG, "ChooseCityFrag onResume recyclerViewCityAdapter = " + recyclerViewCityAdapter);
         if (recyclerViewCityAdapter!= null){
             recyclerViewCityAdapter.notifyDataSetChanged();
@@ -143,16 +138,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         super.onDestroy();
     }
 
-    // Сохраним текущий город (вызывается перед выходом из фрагмента)
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        Log.d(TAG, "ChooseCityFrag onSaveInstanceState");
-        outState.putStringArrayList(CURRENT_CITY_MARKED, cityMarked);
-        Log.d(TAG, "ChooseCityFrag savedInstanceState cityMarked.size()= " +
-                cityMarked.size() + " city = " + CityLab.getCity());
-        super.onSaveInstanceState(outState);
-    }
-
     //********************************** Жесть **************************************************
     //Действия по подключению контекстного меню для пунктов списка RecyclerView во фрагменте
     // 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);
@@ -174,7 +159,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         sensorManager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
         sensorTemp = Objects.requireNonNull(sensorManager).getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        Log.d(TAG, "ChooseCityFrag initSemsors sensorTemp = " + sensorTemp +
+        Log.d(TAG, "ChooseCityFrag initSensors sensorTemp = " + sensorTemp +
                 " sensorHumidity = " + sensorHumidity);
     }
 
@@ -255,7 +240,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
         ft.replace(frame_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        //ft.addToBackStack(null);
         ft.commit();
         Log.d(TAG, "ChooseCityFrag showCityWhetherLand Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));

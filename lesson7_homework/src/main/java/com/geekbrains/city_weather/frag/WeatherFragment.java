@@ -104,7 +104,7 @@ public class WeatherFragment extends Fragment {
         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
         intent.putExtra(CURRENT_CITY,currentCity);
         Objects.requireNonNull(getActivity()).startService(intent);
-        Log.d(TAG, "WeatherFragment onViewCreated intent = " + intent);
+        Log.d(TAG, "WeatherFragment onViewCreated" );
     }
 
     @Override
@@ -142,7 +142,7 @@ public class WeatherFragment extends Fragment {
     public void onDestroy() {
         Log.d(TAG, "WeatherFragment onDestroy");
         SharedPreferences defaultPrefs =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
+                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
         saveLastCity(defaultPrefs);
         super.onDestroy();
     }
@@ -150,7 +150,7 @@ public class WeatherFragment extends Fragment {
     private void saveLastCity(SharedPreferences preferences){
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(LAST_CITY, currentCity);
-        editor.commit();
+        editor.apply();
     }
 
     private void initViews(View view) {
