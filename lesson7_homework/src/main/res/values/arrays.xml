@@ -3,7 +3,7 @@
     <string-array name="city_entryName">
         <item>The largest cities in the world</item>
         <item> The largest cities of Russia</item>
-        <item>Previously selected cities</item>
+        <item>User list</item>
     </string-array>
 
     <string-array name="аccurancy_entryValues">

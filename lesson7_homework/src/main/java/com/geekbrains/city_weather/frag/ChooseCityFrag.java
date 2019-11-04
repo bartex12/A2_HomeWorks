@@ -194,7 +194,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                         //изменяем текущий город  в синглтоне
                         CityLab.setCurrentCity(newCity);
                         // показываем погоду в городе с учётом ориентации экрана
-                        showCityWhetherWithOrientation(CityLab.getCity());
+                        showCityWhetherWithOrientation();
                     }
                 };
         //передадим адаптеру в конструкторе список выбранных городов и ссылку на интерфейс
@@ -232,10 +232,10 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     // Показать погоду во фрагменте в зависимости от  города и ориентации
-    private void showCityWhether(String city, int frame_id) {
+    private void showCityWhether(int frame_id) {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        WeatherFragment weatherFrag = WeatherFragment.newInstance();
         // ... и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
         ft.replace(frame_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
@@ -246,13 +246,13 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     // показываем погоду в городе с учётом ориентации экрана
-    private void showCityWhetherWithOrientation(String city) {
+    private void showCityWhetherWithOrientation() {
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
-            showCityWhether(city, R.id.content_super_r);
+            showCityWhether(R.id.content_super_r);
             //а если портретная, то
         } else {
-            showCityWhether(city,R.id.content_super);
+            showCityWhether(R.id.content_super);
         }
     }
 

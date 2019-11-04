@@ -44,7 +44,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {
             data.remove((int) posItem);
-            notifyItemRemoved((int) posItem);
+            notifyDataSetChanged();
             Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         }
     }

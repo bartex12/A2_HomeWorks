@@ -71,20 +71,8 @@ public class WeatherFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static WeatherFragment newInstance(String city) {
-        WeatherFragment fragment = new WeatherFragment();
-        // Передача параметра
-        Bundle args = new Bundle();
-        args.putString("city", city);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        currentCity = Objects.requireNonNull(getArguments()).getString("city", "Saint Petersburg");
-        Log.d(TAG, "WeatherFragment onCreate currentCity = " + currentCity);
+    public static WeatherFragment newInstance() {
+        return new WeatherFragment();
     }
 
     @Override
@@ -102,7 +90,7 @@ public class WeatherFragment extends Fragment {
 
         //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-        intent.putExtra(CURRENT_CITY,currentCity);
+        intent.putExtra(CURRENT_CITY, CityLab.getCity());
         Objects.requireNonNull(getActivity()).startService(intent);
         Log.d(TAG, "WeatherFragment onViewCreated" );
     }
@@ -149,7 +137,7 @@ public class WeatherFragment extends Fragment {
 
     private void saveLastCity(SharedPreferences preferences){
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(LAST_CITY, currentCity);
+        editor.putString(LAST_CITY, CityLab.getCity());
         editor.apply();
     }
 
@@ -174,7 +162,7 @@ public class WeatherFragment extends Fragment {
     private void showCityWhetherLand(String city) {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        WeatherFragment weatherFrag = WeatherFragment.newInstance();
         // ... и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
         ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
@@ -494,7 +482,11 @@ public class WeatherFragment extends Fragment {
                         String currentCity = intent.getStringExtra(CURRENT_CITY);
                         Toast.makeText(getActivity(), R.string.place_not_found,
                                 Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
+                                CityListLab.getCitysList().size());
                         CityListLab.removeSity(currentCity); //удаляем город из списка
+                        Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
+                                CityListLab.getCitysList().size());
                         CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
 
                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()

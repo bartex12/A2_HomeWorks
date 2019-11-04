@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements
     // создаем новый фрагмент с текущей позицией города  для вывода погоды
     private void setWeatherFragment(String city, int container_id) {
         Log.d(TAG, "MainActivity setWeatherFragment");
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        WeatherFragment weatherFrag = WeatherFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(container_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
