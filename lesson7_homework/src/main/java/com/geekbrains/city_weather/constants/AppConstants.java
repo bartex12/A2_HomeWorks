@@ -18,4 +18,6 @@ public class AppConstants {
     public static final String JSON_OBJECT = "JSON_OBJECT";
     public static final String JSON_OBJECT_FORECAST = "JSON_OBJECT_FORECAST";
     public static final String LAST_CITY = "LAST_CITY";
+    public static final String LAST_LIST = "LAST_LIST";
+
 }

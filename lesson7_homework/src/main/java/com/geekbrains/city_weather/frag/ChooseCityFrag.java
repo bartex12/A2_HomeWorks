@@ -51,10 +51,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private TextView textTempHere;
     private TextView textHumidity;
 
-    public ChooseCityFrag() {
-        // Required empty public constructor
-    }
-
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
     }
@@ -112,11 +108,10 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     private void getPreferensis() {
-
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting =
                 getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        //получаем из файла настроек состояние чекбоксов Ключ не менять!
+        //получаем из файла настроек состояние чекбоксов (Ключ не менять!)
         boolean isShowTempHumidHere = prefSetting.getBoolean("showSensors", true);
         Log.d(TAG, "WeatherFragment onResume isShowTempHumidHere = " + isShowTempHumidHere);
         showTempAndHumiditySensors(isShowTempHumidHere);
@@ -142,22 +137,16 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         sensorManager.unregisterListener(this, sensorHumidity);
     }
 
-    //проверка - если такой город есть в списке- возвращает false
-    //сделан статическим, чтобы можно было использовать в адаптере списка
-    public static boolean isNotCityInList(String city, ArrayList<String> cityMarked) {
-        for (int i = 0; i < cityMarked.size(); i++) {
-            if (cityMarked.get(i).toUpperCase().equals(city.toUpperCase())) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "ChooseCityFrag onDestroy");
+        super.onDestroy();
     }
 
     // Сохраним текущий город (вызывается перед выходом из фрагмента)
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Log.d(TAG, "ChooseCityFrag onSaveInstanceState");
-        //outState.putString(CURRENT_CITY, city);
         outState.putStringArrayList(CURRENT_CITY_MARKED, cityMarked);
         Log.d(TAG, "ChooseCityFrag savedInstanceState cityMarked.size()= " +
                 cityMarked.size() + " city = " + CityLab.getCity());

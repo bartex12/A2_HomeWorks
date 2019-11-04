@@ -40,16 +40,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         this.activity = activity;
     }
 
-    public void addItem(String city) {
-        Log.d(TAG, "RecyclerViewCityAdapter addItem");
-        if (ChooseCityFrag.isNotCityInList(city, data)) {
-            data.add(city);
-            notifyItemInserted(data.size() - 1);
-        } else {
-            Toast.makeText(context, "Такой город уже есть в списке", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {

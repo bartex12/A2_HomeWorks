@@ -1,6 +1,7 @@
 package com.geekbrains.city_weather;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +20,12 @@ import com.geekbrains.city_weather.singltones.CityListLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,9 +34,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
-
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
+import static com.geekbrains.city_weather.constants.AppConstants.LAST_LIST;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "33333";
     private DrawerLayout drawer;
+    private int typeOfCityList ;
+    public int request = 111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,75 +59,51 @@ public class MainActivity extends AppCompatActivity implements
         initviews();
 
         Log.d(TAG,"MainActivity onCreate savedInstanceState = " + savedInstanceState);
-        //если первый вызов, инициализируем синглтон значениями по умолчанию
-        if (savedInstanceState == null){
-            initSingleton();
-            doOrientationBasedActions();
-        }else {
-            doOrientationBasedActions();
-        }
-    }
-
-    private void initSingleton() {
-        //инициализируем пустой список городов
-        ArrayList<String> cityMarked = new ArrayList<>();
-        //Этот город - saint_petersburg - должен быть всегда
-        String cityDefault = getResources().getString(R.string.saint_petersburg);
-        //это последний запомненный город из Preferences
-        String cityCurrent = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(LAST_CITY, getResources().getString(R.string.saint_petersburg));
-        //инициализируем значение  синглтона CityLab последним городом из Preferences
-        CityLab.getInstance(cityCurrent);
-        //добавляем в список город по умолчанию (если его там нет)
-        cityMarked.add(cityDefault);
-        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
-        CityListLab.getInstance(cityMarked);
-        //добавляем в список последний запомненный город, если его там нет
-        CityListLab.addCity(cityCurrent);
-        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
-    }
-
-    //действия с фрагментами в зависимости от ориентации телефона
-    private void doOrientationBasedActions() {
-        // Определение, можно ли будет расположить рядом данные в другом фрагменте
-        boolean isExistWhetherFrag = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
-        if (isExistWhetherFrag) {
-            setChooseCityFrag();
-            setWeatherFragment(CityLab.getCity(), R.id.content_super_r);
-        } else {
-            //setChooseCityFrag();
-            setWeatherFragment(CityLab.getCity(), R.id.content_super);
-        }
-    }
-
-    private void initviews() {
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view_main);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);
-    }
-
-
-    private void initPrefs() {
-        //устанавливаем из настроек значения по умолчанию для первой загрузки
-        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
-        PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
+//        //если первый вызов, инициализируем синглтон
+//        if (savedInstanceState == null){
+//            initSingletons();
+//            doOrientationBasedActions();
+//        }else {
+//            doOrientationBasedActions();
+//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"MainActivity onResume");
+        initSingletons();
+        doOrientationBasedActions();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"MainActivity onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG,"MainActivity onStop");
+        //если пользовательский список. запоминаем в Preferences
+        if (typeOfCityList == 3){
+            SharedPreferences defaultPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            saveLastMarkedList(defaultPrefs);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK){
+            if (requestCode == 111){
+                initSingletons();
+                doOrientationBasedActions();
+            }
+        }
     }
 
     @Override
@@ -154,6 +137,111 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void initSingletons() {
+        Log.d(TAG,"MainActivity initSingletons");
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        SharedPreferences prefSetting = PreferenceManager.getDefaultSharedPreferences(this);
+        //это последний запомненный город из Preferences
+        String cityCurrent = prefSetting.getString(LAST_CITY,
+                getResources().getString(R.string.saint_petersburg));
+        typeOfCityList =  Integer.parseInt(prefSetting.getString("typeOfCitysList", "3"));
+        Log.d(TAG,"MainActivity initSingletons typeOfCityList = " + typeOfCityList) ;
+
+        //инициализируем синглтон города
+        initCitySinglton(cityCurrent);
+
+        //инициализируем синглтон списка
+        initSingltonList(cityCurrent);
+    }
+
+    private void initSingltonList(String cityCurrent) {
+        Log.d(TAG,"MainActivity initSingltonList");
+        if (typeOfCityList == 1){
+            initWithFixList(cityCurrent, R.array.cities_of_the_world);
+        }else if (typeOfCityList == 2){
+            initWithFixList(cityCurrent, R.array.cities_of_the_russia);
+        }else if (typeOfCityList == 3){
+            initWithUserList(cityCurrent);
+        }
+    }
+
+    private void initWithUserList(String cityCurrent) {
+        Log.d(TAG,"MainActivity initWithUserList");
+        String cityDefault = getResources().getString(R.string.saint_petersburg);
+        HashSet<String> hsDefault = new HashSet<>();
+        hsDefault.add(cityDefault);
+        Set<String> hs = PreferenceManager.getDefaultSharedPreferences(this)
+                .getStringSet(LAST_LIST, hsDefault);
+        ArrayList<String> cityMarked = new ArrayList<>(hs);
+        cityMarked.add(0, cityDefault);
+        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
+        CityListLab.getInstance(cityMarked);
+        //добавляем в список последний запомненный город, если его там нет
+        CityListLab.addCity(cityCurrent);
+        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
+    }
+
+    private void initWithFixList(String cityCurrent, int stringArray) {
+        Log.d(TAG,"MainActivity initWithFixList");
+        String[] citys = getResources().getStringArray(stringArray);
+        ArrayList<String> cityMarked = new ArrayList(Arrays.asList(citys));
+        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
+        CityListLab.getInstance(cityMarked);
+        //добавляем в список последний запомненный город, если его там нет
+        CityListLab.addCity(cityCurrent);
+        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
+    }
+
+    private void initCitySinglton(String cityCurrent) {
+        Log.d(TAG,"MainActivity initCitySinglton");
+        //инициализируем значение  синглтона CityLab последним городом из Preferences
+        CityLab.getInstance(cityCurrent);
+    }
+
+    //действия с фрагментами в зависимости от ориентации телефона
+    private void doOrientationBasedActions() {
+        // Определение, можно ли будет расположить рядом данные в другом фрагменте
+        boolean isExistWhetherFrag = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        if (isExistWhetherFrag) {
+            setChooseCityFrag();
+            setWeatherFragment(CityLab.getCity(), R.id.content_super_r);
+        } else {
+            setWeatherFragment(CityLab.getCity(), R.id.content_super);
+        }
+    }
+
+    private void initviews() {
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view_main);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
+    }
+
+    private void initPrefs() {
+        //устанавливаем из настроек значения по умолчанию для первой загрузки
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
+    }
+
+    private void saveLastMarkedList(SharedPreferences preferences) {
+        SharedPreferences.Editor editor = preferences.edit();
+        ArrayList<String> markedList = CityListLab.getCitysList();
+        Set<String> set = new HashSet<>();
+        set.addAll(markedList);
+        editor.putStringSet(LAST_LIST, set);
+        editor.apply();
+    }
+
     private void showMessageDialogFfagment(String message) {
         DialogFragment dialogMessage = MessageDialog.newInstance(message);
         dialogMessage.show(getSupportFragmentManager(), "dialogMessage");
@@ -161,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showSettingsActivity() {
         Intent intentSettings = new Intent(this, SettingsActivity.class);
-        startActivity(intentSettings);
+        startActivityForResult(intentSettings, request);
     }
 
     private void initFab() {
@@ -274,26 +362,6 @@ public class MainActivity extends AppCompatActivity implements
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
     }
-
-//    // создаем новый фрагмент с текущей позицией для вывода погоды
-//    private void setWeatherFragment(String city) {
-//        Log.d(TAG, "MainActivity setWeatherFragment");
-//        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
-//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-//        ft.commit();
-//    }
-
-//    // создаем новый фрагмент с текущей позицией для вывода погоды
-//    private void setWeatherFragmentLand(String city) {
-//        Log.d(TAG, "MainActivity setWeatherFragmentland");
-//        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
-//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-//        ft.commit();
-//    }
 
     // создаем новый фрагмент с текущей позицией города  для вывода погоды
     private void setWeatherFragment(String city, int container_id) {
