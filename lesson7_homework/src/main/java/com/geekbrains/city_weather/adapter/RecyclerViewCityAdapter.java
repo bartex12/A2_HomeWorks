@@ -30,6 +30,8 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
                                    OnCityClickListener onCityClickListener, Activity activity) {
         if (data != null) {
             this.data = data;
+        }else{
+            this.data = new ArrayList<>();
         }
         this.onCityClickListener = onCityClickListener;
         this.activity = activity;
