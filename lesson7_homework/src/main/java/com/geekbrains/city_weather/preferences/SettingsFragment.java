@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.geekbrains.city_weather.R;
 import androidx.preference.PreferenceFragmentCompat;
 
-class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
