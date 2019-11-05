@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Whether</string>
+    <string name="app_name">Weather</string>
     <string name="press">Pressure</string>
     <string name="about">About</string>
     <string name="settings">Settings</string>
