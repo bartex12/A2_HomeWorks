@@ -55,5 +55,6 @@
     <string name="No_humidity_sensor">No humidity sensor</string>
     <string name="temperature">Temperature</string>
     <string name="Relative_humidity">Relative humidity</string>
+    <string name="forExit">Please click BACK again to exit</string>
 
 </resources>

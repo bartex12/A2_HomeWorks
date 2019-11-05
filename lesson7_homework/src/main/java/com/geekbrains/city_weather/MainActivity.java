@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
@@ -19,9 +21,12 @@ import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = "33333";
     private DrawerLayout drawer;
     private int typeOfCityList ;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,18 +334,38 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
+        @Override
     public void onBackPressed() {
+
+        //если фрагмент - это WeatherFragment то isChooseCityFrag = true
         boolean isChooseCityFrag = getSupportFragmentManager().findFragmentById(
                 R.id.content_super)instanceof WeatherFragment;
         Log.d(TAG, "MainActivity onBackPressed isChooseCityFrag = " + isChooseCityFrag);
 
+            //если шторка открыта- закрываем
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            //если isChooseCityFrag==true то меняем фрагмент на ChooseCityFrag
         } else if (isChooseCityFrag){
             setChooseCityFrag();
+            //иначе мы в ChooseCityFrag и выходим из программы при повторном
+            //нажатии в течение 2 секунд
+            // http://qaru.site/questions/30293/clicking-the-back-button-twice-to-exit-an-activity
         }else{
-            super.onBackPressed();
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            this.doubleBackToExitPressedOnce = true;
+                Snackbar.make(findViewById(android.R.id.content),
+                        Objects.requireNonNull(this).getString(R.string.forExit),
+                        Snackbar.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
     }
 
