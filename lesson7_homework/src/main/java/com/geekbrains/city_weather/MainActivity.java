@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -45,8 +43,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
 
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        DialogCityChange.OnCityChangeListener{
+        NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "33333";
     private DrawerLayout drawer;
@@ -298,40 +295,6 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
-//    @Override
-//    public void onCityAdd(String city) {
-////        Log.d(TAG, "MainActivity onCityAdd city = " + city);
-////        //добавляем город в список синглтона
-////        CityListLab.addCity(city);
-////        Log.d(TAG, "MainActivity onCityAdd CityListLab.size = " + CityListLab.getCitysList().size());
-////        if (getResources().getConfiguration().orientation
-////                == Configuration.ORIENTATION_LANDSCAPE){
-////            setChooseCityFrag();
-////            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_LANDSCAPE");
-////        }else {
-////            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_PORTRAIT");
-////        }
-//    }
-
-    @Override
-    public void onCityChange(String city) {
-        Log.d(TAG, "MainActivity onCityChange city = " + city);
-        //добавляем город в список синглтона
-        CityListLab.addCity(city);
-        //устанавливаем город текущим городом
-        CityLab.setCurrentCity(city);
-        Log.d(TAG, "MainActivity onCityChange CityListLab.size = " +
-                CityListLab.getCitysList().size() + " CurrentCity= " + CityLab.getCity());
-
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE){
-            setChooseCityFrag();
-            setWeatherFragment(R.id.content_super_r);
-        }else {
-            setWeatherFragment(R.id.content_super);
-        }
-    }
-
         @Override
     public void onBackPressed() {
 
@@ -368,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // создаем новый фрагмент со списком ранее выбранных городов
+    //TODO возможно сделать его статическим если использовать во фрагменте
     private void setChooseCityFrag() {
         Log.d(TAG, "MainActivity setChooseCityFrag");
         ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
@@ -378,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // создаем новый фрагмент с текущей позицией города  для вывода погоды
+    //TODO возможно сделать его статическим если использовать во фрагменте
     private void setWeatherFragment(int container_id) {
         Log.d(TAG, "MainActivity setWeatherFragment");
         WeatherFragment weatherFrag = WeatherFragment.newInstance();

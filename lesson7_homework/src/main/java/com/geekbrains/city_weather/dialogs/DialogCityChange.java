@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.geekbrains.city_weather.R;
+import com.geekbrains.city_weather.events.ChangeItemEvent;
+import com.geekbrains.city_weather.singltones.EventBus;
 import com.google.android.material.snackbar.Snackbar;
 import java.util.Objects;
 import androidx.annotation.NonNull;
@@ -22,18 +24,10 @@ public class DialogCityChange extends DialogFragment {
         super();
     }
 
-    private OnCityChangeListener onCityChangeListener;
-
-    public interface OnCityChangeListener{
-        void onCityChange(String city);
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        onCityChangeListener = (OnCityChangeListener)context;
     }
-
 
     @NonNull
     @Override
@@ -60,12 +54,12 @@ public class DialogCityChange extends DialogFragment {
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
                             Snackbar.LENGTH_SHORT).show();
                 } else {
-                    onCityChangeListener.onCityChange(city);
+                    //пушим ивент изменения города и ловим city во фрагменте ChooseCityFrag
+                    EventBus.getBus().post(new ChangeItemEvent(city));
                     Objects.requireNonNull(getDialog()).dismiss();  //закрывает только диалог
                 }
             }
         });
-
         return builder.create();
     }
 }

@@ -2,7 +2,6 @@ package com.geekbrains.city_weather.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.events.AddItemIvent;
+import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.google.android.material.snackbar.Snackbar;
 import java.util.Objects;
@@ -21,18 +20,6 @@ import androidx.fragment.app.DialogFragment;
 public class DialogCityAdd extends DialogFragment {
     public DialogCityAdd() {
         super();
-    }
-
-//    private OnCityAddListener onCityAddListener;
-//
-//    public interface OnCityAddListener{
-//       void onCityAdd(String city);
-//    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-//        onCityAddListener = (OnCityAddListener)context;
     }
 
     @NonNull
@@ -61,8 +48,7 @@ public class DialogCityAdd extends DialogFragment {
                             Snackbar.LENGTH_SHORT).show();
                 } else {
 
-                    EventBus.getBus().post(new AddItemIvent(city));
-                    //onCityAddListener.onCityAdd(city);
+                    EventBus.getBus().post(new AddItemEvent(city));
                     Objects.requireNonNull(getDialog()).dismiss();  //закрывает только диалог
                 }
             }

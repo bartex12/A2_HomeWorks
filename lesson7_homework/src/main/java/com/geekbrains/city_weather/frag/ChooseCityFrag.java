@@ -18,9 +18,8 @@ import android.widget.TextView;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
-import com.geekbrains.city_weather.events.AddItemIvent;
-import com.geekbrains.city_weather.events.ClearListEvent;
-import com.geekbrains.city_weather.events.RemoveItemIvent;
+import com.geekbrains.city_weather.events.AddItemEvent;
+import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import com.geekbrains.city_weather.singltones.EventBus;
@@ -249,13 +248,13 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     // Показать погоду во фрагменте в зависимости от  города и ориентации
-    private void showCityWhether(int frame_id) {
+    private void setWeatherFragment(int container_id) {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
         WeatherFragment weatherFrag = WeatherFragment.newInstance();
-        // ... и выполняем транзакцию по замене фрагмента
+        //и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
-        ft.replace(frame_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.replace(container_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
         Log.d(TAG, "ChooseCityFrag showCityWhetherLand Фрагмент = " +
@@ -266,10 +265,10 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private void showCityWhetherWithOrientation() {
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
-            showCityWhether(R.id.content_super_r);
+            setWeatherFragment(R.id.content_super_r);
             //а если портретная, то
         } else {
-            showCityWhether(R.id.content_super);
+            setWeatherFragment(R.id.content_super);
         }
     }
 
@@ -297,14 +296,30 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     @Subscribe
     @SuppressWarnings("unused")
-    public void onAddEvent(AddItemIvent event) {
+    public void onChangeEvent(ChangeItemEvent event) {
+        //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
+        //добавляем город в список синглтона
+        CityListLab.addCity(event.city);
+        //устанавливаем город текущим городом
+        CityLab.setCurrentCity(event.city);
+        // показываем погоду в городе с учётом ориентации экрана
+        showCityWhetherWithOrientation();
+
+    }
+
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onAddEvent(AddItemEvent event) {
+        //добавляем город в список адаптера
+        recyclerViewCityAdapter.addElement(event.city);
+        //добавляем город в список синглтона
         CityListLab.addCity(event.city);
     }
 
 //    @Subscribe
 //    @SuppressWarnings("unused")
-//    public void onRemoveEvent(RemoveItemIvent event) {
+//    public void onRemoveEvent(RemoveItemEvent event) {
 //        recyclerViewCityAdapter.removeElement();
 //    }
 //
