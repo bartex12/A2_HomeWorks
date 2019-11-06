@@ -37,6 +37,11 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         this.activity = activity;
     }
 
+    public void addElement(String city) {
+        data.add(city);
+        notifyDataSetChanged();
+    }
+
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {

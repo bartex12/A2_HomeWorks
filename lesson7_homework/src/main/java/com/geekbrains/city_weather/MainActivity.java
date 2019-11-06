@@ -45,7 +45,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
 
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, DialogCityAdd.OnCityAddListener,
+        NavigationView.OnNavigationItemSelectedListener,
         DialogCityChange.OnCityChangeListener{
 
     private static final String TAG = "33333";
@@ -258,13 +258,11 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    //диалог сохранения, оформленный как класс с указанием имени файла
     private void showChangecityDialogFragment() {
         DialogFragment dialogFragment = new DialogCityChange();
         dialogFragment.show(getSupportFragmentManager(), "changeCity");
     }
 
-    //диалог сохранения, оформленный как класс с указанием имени файла
     private void showAddcityDialogFragment() {
         DialogFragment dialogFragment = new DialogCityAdd();
         dialogFragment.show(getSupportFragmentManager(), "addCity");
@@ -300,20 +298,20 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
-    @Override
-    public void onCityAdd(String city) {
-        Log.d(TAG, "MainActivity onCityAdd city = " + city);
-        //добавляем город в список синглтона
-        CityListLab.addCity(city);
-        Log.d(TAG, "MainActivity onCityAdd CityListLab.size = " + CityListLab.getCitysList().size());
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE){
-            setChooseCityFrag();
-            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_LANDSCAPE");
-        }else {
-            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_PORTRAIT");
-        }
-    }
+//    @Override
+//    public void onCityAdd(String city) {
+////        Log.d(TAG, "MainActivity onCityAdd city = " + city);
+////        //добавляем город в список синглтона
+////        CityListLab.addCity(city);
+////        Log.d(TAG, "MainActivity onCityAdd CityListLab.size = " + CityListLab.getCitysList().size());
+////        if (getResources().getConfiguration().orientation
+////                == Configuration.ORIENTATION_LANDSCAPE){
+////            setChooseCityFrag();
+////            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_LANDSCAPE");
+////        }else {
+////            Log.d(TAG, "MainActivity onCityAdd ORIENTATION_PORTRAIT");
+////        }
+//    }
 
     @Override
     public void onCityChange(String city) {

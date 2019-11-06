@@ -18,8 +18,14 @@ import android.widget.TextView;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
+import com.geekbrains.city_weather.events.AddItemIvent;
+import com.geekbrains.city_weather.events.ClearListEvent;
+import com.geekbrains.city_weather.events.RemoveItemIvent;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
+import com.geekbrains.city_weather.singltones.EventBus;
+import com.squareup.otto.Subscribe;
+
 import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,6 +96,18 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         }
         getPreferensis();
         registerListenersOfSensors();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getBus().unregister(this);
+        super.onStop();
     }
 
     private void registerListenersOfSensors() {
@@ -276,5 +294,25 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onAddEvent(AddItemIvent event) {
+        recyclerViewCityAdapter.addElement(event.city);
+        CityListLab.addCity(event.city);
+    }
+
+//    @Subscribe
+//    @SuppressWarnings("unused")
+//    public void onRemoveEvent(RemoveItemIvent event) {
+//        recyclerViewCityAdapter.removeElement();
+//    }
+//
+//    @Subscribe
+//    @SuppressWarnings("unused")
+//    public void onClearList(ClearListEvent event) {
+//        recyclerViewCityAdapter.clearList();
+//    }
+
 }
 
