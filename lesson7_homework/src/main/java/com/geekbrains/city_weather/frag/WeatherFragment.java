@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +44,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
-import static com.geekbrains.city_weather.constants.AppConstants.SHOW_CHECK_BOXES;
+import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
@@ -63,27 +64,14 @@ public class WeatherFragment extends Fragment {
     private String[] dates = new String[5];
     private double[] temperuteres = new double[5];
     private String[] iconArray = new String[5];
-    private String currentCity;
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
     public WeatherFragment() {
         // Required empty public constructor
     }
 
-    public static WeatherFragment newInstance(String city) {
-        WeatherFragment fragment = new WeatherFragment();
-        // Передача параметра
-        Bundle args = new Bundle();
-        args.putString("city", city);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        currentCity = Objects.requireNonNull(getArguments()).getString("city", "Saint Petersburg");
-        Log.d(TAG, "WeatherFragment onCreate currentCity = " + currentCity);
+    public static WeatherFragment newInstance() {
+        return new WeatherFragment();
     }
 
     @Override
@@ -101,9 +89,9 @@ public class WeatherFragment extends Fragment {
 
         //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-        intent.putExtra(CURRENT_CITY,currentCity);
+        intent.putExtra(CURRENT_CITY, CityLab.getCity());
         Objects.requireNonNull(getActivity()).startService(intent);
-        Log.d(TAG, "WeatherFragment onViewCreated intent = " + intent);
+        Log.d(TAG, "WeatherFragment onViewCreated" );
     }
 
     @Override
@@ -122,8 +110,8 @@ public class WeatherFragment extends Fragment {
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting =
                 getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        //получаем из файла настроек состояние чекбоксов
-        boolean isShowCheckboxes = prefSetting.getBoolean(SHOW_CHECK_BOXES, true);
+        //получаем из файла настроек состояние чекбоксов Ключ не менять!
+        boolean isShowCheckboxes = prefSetting.getBoolean("showCheckBoxes", true);
         Log.d(TAG, "WeatherFragment onResume isShowCheckboxes = " + isShowCheckboxes);
 
         // показываем/скрываем данные о ветре и давлении
@@ -132,8 +120,24 @@ public class WeatherFragment extends Fragment {
 
     @Override
     public void onStop() {
+        Log.d(TAG, "WeatherFragment onStop");
         Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "WeatherFragment onDestroy");
+        SharedPreferences defaultPrefs =
+                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
+        saveLastCity(defaultPrefs);
+        super.onDestroy();
+    }
+
+    private void saveLastCity(SharedPreferences preferences){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(LAST_CITY, CityLab.getCity());
+        editor.apply();
     }
 
     private void initViews(View view) {
@@ -154,15 +158,14 @@ public class WeatherFragment extends Fragment {
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
-    private void showCityWhetherLand(String city) {
+    private void showCityWhetherLand() {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
-        WeatherFragment weatherFrag = WeatherFragment.newInstance(city);
+        WeatherFragment weatherFrag = WeatherFragment.newInstance();
         // ... и выполняем транзакцию по замене фрагмента
         FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
         ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        //ft.addToBackStack(null);
         ft.commit();
         Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));
@@ -477,13 +480,17 @@ public class WeatherFragment extends Fragment {
                         String currentCity = intent.getStringExtra(CURRENT_CITY);
                         Toast.makeText(getActivity(), R.string.place_not_found,
                                 Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
+                                CityListLab.getCitysList().size());
                         CityListLab.removeSity(currentCity); //удаляем город из списка
+                        Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
+                                CityListLab.getCitysList().size());
                         CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
 
                         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
                                 .orientation  == Configuration.ORIENTATION_LANDSCAPE){
                             //показываем фрагмент с погодой с городом по умолчанию
-                            showCityWhetherLand(CityLab.getCity());
+                            showCityWhetherLand();
                             //перегружаем фрагмент со списком для обновления списка
                             setChooseCityFrag();
                         }else {

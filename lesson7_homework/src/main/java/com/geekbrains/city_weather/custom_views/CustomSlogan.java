@@ -26,6 +26,7 @@ public class CustomSlogan extends View {
     //если через макет, то нужен такой конструктор для добавления аттрибутов
     public CustomSlogan(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        Log.d(TAG, "CustomSlogan конструктор");
         initAttr(context, attrs);
         initView();
     }
@@ -47,18 +48,18 @@ public class CustomSlogan extends View {
     }
 
     private void initView(){
-        Log.d(TAG, "Constructor");
+        Log.d(TAG, "CustomSlogan initView");
         paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3);
     }
 
-    public void setRadius(int radius){
+    private void setRadius(int radius){
         this.radius = radius;
     }
 
-    public void setColor(int color)
+    private void setColor(int color)
     {
         this.color = color;
     }

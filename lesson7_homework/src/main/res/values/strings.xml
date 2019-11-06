@@ -1,29 +1,12 @@
 <resources>
-    <string name="app_name" translatable="false">Whether</string>
-    <string name="weather_morning">Weather in the morning</string>
-    <string name="weather_afternoon">Weather in the afternoon</string>
-    <string name="weather_evening">Weather in the evening</string>
-    <string name="weather_night">Weather at night</string>
-    <string name="on">at</string>
-    <string name="weather">Weather</string>
-    <string name="ShowWeather">Weather forecast</string>
-    <string name="WindSpeed">Speed of Wind</string>
-    <string name="Pressure">Pressure</string>
-    <string name="WhetherInCity">Whether In City</string>
-    <string name="CityChoose">Choose а City</string>
-    <string name="city">City</string>
+    <string name="app_name">Weather</string>
     <string name="press">Pressure</string>
     <string name="about">About</string>
-    <string name="home">Home</string>
     <string name="settings">Settings</string>
-    <string name="yes">Yes</string>
     <string name="about_me">The app is made on relax</string>
-    <string name="dialog">Dialog</string>
-    <string name="aboutApp">About Application</string>
     <string name="show">Show wind pressure and speed</string>
     <string name="NotShow">Do not show pressure and wind speed</string>
     <string name="addParam">Advanced options</string>
-    <string name="change_city">Change city</string>
     <string name="place_not_found">Place not found</string>
     <string name="input_city">Input city name</string>
     <string name="ok">OK</string>
@@ -46,19 +29,13 @@
     <string name="show_city">Show city</string>
     <string name="ms">mps</string>
     <string name="windSpeed">Wind speed</string>
-    <string name="choose_city">Сhoose city</string>
     <string name="add_city">Add city</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
     <string name="help">Help</string>
     <string name="willBeHelp">There will be help here</string>
-    <string name="sh">Show city</string>
     <string name="aboutAppMessage">GeekBrains weather app Android advanced level</string>
     <string name="saint_petersburg">Saint Petersburg</string>
-    <string name="stub">Stub</string>
     <string name="addision">Additionally</string>
     <string name="share">Share</string>
     <string name="send">Estimate</string>
@@ -78,5 +55,6 @@
     <string name="No_humidity_sensor">No humidity sensor</string>
     <string name="temperature">Temperature</string>
     <string name="Relative_humidity">Relative humidity</string>
+    <string name="forExit">Please click BACK again to exit</string>
 
 </resources>

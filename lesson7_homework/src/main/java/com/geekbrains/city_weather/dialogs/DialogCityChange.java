@@ -65,6 +65,7 @@ public class DialogCityChange extends DialogFragment {
                 }
             }
         });
+
         return builder.create();
     }
 }

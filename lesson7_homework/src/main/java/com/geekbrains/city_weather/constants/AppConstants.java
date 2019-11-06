@@ -6,7 +6,6 @@ package com.geekbrains.city_weather.constants;
 
 public class AppConstants {
     public static final String CURRENT_CITY = "CURRENT_CITY";
-    public static final String CURRENT_CITY_MARKED = "CURRENT_CITY_MARKED";
     public static final String WEATHER_FRAFMENT_TAG = "WEATHER_FRAFMENT_TAG";
     public static final String MESSAGE = "MESSAGE";
     public static final String CITY_FRAFMENT_TAG = "CITY_FRAFMENT_TAG";
@@ -17,6 +16,7 @@ public class AppConstants {
     public static final String IS_JSON_NULL = "IS_JSON_NULL";
     public static final String JSON_OBJECT = "JSON_OBJECT";
     public static final String JSON_OBJECT_FORECAST = "JSON_OBJECT_FORECAST";
-    public static final String SHOW_SENSORS = "SHOW_SENSORS";
-    public static final String SHOW_CHECK_BOXES = "SHOW_CHECK_BOXES";
+    public static final String LAST_CITY = "LAST_CITY";
+    public static final String LAST_LIST = "LAST_LIST";
+
 }

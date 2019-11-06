@@ -8,14 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.singltones.CityListLab;
-
 import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,7 +21,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     private OnCityClickListener onCityClickListener;
     private Activity activity;
     private long posItem = 0;
-    private Context context;
 
     public interface OnCityClickListener {
         void onCityClick(String city);
@@ -35,26 +30,18 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
                                    OnCityClickListener onCityClickListener, Activity activity) {
         if (data != null) {
             this.data = data;
+        }else{
+            this.data = new ArrayList<>();
         }
         this.onCityClickListener = onCityClickListener;
         this.activity = activity;
-    }
-
-    public void addItem(String city) {
-        Log.d(TAG, "RecyclerViewCityAdapter addItem");
-        if (ChooseCityFrag.isNotCityInList(city, data)) {
-            data.add(city);
-            notifyItemInserted(data.size() - 1);
-        } else {
-            Toast.makeText(context, "Такой город уже есть в списке", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {
             data.remove((int) posItem);
-            notifyItemRemoved((int) posItem);
+            notifyDataSetChanged();
             Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         }
     }
@@ -92,7 +79,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
+        Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.item_list,
                 parent, false);
         return new ViewHolder(view);

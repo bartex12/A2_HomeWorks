@@ -32,17 +32,25 @@ public class CityListLab {
         }
     }
 
+    //добавление данных
+    public static void addCityInPosition(int position, String city){
+        if (isNotCityInList(city)){
+            cityMarked.add(position, city);
+        }
+    }
+
     //удаление данных из списка
     public static void removeSity(String city){
         cityMarked.remove(city);
     }
 
-    //очистка списка
-    public static void clearSityList(){
+    //очистка синглтона для замены списка
+    public static void clearCityListLab(){
         cityMarked.clear();
+        cityListLab = null;
     }
 
-    public static boolean isNotCityInList(String city) {
+    private static boolean isNotCityInList(String city) {
         for (int i = 0; i < cityMarked.size(); i++) {
             if (cityMarked.get(i).toUpperCase().equals(city.toUpperCase())) {
                 return false;
