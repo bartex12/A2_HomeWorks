@@ -249,18 +249,23 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     // показываем погоду в городе с учётом ориентации экрана
     private void showCityWhetherWithOrientation() {
+        Log.d(TAG, "ChooseCityFrag showCityWhetherWithOrientation ");
+        isExistWhetherFrag = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
+            Log.d(TAG, "ChooseCityFrag showCityWhetherWithOrientation альбомная");
             setWeatherFragment(R.id.content_super_r);
             //а если портретная, то
         } else {
+            Log.d(TAG, "ChooseCityFrag showCityWhetherWithOrientation портретная");
             setWeatherFragment(R.id.content_super);
         }
     }
 
     // Показать погоду во фрагменте в зависимости от  города и ориентации
     private void setWeatherFragment(int container_id) {
-
+        Log.d(TAG, "ChooseCityFrag setWeatherFragment ");
         // создаем новый фрагмент с текущей позицией для вывода погоды
         WeatherFragment weatherFrag = WeatherFragment.newInstance();
         //и выполняем транзакцию по замене фрагмента
@@ -268,8 +273,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         ft.replace(container_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
-        Log.d(TAG, "ChooseCityFrag showCityWhetherLand Фрагмент = " +
-                getFragmentManager().findFragmentById(R.id.content_super));
     }
 
     @Override
@@ -297,6 +300,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Subscribe
     @SuppressWarnings("unused")
     public void onChangeEvent(ChangeItemEvent event) {
+        Log.d(TAG, "ChooseCityFrag onChangeEvent event.city =" + event.city);
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
         //добавляем город в список синглтона

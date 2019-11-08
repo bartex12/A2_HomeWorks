@@ -18,9 +18,14 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
+import com.geekbrains.city_weather.events.AddItemEvent;
+import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
+import com.geekbrains.city_weather.singltones.EventBus;
+import com.squareup.otto.Subscribe;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.text.DateFormat;
@@ -171,6 +176,20 @@ public class WeatherFragment extends Fragment {
         Typeface weatherFont = Typeface.createFromAsset(
                 Objects.requireNonNull(getActivity()).getAssets(), "fonts/weather.ttf");
         textViewIcon.setTypeface(weatherFont);
+    }
+
+    // Показать погоду во фрагменте в альбомной ориентации
+    private void showCityWhetherPort() {
+
+        // создаем новый фрагмент с текущей позицией для вывода погоды
+        WeatherFragment weatherFrag = WeatherFragment.newInstance();
+        // ... и выполняем транзакцию по замене фрагмента
+        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        ft.commit();
+        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+                getFragmentManager().findFragmentById(R.id.content_super));
     }
 
     // Показать погоду во фрагменте в альбомной ориентации

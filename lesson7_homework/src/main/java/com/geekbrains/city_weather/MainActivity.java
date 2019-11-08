@@ -94,10 +94,12 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "MainActivity onOptionsItemSelected id = " + id);
         switch (id) {
             case R.id.navigation_choose_city:
+                setChooseCityFrag();
                 showChangecityDialogFragment();
                 return true;
 
             case R.id.navigation_add:
+                setChooseCityFrag();
                 showAddcityDialogFragment();
                 return true;
 
@@ -193,9 +195,11 @@ public class MainActivity extends AppCompatActivity implements
         // Определение, можно ли будет расположить рядом данные в другом фрагменте
         boolean isExistWhetherFrag = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
+        //если альбомная
         if (isExistWhetherFrag) {
             setChooseCityFrag();
             setWeatherFragment(R.id.content_super_r);
+            //а если портретная
         } else {
             setWeatherFragment(R.id.content_super);
         }
@@ -250,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setChooseCityFrag();
                 showChangecityDialogFragment();
             }
         });
@@ -272,9 +277,11 @@ public class MainActivity extends AppCompatActivity implements
 
         if (id == R.id.nav_camera) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_camera");
+            setChooseCityFrag();
             showChangecityDialogFragment();
         } else if (id == R.id.nav_gallery) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_gallery");
+            setChooseCityFrag();
             showAddcityDialogFragment();
         } else if (id == R.id.nav_help) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_help");
