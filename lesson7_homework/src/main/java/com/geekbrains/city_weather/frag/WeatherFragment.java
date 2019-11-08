@@ -36,6 +36,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import rest.entities.WeatherRequestRestModel;
 
 import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
@@ -51,11 +52,15 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
  *  Варианты получения погодных данных в приложении:
  * 1) на уроке A2L1 JSONObject получали в отдельном потоке через методы sdk - HttpURLConnection и т д
  * а обрабатывали в потоке GUI через handler.post(new Runnable()
+ *
  * 2) на уроке A2L3 JSONObject получали через сервис, который сам создавал отдельный поток,
  * передавали в интенте широковещательного сообщения в виде строки в место обработки
  * воссоздавали JSONObject из строки и обрабатывали в потоке GUI
- * 3) на уроке A2L5 погодные данные получаем через сервис сразу в виде JAVA объекта с помощью запроса к
- * погодному серверу через библиотеку Retrofit с конвертором GSON
+ *
+ * 3) на уроке A2L5 погодные данные получаем через сервис сразу в виде JAVA объекта
+ * с помощью запроса к погодному серверу через библиотеку Retrofit с конвертором GSON,
+ * сериализуем ответ и передаём его  в интенте широковещательного сообщения в место обработки,
+ * где десериализуем и обрабатывали в потоке GUI
  */
 public class WeatherFragment extends Fragment {
     private static final String TAG = "33333";
@@ -213,23 +218,20 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    private void renderWeather(JSONObject jsonObject) {
+    private void renderWeather(WeatherRequestRestModel modelWeather) {
 
         try {
-            JSONObject details = jsonObject.getJSONArray("weather").getJSONObject(0);
-            JSONObject main = jsonObject.getJSONObject("main");
-            JSONObject wind = jsonObject.getJSONObject("wind");
+            setPlaceName(modelWeather.name, modelWeather.sys.country);
+            setUpdatedText(modelWeather.dt);
+            setDescription(modelWeather.weather[0].description);
+            setWind(modelWeather.wind.speed);
+            setPressure(modelWeather.main.pressure);
+            setCurrentTemp(modelWeather.main.temp);
 
-            setPlaceName(jsonObject);
-            setUpdatedText(jsonObject);
-            setDescription(details);
-            setWind(wind);
-            setPressure(main);
-            setCurrentTemp(main);
+            setWeatherIcon(modelWeather.weather[0].id,
+                    modelWeather.sys.sunrise * 1000,
+                    modelWeather.sys.sunset * 1000);
 
-            setWeatherIcon(details.getInt("id"),
-                    jsonObject.getJSONObject("sys").getLong("sunrise") * 1000,
-                    jsonObject.getJSONObject("sys").getLong("sunset") * 1000);
         } catch (Exception exc) {
             exc.printStackTrace();
             Log.e(TAG, "One or more fields not found in the JSON data");
@@ -334,46 +336,39 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    private void setPlaceName(JSONObject jsonObject) throws JSONException {
-        String cityText = jsonObject.getString("name").toUpperCase() + ", "
-                + jsonObject.getJSONObject("sys").getString("country");
-        //выводим строки в текстовых полях
-        cityTextView.setText(cityText);
+    private void setPlaceName(String name, String country) {
+        cityTextView.setText(name + ", " + country);
     }
 
-    private void setUpdatedText(JSONObject jsonObject) throws JSONException {
+    private void setUpdatedText(long dt) {
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
-        String updateOn = dateFormat.format(new Date(jsonObject.getLong("dt") * 1000));
+        String updateOn = dateFormat.format(new Date(dt * 1000));
         String updatedText = Objects.requireNonNull(getActivity()).getResources()
                 .getString(R.string.lastUpdate) + updateOn;
         textViewLastUpdate.setText(updatedText);
     }
 
-    private void setDescription(JSONObject details) throws JSONException {
-        String descriptionText = details.getString("description").toUpperCase();
-        textViewWhether.setText(descriptionText);
+    private void setDescription(String description){
+        textViewWhether.setText(description);
     }
 
-    private void setWind(JSONObject jsonObject) throws JSONException {
-        String wind = jsonObject.getString("speed");
+    private void setWind(float wind){
         String windSpeed = Objects.requireNonNull(getActivity()).getString(R.string.windSpeed);
         String ms = getActivity().getString(R.string.ms);
         String windText = windSpeed + " " + wind + " " + ms;
         textViewWind.setText(windText);
     }
 
-    private void setCurrentTemp(JSONObject main) throws JSONException {
-        String currentTextText = String.format(Locale.getDefault(), "%.1f",
-                main.getDouble("temp")) + "\u2103";
-        textViewTemper.setText(currentTextText);
-    }
-
-    private void setPressure(JSONObject main) throws JSONException {
-        String pressure = main.getString("pressure");
+    private void setPressure(float pressure) {
         String press = Objects.requireNonNull(getActivity()).getString(R.string.press);
         String hPa = getActivity().getString(R.string.hPa);
         String pressureText = press + " " + pressure + " " + hPa;
         textViewPressure.setText(pressureText);
+    }
+
+    private void setCurrentTemp(float temper){
+        String currentText = String.format(Locale.getDefault(), "%.1f",temper) + "\u2103";
+        textViewTemper.setText(currentText);
     }
 
     private String[] getIconsArray(int[] actualId, long sunrise, long sunset) {
@@ -481,6 +476,7 @@ public class WeatherFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, final Intent intent) {
+            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver onReceive" );
             //переходим в поток GUI
             Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                 @Override
@@ -511,20 +507,13 @@ public class WeatherFragment extends Fragment {
                         }
                         //если JSON объект получен, то переводим строки в JSON объекты и получаем данные
                     }else {
-                        String jsonObjectString = intent.getStringExtra(JSON_OBJECT);
-                        String jsonObjectForecastString = intent.getStringExtra(JSON_OBJECT_FORECAST);
-                        JSONObject jsonObject = null;
-                        JSONObject jsonObjectForecast = null;
-                        try {
-                            jsonObject = new JSONObject(Objects.requireNonNull(jsonObjectString));
-                            jsonObjectForecast = new JSONObject(Objects.requireNonNull(jsonObjectForecastString));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        renderWeather(jsonObject);
-                        renderForecast(jsonObjectForecast);
+                        //десериализуем объект WeatherRequestRestModel
+                        WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
+                                Objects.requireNonNull(intent.getExtras()).getSerializable(JSON_OBJECT);
+                        //обрабатываем данные и выводим на экран
+                        renderWeather(modelWeather);
+//                      renderForecast(jsonObjectForecast);
                     }
-                    Log.d(TAG, "WeatherFragment ServiceFinishedReceiver onReceive" );
                 }
             });
         }

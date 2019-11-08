@@ -2,6 +2,8 @@ package rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CloudsRestModel {
+import java.io.Serializable;
+
+public class CloudsRestModel implements Serializable {
     @SerializedName("all") public int all;
 }

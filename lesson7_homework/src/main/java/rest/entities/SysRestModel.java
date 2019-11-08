@@ -2,7 +2,9 @@ package rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SysRestModel {
+import java.io.Serializable;
+
+public class SysRestModel implements Serializable {
     @SerializedName("type") public int type;
     @SerializedName("id") public int id;
     @SerializedName("message") public float message;

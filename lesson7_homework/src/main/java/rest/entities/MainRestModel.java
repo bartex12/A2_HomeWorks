@@ -2,7 +2,9 @@ package rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MainRestModel {
+import java.io.Serializable;
+
+public class MainRestModel implements Serializable {
     @SerializedName("temp")public float temp;
     @SerializedName("pressure") public float pressure;
     @SerializedName("humidity") public float humidity;

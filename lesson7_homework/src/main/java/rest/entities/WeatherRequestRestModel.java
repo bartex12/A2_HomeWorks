@@ -2,7 +2,9 @@ package rest.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class WeatherRequestRestModel {
+import java.io.Serializable;
+
+public class WeatherRequestRestModel implements Serializable {
     @SerializedName("coord") public CoordRestModel coordinates;
     @SerializedName("weather") public WeatherRestModel[] weather;
     @SerializedName("base") public String base;
