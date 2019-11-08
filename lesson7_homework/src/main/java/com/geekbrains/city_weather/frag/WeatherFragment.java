@@ -48,7 +48,14 @@ import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 /**
- * A simple {@link Fragment} subclass.
+ *  Варианты получения погодных данных в приложении:
+ * 1) на уроке A2L1 JSONObject получали в отдельном потоке через методы sdk - HttpURLConnection и т д
+ * а обрабатывали в потоке GUI через handler.post(new Runnable()
+ * 2) на уроке A2L3 JSONObject получали через сервис, который сам создавал отдельный поток,
+ * передавали в интенте широковещательного сообщения в виде строки в место обработки
+ * воссоздавали JSONObject из строки и обрабатывали в потоке GUI
+ * 3) на уроке A2L5 погодные данные получаем через сервис сразу в виде JAVA объекта с помощью запроса к
+ * погодному серверу через библиотеку Retrofit с конвертором GSON
  */
 public class WeatherFragment extends Fragment {
     private static final String TAG = "33333";
@@ -64,6 +71,9 @@ public class WeatherFragment extends Fragment {
     private String[] dates = new String[5];
     private double[] temperuteres = new double[5];
     private String[] iconArray = new String[5];
+
+    //когда сервис BackgroundWeatherService отправляет уведомление о завершении
+    //мы его получаем и в  методе onReceive обрабатываем погодные данные
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
     public WeatherFragment() {
@@ -88,6 +98,7 @@ public class WeatherFragment extends Fragment {
         initFonts();
 
         //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+        //для получения погодных данных
         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
         intent.putExtra(CURRENT_CITY, CityLab.getCity());
         Objects.requireNonNull(getActivity()).startService(intent);
@@ -470,6 +481,7 @@ public class WeatherFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, final Intent intent) {
+            //переходим в поток GUI
             Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

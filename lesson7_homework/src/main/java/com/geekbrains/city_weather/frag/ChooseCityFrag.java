@@ -247,6 +247,17 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         }
     }
 
+    // показываем погоду в городе с учётом ориентации экрана
+    private void showCityWhetherWithOrientation() {
+        //если альбомная ориентация,то
+        if (isExistWhetherFrag) {
+            setWeatherFragment(R.id.content_super_r);
+            //а если портретная, то
+        } else {
+            setWeatherFragment(R.id.content_super);
+        }
+    }
+
     // Показать погоду во фрагменте в зависимости от  города и ориентации
     private void setWeatherFragment(int container_id) {
 
@@ -259,17 +270,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         ft.commit();
         Log.d(TAG, "ChooseCityFrag showCityWhetherLand Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));
-    }
-
-    // показываем погоду в городе с учётом ориентации экрана
-    private void showCityWhetherWithOrientation() {
-        //если альбомная ориентация,то
-        if (isExistWhetherFrag) {
-            setWeatherFragment(R.id.content_super_r);
-            //а если портретная, то
-        } else {
-            setWeatherFragment(R.id.content_super);
-        }
     }
 
     @Override

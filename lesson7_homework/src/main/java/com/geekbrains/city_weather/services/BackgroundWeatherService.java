@@ -14,7 +14,6 @@ import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FOR
 import static com.geekbrains.city_weather.data_loader.CityWeatherDataLoader.OPEN_FORECAST_API_URL;
 import static com.geekbrains.city_weather.data_loader.CityWeatherDataLoader.OPEN_WEATHER_API_URL;
 
-
 public class BackgroundWeatherService extends IntentService {
 
     //если создавать через Alt+Enter, будет BackgroundWeatherService(String name), его надо удалить
@@ -32,7 +31,10 @@ public class BackgroundWeatherService extends IntentService {
         final JSONObject jsonObjectForecast = CityWeatherDataLoader
                 .getJSONDataWithCityAndApiUrl(currentCity, OPEN_FORECAST_API_URL);
 
-        //отправить уведомление о завершении сервиса
+        //отправляем уведомление о завершении сервиса во фрагмент WeatherFragment
+        //там создаём  private class ServiceFinishedReceiver extends BroadcastReceiver,
+        //который регистрируем в onStart с фильтром  BROADCAST_WEATHER_ACTION и  в его методе
+        //onReceive обрабатываем погодные данные
         Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
         if (jsonObject == null){
             broadcastIntent.putExtra(CURRENT_CITY, currentCity);
