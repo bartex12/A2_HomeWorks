@@ -1,6 +1,7 @@
 package rest;
 
 import rest.entities.WeatherRequestRestModel;
+import rest.forecast.ForecastRequestRestModel;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -10,4 +11,9 @@ public interface IOpenWeather {
     Call<WeatherRequestRestModel> loadWeather(@Query("q") String city,
                                               @Query("appid") String keyApi,
                                               @Query("units") String units);
+
+    @GET("data/2.5/forecast")
+    Call<ForecastRequestRestModel> loadForecast(@Query("q") String city,
+                                                @Query("appid") String keyApi,
+                                                @Query("units") String units);
 }
