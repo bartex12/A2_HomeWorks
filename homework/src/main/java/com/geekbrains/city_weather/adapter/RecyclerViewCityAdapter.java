@@ -1,9 +1,8 @@
 package com.geekbrains.city_weather.adapter;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     private ArrayList<String> data;
     private OnCityClickListener onCityClickListener;
     private int posItem = 0;
-    Context context;
+    private Context context;
 
     public interface OnCityClickListener {
         void onCityClick(String city);

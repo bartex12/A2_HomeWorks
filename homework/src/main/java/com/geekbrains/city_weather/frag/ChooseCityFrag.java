@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
-import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.singltones.CityLab;
@@ -180,7 +179,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onCreateContextMenu(@NonNull ContextMenu menu,
                                     @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.context_city_menu, menu);
+        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.context_city_menu, menu);
     }
 
     @Override
