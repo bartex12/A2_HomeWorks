@@ -6,12 +6,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
+
+import java.io.IOException;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import rest.OpenWeatherRepo;
 import rest.entities.WeatherRequestRestModel;
+import rest.forecast.ForecastRequestRestModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,5 +73,36 @@ public class BackgroundWeatherService extends IntentService {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+
+//        //делаем запрос и получаем ответ от сервера
+//        try {
+//            Response<ForecastRequestRestModel> response = OpenWeatherRepo
+//                    .getSingleton().getAPI().loadForecastEng(currentCity,
+//                    "80bb32e4a0db84762bb04ab2bd724646", "metric")
+//                    .execute();
+//
+////          отправляем уведомление о завершении сервиса во фрагмент WeatherFragment
+////          там создаём  private class ServiceFinishedReceiver extends BroadcastReceiver,
+////          который регистрируем в onStart с фильтром  BROADCAST_WEATHER_ACTION и  в его методе
+////          оnReceive обрабатываем погодные данные
+////          Для этого создаём интент широковещательного сообщения с фильтром
+//            Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
+//            //если удалось получить ответ от сервера посылаем интент с ответом
+//            if (response.body() != null && response.isSuccessful()) {
+//                broadcastIntent.putExtra(JAVA_OBJECT, response.body());
+//                broadcastIntent.putExtra(CURRENT_CITY, currentCity);
+//                broadcastIntent.putExtra(IS_JSON_NULL, false);
+//                sendBroadcast(broadcastIntent);
+//                //а если не удалось получить ответ- посылаем интент для обработки ошибки
+//            } else {
+//                broadcastIntent.putExtra(CURRENT_CITY, currentCity);
+//                broadcastIntent.putExtra(IS_JSON_NULL, true);
+//                sendBroadcast(broadcastIntent);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 }
+

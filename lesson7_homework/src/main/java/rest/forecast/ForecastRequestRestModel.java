@@ -7,9 +7,10 @@ public class ForecastRequestRestModel implements Serializable {
 
     @SerializedName("cod") public String cod;
     @SerializedName("message") public int message;
+    @SerializedName("city") public CityForecastRestModel city;
     @SerializedName("cnt") public int cnt;
     @SerializedName("list") public ListForecastRestModel[] list;
-    @SerializedName("city") public CityForecastRestModel city;
+
     @SerializedName("country") public String country;
     @SerializedName("population") public long population;
     @SerializedName("timezone")public long timezone;
