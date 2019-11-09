@@ -57,5 +57,6 @@
     <string name="Relative_humidity">Relative humidity</string>
     <string name="forExit">Please click BACK again to exit</string>
     <string name="network_error">Network issues</string>
+    <string name="txt">text</string>
 
 </resources>
