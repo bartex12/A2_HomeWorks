@@ -2,6 +2,7 @@ package com.geekbrains.city_weather.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
@@ -18,8 +19,8 @@ import retrofit2.Response;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
-import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
-import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
+import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
+
 
 public class BackgroundWeatherService extends IntentService {
 
@@ -36,12 +37,13 @@ public class BackgroundWeatherService extends IntentService {
         //получаем текущий город из интента
         final String currentCity = Objects.requireNonNull(intent).getStringExtra(CURRENT_CITY);
         //делаем запрос и получаем ответ от сервера
-        OpenWeatherRepo.getSingleton().getAPI().loadWeather(currentCity,
+        OpenWeatherRepo.getSingleton().getAPI().loadWeatherEng(currentCity,
                 "80bb32e4a0db84762bb04ab2bd724646", "metric")
                 .enqueue(new Callback<WeatherRequestRestModel>() {
                     @Override
                     public void onResponse(@NonNull Call<WeatherRequestRestModel> call,
                                            @NonNull Response<WeatherRequestRestModel> response) {
+                        Log.d(TAG, "BackgroundWeatherService loadWeatherRu" );
 //          отправляем уведомление о завершении сервиса во фрагмент WeatherFragment
 //          там создаём  private class ServiceFinishedReceiver extends BroadcastReceiver,
 //          который регистрируем в onStart с фильтром  BROADCAST_WEATHER_ACTION и  в его методе
@@ -50,7 +52,7 @@ public class BackgroundWeatherService extends IntentService {
                         Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
                         //если удалось получить ответ от сервера посылаем интент с ответом
                         if (response.body() != null && response.isSuccessful()) {
-                              broadcastIntent.putExtra(JSON_OBJECT, response.body());
+                              broadcastIntent.putExtra(JAVA_OBJECT, response.body());
                               broadcastIntent.putExtra(CURRENT_CITY, currentCity);
                               broadcastIntent.putExtra(IS_JSON_NULL, false);
                               sendBroadcast(broadcastIntent);

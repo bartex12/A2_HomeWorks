@@ -48,6 +48,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATH
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
@@ -528,7 +529,7 @@ public class WeatherFragment extends Fragment {
                     }else {
                         //десериализуем объект WeatherRequestRestModel
                         WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
-                                Objects.requireNonNull(intent.getExtras()).getSerializable(JSON_OBJECT);
+                                Objects.requireNonNull(intent.getExtras()).getSerializable(JAVA_OBJECT);
                         //обрабатываем данные и выводим на экран
                         renderWeather(modelWeather);
 //                      renderForecast(jsonObjectForecast);

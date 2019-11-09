@@ -19,4 +19,7 @@ public class AppConstants {
     public static final String LAST_CITY = "LAST_CITY";
     public static final String LAST_LIST = "LAST_LIST";
 
+    public static final String JAVA_OBJECT = "JAVA_OBJECT";
+    public static final String JAVA_OBJECT_FORECAST = "JAVA_OBJECT_FORECAST";
+
 }
