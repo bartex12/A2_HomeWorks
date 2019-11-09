@@ -1,7 +1,7 @@
 package rest;
 
-import rest.entities.WeatherRequestRestModel;
-import rest.forecast.ForecastRequestRestModel;
+import rest.weather_model.WeatherRequestRestModel;
+import rest.forecast_model.ForecastRequestRestModel;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

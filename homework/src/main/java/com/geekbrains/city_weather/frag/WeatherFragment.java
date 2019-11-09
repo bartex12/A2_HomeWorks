@@ -37,8 +37,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import rest.entities.WeatherRequestRestModel;
-import rest.forecast.ForecastRequestRestModel;
+import rest.weather_model.WeatherRequestRestModel;
+import rest.forecast_model.ForecastRequestRestModel;
 
 import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;

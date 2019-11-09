@@ -9,8 +9,8 @@ import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import rest.OpenWeatherRepo;
-import rest.entities.WeatherRequestRestModel;
-import rest.forecast.ForecastRequestRestModel;
+import rest.weather_model.WeatherRequestRestModel;
+import rest.forecast_model.ForecastRequestRestModel;
 import retrofit2.Response;
 
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;

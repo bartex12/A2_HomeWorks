@@ -1,4 +1,4 @@
-package rest.entities;
+package rest.weather_model;
 
 import com.google.gson.annotations.SerializedName;
 

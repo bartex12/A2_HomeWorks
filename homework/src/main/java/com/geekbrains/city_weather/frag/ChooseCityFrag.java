@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -165,6 +166,14 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     // holder.textView.setOnLongClickListener(new View.OnLongClickListener()
     //*******************************************************************
 
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu,
+                                    @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.context_city_menu, menu);
+    }
+
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         handleMenuItemClick(item);
@@ -213,12 +222,10 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                         showCityWhetherWithOrientation();
                     }
                 };
-        //передадим адаптеру в конструкторе список выбранных городов и ссылку на интерфейс
-        //в принципе, надо через adapter.setOnCityClickListener, но хочу попробовать так
-        //понятно, что это  неуниверсально, так как адаптер теперь зависит от конкретного интерфейся
-        recyclerViewCityAdapter = new RecyclerViewCityAdapter(CityListLab.getCitysList(),
-                onCityClickListener, getActivity());
-
+        // вызываем конструктор адаптера, передаём список
+        recyclerViewCityAdapter = new RecyclerViewCityAdapter(CityListLab.getCitysList());
+        // передаём ссылку на интерфейс чтобы отработать реакцию на выбор города в списке
+        recyclerViewCityAdapter.setOnCityClickListener(onCityClickListener);
         recyclerViewMarked.setLayoutManager(layoutManager);
         recyclerViewMarked.setAdapter(recyclerViewCityAdapter);
     }

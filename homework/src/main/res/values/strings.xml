@@ -13,7 +13,6 @@
     <string name="connecting">Connecting…</string>
     <string name="hPa">hPa</string>
     <string name="weather_sunny" translatable="false">&#xf00d;</string>
-    <string name="weather_clear_night" translatable="false">&#xf02e;</string>
     <string name="weather_foggy" translatable="false">&#xf014;</string>
     <string name="weather_cloudy" translatable="false">&#xf013;</string>
     <string name="weather_rainy" translatable="false">&#xf019;</string>
@@ -56,7 +55,7 @@
     <string name="temperature">Temperature</string>
     <string name="Relative_humidity">Relative humidity</string>
     <string name="forExit">Please click BACK again to exit</string>
-    <string name="network_error">Network issues</string>
     <string name="txt">text</string>
+    <string name="is_in_list">Such a city is already on the list</string>
 
 </resources>

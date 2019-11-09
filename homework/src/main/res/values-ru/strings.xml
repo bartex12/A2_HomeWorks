@@ -45,7 +45,7 @@
     <string name="Relative_humidity">Отн. влажность</string>
     <string name="forExit">Для выхода нажмите  НАЗАД  ещё раз</string>
     <string name="app_name">Погода</string>
-    <string name="network_error">Проблемы с сетью</string>
     <string name="txt">текст</string>
+    <string name="is_in_list">Такой город уже есть в списке</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package rest.forecast;
+package rest.forecast_model;
 
 import com.google.gson.annotations.SerializedName;
 
