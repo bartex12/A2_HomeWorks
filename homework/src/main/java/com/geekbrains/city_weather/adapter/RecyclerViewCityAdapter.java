@@ -20,7 +20,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     private static final String TAG = "33333";
     private ArrayList<String> data;
     private OnCityClickListener onCityClickListener;
-    private long posItem = 0;
+    private int posItem = 0;
     Context context;
 
     public interface OnCityClickListener {
@@ -39,7 +39,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         this.onCityClickListener =onCityClickListener;
     }
 
-
     public void addElement(String city) {
         if (isNotCityInList(city)){
             data.add(city);
@@ -52,8 +51,9 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
 
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
+        Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         if (data.size() > 0) {
-            data.remove((int) posItem);
+            data.remove(posItem);
             notifyDataSetChanged();
             Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         }

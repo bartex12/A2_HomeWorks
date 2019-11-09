@@ -20,8 +20,7 @@
     <string name="add_city">Добавить город</string>
     <string name="add">Добавить</string>
     <string name="cancel">Назад</string>
-    <string name="clear">Очистить</string>
-    <string name="remove">Удалить</string>
+    <string name="clear">Очистить список</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="help">Справка</string>
@@ -47,5 +46,6 @@
     <string name="app_name">Погода</string>
     <string name="txt">текст</string>
     <string name="is_in_list">Такой город уже есть в списке</string>
+    <string name="remove_city">Удалить город</string>
 
 </resources>

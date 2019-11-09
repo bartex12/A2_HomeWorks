@@ -22,8 +22,7 @@
     <string name="lastUpdate">Last update:</string>
     <string name="inputCitiName">Input city name</string>
     <string name="add">add</string>
-    <string name="remove">remove</string>
-    <string name="clear">clear</string>
+    <string name="clear">Clear list</string>
     <string name="cancel">cancel</string>
     <string name="show_city">Show city</string>
     <string name="ms">mps</string>
@@ -57,5 +56,6 @@
     <string name="forExit">Please click BACK again to exit</string>
     <string name="txt">text</string>
     <string name="is_in_list">Such a city is already on the list</string>
+    <string name="remove_city">Remove city</string>
 
 </resources>

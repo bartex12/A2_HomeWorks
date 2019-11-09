@@ -5,13 +5,13 @@
     <item
         android:id="@+id/menu_add"
         android:orderInCategory="10"
-        android:title="@string/add"
+        android:title="@string/add_city"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_remove"
         android:orderInCategory="20"
-        android:title="@string/remove"
+        android:title="@string/remove_city"
         app:showAsAction="never" />
 
     <item

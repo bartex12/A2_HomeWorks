@@ -156,16 +156,24 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     //********************************** Жесть **************************************************
-    //Действия по подключению контекстного меню для пунктов списка RecyclerView во фрагменте
+    //Действия для контекстного меню для пунктов списка RecyclerView во фрагменте
     // 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);
     // 2 делаем метод onContextItemSelected(MenuItem item) как обычно (см ниже)
     // 3 ViewHolder адаптера implements View.OnCreateContextMenuListener и реализуем
     // onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) интерфейса
     // 4 присваиваем слушатель адаптеру во ViewHolder: itemView.setOnCreateContextMenuListener(this);
-    // 5  устанавливаем слушатель для долгих нажатий в onBindViewHolder адаптера
+    // 5  устанавливаем слушатель для долгих нажатий в onBindViewHolder адаптера - ловим позицию
     // holder.textView.setOnLongClickListener(new View.OnLongClickListener()
-    //*******************************************************************
+    //********************************************************************************************
 
+    //********************************** Жесть 2 **************************************************
+    //Действия для контекстного меню для списка RecyclerView во фрагменте при использовании OttoBus
+    // 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);
+    // 2 делаем метод onCreateContextMenu(...) как обычно (см ниже)
+    // 3 делаем метод onContextItemSelected(...) как обычно (см ниже)
+    // 4  устанавливаем слушатель для долгих нажатий в onBindViewHolder адаптера - ловим позицию
+    // holder.textView.setOnLongClickListener(new View.OnLongClickListener()
+    //*********************************************************************************************
 
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu,
@@ -329,7 +337,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         //добавляем город в список синглтона
         CityListLab.addCity(event.city);
     }
-
 
 }
 
