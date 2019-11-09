@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.geekbrains.city_weather.R;
@@ -21,6 +22,7 @@ import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -76,8 +78,9 @@ public class WeatherFragment extends Fragment {
     private String[] dates = new String[5];
     private double[] temperuteres = new double[5];
     private String[] iconArray = new String[5];
+    private ImageView imageView;
 
-    //когда сервис BackgroundWeatherService отправляет уведомление о завершении
+    //когда серви с BackgroundWeatherService отправляет уведомление о завершении
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
@@ -101,6 +104,7 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         initFonts();
+        loadImageWithPicasso();
 
         //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
         //для получения погодных данных
@@ -165,6 +169,7 @@ public class WeatherFragment extends Fragment {
         textViewWind = view.findViewById(R.id.textViewWind);
         textViewPressure = view.findViewById(R.id.textViewPressure);
         textViewIcon = view.findViewById(R.id.textViewIcon);
+        imageView = view.findViewById(R.id.imageView);
     }
 
     private void initFonts() {
@@ -346,9 +351,7 @@ public class WeatherFragment extends Fragment {
         try {
             for (int i = 0; i < icons.length; i++) {
                 int id = actualId[i] / 100;
-
                 icons[i] = getIconString(actualId[i], sunrise, sunset, id, icons[i]);
-
             }
             Log.e(TAG, "icons.length = " + icons.length);
         } catch (IllegalStateException e) {
@@ -360,9 +363,7 @@ public class WeatherFragment extends Fragment {
     private void setWeatherIcon(int actualId, long sunrise, long sunset) {
         int id = actualId / 100;
         String icon = "";
-
         icon = getIconString(actualId, sunrise, sunset, id, icon);
-
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             textViewIcon.setVisibility(View.GONE);
         } else {
@@ -376,34 +377,42 @@ public class WeatherFragment extends Fragment {
             if (currentTime >= sunrise && currentTime < sunset) {
                 //icon = "\u2600";
                 icon = getString(R.string.weather_sunny);
+                //http://openweathermap.org/img/wn/01d@2x.png
             } else {
                 icon = getString(R.string.weather_clear_night);
+                //http://openweathermap.org/img/wn/01n@2x.png
             }
         } else {
             switch (id) {
                 case 2: {
                     icon = getString(R.string.weather_thunder);
+                    //http://openweathermap.org/img/wn/11d@2x.png
                     break;
                 }
                 case 3: {
                     icon = getString(R.string.weather_drizzle);
+                    //http://openweathermap.org/img/wn/09d@2x.png
                     break;
                 }
                 case 5: {
                     icon = getString(R.string.weather_rainy);
+                    //http://openweathermap.org/img/wn/10d@2x.png
                     break;
                 }
                 case 6: {
                     icon = getString(R.string.weather_snowy);
+                    //http://openweathermap.org/img/wn/13d@2x.png
                     break;
                 }
                 case 7: {
                     icon = getString(R.string.weather_foggy);
+                    http://openweathermap.org/img/wn/50d@2x.png
                     break;
                 }
                 case 8: {
                     //icon = "\u2601";
                     icon = getString(R.string.weather_cloudy);
+                    //http://openweathermap.org/img/wn/04d@2x.png
                     break;
                 }
             }
@@ -464,5 +473,10 @@ public class WeatherFragment extends Fragment {
             });
         }
     }
+    private void loadImageWithPicasso(){
+        Picasso.get().load("http://openweathermap.org/img/wn/11d@2x.png").into(imageView);
+    }
+
+
 }
 //1 hPa = 0.75006375541921 mmHg
