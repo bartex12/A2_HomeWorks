@@ -297,6 +297,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     }
 
+    //реакция на событие ChangeItemEvent Событие создаётся в DialogCityChange
     @Subscribe
     @SuppressWarnings("unused")
     public void onChangeEvent(ChangeItemEvent event) {
@@ -312,6 +313,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     }
 
+    //реакция на событие AddItemEvent Событие создаётся в DialogCityAdd
     @Subscribe
     @SuppressWarnings("unused")
     public void onAddEvent(AddItemEvent event) {
@@ -321,17 +323,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         CityListLab.addCity(event.city);
     }
 
-//    @Subscribe
-//    @SuppressWarnings("unused")
-//    public void onRemoveEvent(RemoveItemEvent event) {
-//        recyclerViewCityAdapter.removeElement();
-//    }
-//
-//    @Subscribe
-//    @SuppressWarnings("unused")
-//    public void onClearList(ClearListEvent event) {
-//        recyclerViewCityAdapter.clearList();
-//    }
 
 }
 

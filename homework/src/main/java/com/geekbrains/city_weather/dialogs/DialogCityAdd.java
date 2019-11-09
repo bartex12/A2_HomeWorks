@@ -47,7 +47,7 @@ public class DialogCityAdd extends DialogFragment {
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
                             Snackbar.LENGTH_SHORT).show();
                 } else {
-
+                    //пушим ивент добавления города и ловим city во фрагменте ChooseCityFrag
                     EventBus.getBus().post(new AddItemEvent(city));
                     Objects.requireNonNull(getDialog()).dismiss();  //закрывает только диалог
                 }

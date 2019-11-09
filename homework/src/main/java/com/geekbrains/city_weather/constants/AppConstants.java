@@ -14,8 +14,6 @@ public class AppConstants {
             "com.geekbrains.city_weather.BROADCAST_WEATHER_ACTION";
 
     public static final String IS_JSON_NULL = "IS_JSON_NULL";
-    public static final String JSON_OBJECT = "JSON_OBJECT";
-    public static final String JSON_OBJECT_FORECAST = "JSON_OBJECT_FORECAST";
     public static final String LAST_CITY = "LAST_CITY";
     public static final String LAST_LIST = "LAST_LIST";
 
