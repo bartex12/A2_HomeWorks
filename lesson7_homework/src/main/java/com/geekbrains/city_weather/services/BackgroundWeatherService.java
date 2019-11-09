@@ -43,8 +43,8 @@ public class BackgroundWeatherService extends IntentService {
         Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
 
         //делаем запрос о погоде и получаем ответ от сервера
+        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<WeatherRequestRestModel> response = getWeatherResponse(currentCity);
-
         //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
         if (response.body() != null && response.isSuccessful()) {
             Log.d(TAG, "BackgroundWeatherService loadWeatherEng OK" );
@@ -71,6 +71,7 @@ public class BackgroundWeatherService extends IntentService {
     }
 
     private Response<ForecastRequestRestModel> getForecastResponse(String currentCity) {
+        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<ForecastRequestRestModel> responseForecast = null;
         try {
             responseForecast = OpenWeatherRepo.getSingleton()
@@ -84,7 +85,7 @@ public class BackgroundWeatherService extends IntentService {
     }
 
     private Response<WeatherRequestRestModel> getWeatherResponse(String currentCity) {
-        //делаем запрос и получаем ответ от сервера
+        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<WeatherRequestRestModel> response = null;
         try {
             response = OpenWeatherRepo.getSingleton()
