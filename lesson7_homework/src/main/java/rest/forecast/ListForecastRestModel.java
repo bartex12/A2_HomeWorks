@@ -1,10 +1,7 @@
 package rest.forecast;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
-
-import rest.entities.WeatherRestModel;
 
 public class ListForecastRestModel implements Serializable {
     @SerializedName("dt") public long dt;
@@ -13,5 +10,5 @@ public class ListForecastRestModel implements Serializable {
     @SerializedName("clouds") public CloudsForecastRestModel clouds;
     @SerializedName("wind") public WindForecastRestModel wind;
     @SerializedName("sys") public SysForecastRestModel sys;
-    @SerializedName("dt_txt") public DateForecastRestModel dt_txt;
+    @SerializedName("dt_txt") public String dt_txt;
 }

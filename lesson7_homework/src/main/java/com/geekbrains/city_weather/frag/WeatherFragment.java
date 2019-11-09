@@ -18,16 +18,10 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
-import com.geekbrains.city_weather.events.AddItemEvent;
-import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
-import com.geekbrains.city_weather.singltones.EventBus;
-import com.squareup.otto.Subscribe;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +36,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import rest.entities.WeatherRequestRestModel;
+import rest.forecast.ForecastRequestRestModel;
 
 import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
@@ -49,8 +44,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_T
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
-import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT;
-import static com.geekbrains.city_weather.constants.AppConstants.JSON_OBJECT_FORECAST;
+import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT_FORECAST;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
@@ -180,20 +174,6 @@ public class WeatherFragment extends Fragment {
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
-    private void showCityWhetherPort() {
-
-        // создаем новый фрагмент с текущей позицией для вывода погоды
-        WeatherFragment weatherFrag = WeatherFragment.newInstance();
-        // ... и выполняем транзакцию по замене фрагмента
-        FragmentTransaction ft = Objects.requireNonNull(getFragmentManager()).beginTransaction();
-        ft.replace(R.id.content_super, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        ft.commit();
-        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
-                getFragmentManager().findFragmentById(R.id.content_super));
-    }
-
-    // Показать погоду во фрагменте в альбомной ориентации
     private void showCityWhetherLand() {
 
         // создаем новый фрагмент с текущей позицией для вывода погоды
@@ -217,25 +197,14 @@ public class WeatherFragment extends Fragment {
         ft.commit();
     }
 
-    /**
-     * @param jsonObjectForecast
-     * данные для 5 дневного прогноза
-     */
-    private void renderForecast(JSONObject jsonObjectForecast) {
-        try {
-            dates = getDateArray(jsonObjectForecast);
-            temperuteres = getTempArray(jsonObjectForecast);
-            int[] idArray = getIdArray(jsonObjectForecast);
-            long sunrise = getSunrise(jsonObjectForecast);
-            long sunset = getSunset(jsonObjectForecast);
-            iconArray = getIconsArray(idArray, sunrise, sunset);
+
+    private void renderForecast(ForecastRequestRestModel modelForecast) {
+            dates = getDateArray(modelForecast);
+            temperuteres = getTempArray(modelForecast);
+            int[] idArray = getIdArray(modelForecast);
+           iconArray = getIconsArray(idArray,modelForecast.city.sunrise, modelForecast.city.sunset);
             //после формирования данных для адаптера инициализируем сам адаптер
             initRecyclerView();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.e(TAG, "Ошибка в renderForecast");
-        }
     }
 
     private void renderWeather(WeatherRequestRestModel modelWeather) {
@@ -259,14 +228,13 @@ public class WeatherFragment extends Fragment {
     }
 
     //получение даты для прогноза на 5 дней
-    private String[] getDateArray(JSONObject jsonObjectForecast) throws JSONException {
-        Log.e(TAG, "getDateArray");
+    private String[] getDateArray(ForecastRequestRestModel modelForecast) {
+        Log.e(TAG, "getDateArray list.length = " + modelForecast.list.length);
         DateFormat dateFormat = DateFormat.getDateInstance();
         long dateTime;
         String[] dateTimeArray = new String[5];
         for (int i = 0; i < dateTimeArray.length; i++) {
-            dateTime = jsonObjectForecast.getJSONArray("list").
-                    getJSONObject(7 + 8 * i).getLong("dt");
+            dateTime = modelForecast.list[7 + 8 * i].dt;
             dateTimeArray[i] = dateFormat.format(new Date(dateTime * 1000));
         }
         Log.e(TAG, "dateTimeArray.length = " + dateTimeArray.length);
@@ -274,44 +242,25 @@ public class WeatherFragment extends Fragment {
     }
 
     //получение температуры для прогноза на 5 дней
-    private double[] getTempArray(JSONObject jsonObjectForecast) throws JSONException {
-        Log.e(TAG, "getTempArray");
+    private double[] getTempArray(ForecastRequestRestModel modelForecast){
+        Log.e(TAG, "getTempArray list.length = " + modelForecast.list.length);
         double[] temper = new double[5];
         for (int i = 0; i < temper.length; i++) {
-            JSONObject list = jsonObjectForecast.getJSONArray("list").getJSONObject(7 + 8 * i);
-            temper[i] = list.getJSONObject("main").getDouble("temp");
+            temper[i] =  modelForecast.list[7 + 8*i].main.temp;
         }
         Log.e(TAG, "temper.length = " + temper.length);
         return temper;
     }
 
     //получение массива id для прогноза на 5 дней
-    private int[] getIdArray(JSONObject jsonObjectForecast) throws JSONException {
-        Log.e(TAG, "getIdArray");
+    private int[] getIdArray(ForecastRequestRestModel modelForecast) {
+        Log.e(TAG, "getIdArray list.length = " + modelForecast.list.length);
         int[] id = new int[5];
         for (int i = 0; i < id.length; i++) {
-            JSONObject list = jsonObjectForecast.getJSONArray("list").getJSONObject(7 + 8 * i);
-            id[i] = list.getJSONArray("weather").getJSONObject(0).getInt("id");
-            Log.e(TAG, "id[i] = " + id[i]);
+            id[i] = modelForecast.list[7 + 8 * i].weather[0].id;
         }
         Log.e(TAG, "id.length = " + id.length);
         return id;
-    }
-
-    //получение времени  восход для прогноза на 5 дней
-    private long getSunrise(JSONObject jsonObjectForecast) throws JSONException {
-        Log.e(TAG, "getSunrise");
-        long sunrise = jsonObjectForecast.getJSONObject("city").getLong("sunrise");
-        Log.e(TAG, "sunrise = " + sunrise);
-        return sunrise;
-    }
-
-    //получение времени  заката для прогноза на 5 дней
-    private long getSunset(JSONObject jsonObjectForecast) throws JSONException {
-        Log.e(TAG, "getSunset");
-        long sunset = jsonObjectForecast.getJSONObject("city").getLong("sunset");
-        Log.e(TAG, "sunset = " + sunset);
-        return sunset;
     }
 
     //загрузка данных в адаптер списка прогноза на 5 дней
@@ -398,43 +347,7 @@ public class WeatherFragment extends Fragment {
             for (int i = 0; i < icons.length; i++) {
                 int id = actualId[i] / 100;
 
-                if (actualId[i] == 800) {
-                    long currentTime = new Date().getTime();
-                    if (currentTime >= sunrise && currentTime < sunset) {
-                        //icon = "\u2600";
-                        icons[i] = getString(R.string.weather_sunny);
-                    } else {
-                        icons[i] = getString(R.string.weather_clear_night);
-                    }
-                } else {
-                    switch (id) {
-                        case 2: {
-                            icons[i] = getString(R.string.weather_thunder);
-                            break;
-                        }
-                        case 3: {
-                            icons[i] = getString(R.string.weather_drizzle);
-                            break;
-                        }
-                        case 5: {
-                            icons[i] = getString(R.string.weather_rainy);
-                            break;
-                        }
-                        case 6: {
-                            icons[i] = getString(R.string.weather_snowy);
-                            break;
-                        }
-                        case 7: {
-                            icons[i] = getString(R.string.weather_foggy);
-                            break;
-                        }
-                        case 8: {
-                            //icon = "\u2601";
-                            icons[i] = getString(R.string.weather_cloudy);
-                            break;
-                        }
-                    }
-                }
+                icons[i] = getIconString(actualId[i], sunrise, sunset, id, icons[i]);
 
             }
             Log.e(TAG, "icons.length = " + icons.length);
@@ -448,6 +361,16 @@ public class WeatherFragment extends Fragment {
         int id = actualId / 100;
         String icon = "";
 
+        icon = getIconString(actualId, sunrise, sunset, id, icon);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            textViewIcon.setVisibility(View.GONE);
+        } else {
+            textViewIcon.setText(icon);
+        }
+    }
+
+    private String getIconString(int actualId, long sunrise, long sunset, int id, String icon) {
         if (actualId == 800) {
             long currentTime = new Date().getTime();
             if (currentTime >= sunrise && currentTime < sunset) {
@@ -485,11 +408,7 @@ public class WeatherFragment extends Fragment {
                 }
             }
         }
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            textViewIcon.setVisibility(View.GONE);
-        } else {
-            textViewIcon.setText(icon);
-        }
+        return icon;
     }
 
     private class ServiceFinishedReceiver extends BroadcastReceiver {
@@ -501,7 +420,7 @@ public class WeatherFragment extends Fragment {
             Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //сначала смотрим, а удалось ли сервису получить JSON объект
+                    //сначала смотрим, а удалось ли сервису получить JAVA объект
                     boolean is_JSON_null =  intent.getBooleanExtra(IS_JSON_NULL, true);
                     //если не удалось, то is_JSON_null = true
                     if (is_JSON_null){
@@ -525,14 +444,21 @@ public class WeatherFragment extends Fragment {
                             //показываем фрагмент со списком
                             setChooseCityFrag();
                         }
-                        //если JSON объект получен, то переводим строки в JSON объекты и получаем данные
+                        //если JAVA объект получен, то получаем данные
                     }else {
                         //десериализуем объект WeatherRequestRestModel
                         WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
-                                Objects.requireNonNull(intent.getExtras()).getSerializable(JAVA_OBJECT);
+                                Objects.requireNonNull(intent.getExtras())
+                                .getSerializable(JAVA_OBJECT);
                         //обрабатываем данные и выводим на экран
                         renderWeather(modelWeather);
-//                      renderForecast(jsonObjectForecast);
+
+                        ForecastRequestRestModel modelForecast =(ForecastRequestRestModel)
+                                Objects.requireNonNull(intent.getExtras())
+                                        .getSerializable(JAVA_OBJECT_FORECAST);
+                        Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelForecast =" +
+                                modelForecast);
+                      renderForecast(modelForecast);
                     }
                 }
             });

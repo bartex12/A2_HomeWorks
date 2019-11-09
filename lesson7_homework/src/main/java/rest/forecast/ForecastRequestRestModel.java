@@ -11,9 +11,5 @@ public class ForecastRequestRestModel implements Serializable {
     @SerializedName("cnt") public int cnt;
     @SerializedName("list") public ListForecastRestModel[] list;
 
-    @SerializedName("country") public String country;
-    @SerializedName("population") public long population;
-    @SerializedName("timezone")public long timezone;
-    @SerializedName("sunrise")public long sunrise;
-    @SerializedName("sunset")public long sunset;
+
 }
