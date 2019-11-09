@@ -1,2 +1,2 @@
-include ':Homework'
+include ':homework'
 rootProject.name='A1_Whether'
