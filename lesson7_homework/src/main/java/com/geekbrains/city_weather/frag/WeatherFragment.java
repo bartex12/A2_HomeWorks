@@ -104,7 +104,6 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         initFonts();
-        loadImageWithPicasso();
 
         //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
         //для получения погодных данных
@@ -202,16 +201,6 @@ public class WeatherFragment extends Fragment {
         ft.commit();
     }
 
-
-    private void renderForecast(ForecastRequestRestModel modelForecast) {
-            dates = getDateArray(modelForecast);
-            temperuteres = getTempArray(modelForecast);
-            int[] idArray = getIdArray(modelForecast);
-           iconArray = getIconsArray(idArray,modelForecast.city.sunrise, modelForecast.city.sunset);
-            //после формирования данных для адаптера инициализируем сам адаптер
-            initRecyclerView();
-    }
-
     private void renderWeather(WeatherRequestRestModel modelWeather) {
 
         try {
@@ -222,7 +211,7 @@ public class WeatherFragment extends Fragment {
             setPressure(modelWeather.main.pressure);
             setCurrentTemp(modelWeather.main.temp);
 
-            setWeatherIcon(modelWeather.weather[0].id,
+            loadImageWithPicasso(modelWeather.weather[0].id,
                     modelWeather.sys.sunrise * 1000,
                     modelWeather.sys.sunset * 1000);
 
@@ -230,6 +219,19 @@ public class WeatherFragment extends Fragment {
             exc.printStackTrace();
             Log.e(TAG, "One or more fields not found in the JSON data");
         }
+    }
+
+    private void renderForecast(ForecastRequestRestModel modelForecast) {
+        dates = getDateArray(modelForecast);
+        temperuteres = getTempArray(modelForecast);
+        iconArray = getIconsArray(getIdArray(modelForecast));
+        //после формирования данных для адаптера инициализируем сам адаптер
+        initRecyclerView();
+    }
+
+    private void loadImageWithPicasso(int actualId, long sunrise, long sunset){
+        String path =getWeatherIconPath(actualId,sunrise,sunset);
+        Picasso.get().load(path).into(imageView);
     }
 
     //получение даты для прогноза на 5 дней
@@ -345,13 +347,43 @@ public class WeatherFragment extends Fragment {
         textViewTemper.setText(currentText);
     }
 
-    private String[] getIconsArray(int[] actualId, long sunrise, long sunset) {
+    private String[] getIconsArray(int[] actualId) {
 
         String[] icons = new String[5];
         try {
             for (int i = 0; i < icons.length; i++) {
                 int id = actualId[i] / 100;
-                icons[i] = getIconString(actualId[i], sunrise, sunset, id, icons[i]);
+
+                if (actualId[i] == 800) {
+                    icons[i] = getString(R.string.weather_sunny);
+                } else {
+                    switch (id) {
+                        case 2: {
+                            icons[i] = getString(R.string.weather_thunder);
+                            break;
+                        }
+                        case 3: {
+                            icons[i] = getString(R.string.weather_drizzle);
+                            break;
+                        }
+                        case 5: {
+                            icons[i] = getString(R.string.weather_rainy);
+                            break;
+                        }
+                        case 6: {
+                            icons[i] = getString(R.string.weather_snowy);
+                            break;
+                        }
+                        case 7: {
+                            icons[i] = getString(R.string.weather_foggy);
+                            break;
+                        }
+                        case 8: {
+                            icons[i] = getString(R.string.weather_cloudy);
+                            break;
+                        }
+                    }
+                }
             }
             Log.e(TAG, "icons.length = " + icons.length);
         } catch (IllegalStateException e) {
@@ -360,62 +392,47 @@ public class WeatherFragment extends Fragment {
         return icons;
     }
 
-    private void setWeatherIcon(int actualId, long sunrise, long sunset) {
+    private String getWeatherIconPath(int actualId, long sunrise, long sunset) {
         int id = actualId / 100;
         String icon = "";
-        icon = getIconString(actualId, sunrise, sunset, id, icon);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            textViewIcon.setVisibility(View.GONE);
-        } else {
-            textViewIcon.setText(icon);
-        }
-    }
 
-    private String getIconString(int actualId, long sunrise, long sunset, int id, String icon) {
         if (actualId == 800) {
             long currentTime = new Date().getTime();
             if (currentTime >= sunrise && currentTime < sunset) {
-                //icon = "\u2600";
-                icon = getString(R.string.weather_sunny);
-                //http://openweathermap.org/img/wn/01d@2x.png
+                icon = "http://openweathermap.org/img/wn/01d@2x.png";
             } else {
-                icon = getString(R.string.weather_clear_night);
-                //http://openweathermap.org/img/wn/01n@2x.png
+                icon = "http://openweathermap.org/img/wn/01d@2x.png";
             }
         } else {
             switch (id) {
                 case 2: {
-                    icon = getString(R.string.weather_thunder);
-                    //http://openweathermap.org/img/wn/11d@2x.png
+                    icon = "http://openweathermap.org/img/wn/11d@2x.png";
                     break;
                 }
                 case 3: {
-                    icon = getString(R.string.weather_drizzle);
-                    //http://openweathermap.org/img/wn/09d@2x.png
+                    icon = "http://openweathermap.org/img/wn/09d@2x.png";
                     break;
                 }
                 case 5: {
-                    icon = getString(R.string.weather_rainy);
-                    //http://openweathermap.org/img/wn/10d@2x.png
+                    icon = "http://openweathermap.org/img/wn/10d@2x.png";
                     break;
                 }
                 case 6: {
-                    icon = getString(R.string.weather_snowy);
-                    //http://openweathermap.org/img/wn/13d@2x.png
+                    icon = "http://openweathermap.org/img/wn/13d@2x.png";
                     break;
                 }
                 case 7: {
-                    icon = getString(R.string.weather_foggy);
-                    http://openweathermap.org/img/wn/50d@2x.png
+                    icon = "http://openweathermap.org/img/wn/50d@2x.png";
                     break;
                 }
                 case 8: {
-                    //icon = "\u2601";
-                    icon = getString(R.string.weather_cloudy);
-                    //http://openweathermap.org/img/wn/04d@2x.png
+                    icon = "http://openweathermap.org/img/wn/04d@2x.png";
                     break;
                 }
             }
+        }
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            imageView.setVisibility(View.GONE);
         }
         return icon;
     }
@@ -473,10 +490,5 @@ public class WeatherFragment extends Fragment {
             });
         }
     }
-    private void loadImageWithPicasso(){
-        Picasso.get().load("http://openweathermap.org/img/wn/11d@2x.png").into(imageView);
-    }
-
-
 }
 //1 hPa = 0.75006375541921 mmHg

@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"MainActivity onResume");
-
+        // готовим
         initSingletons();
         doOrientationBasedActions();
     }
@@ -125,10 +125,8 @@ public class MainActivity extends AppCompatActivity implements
         //это тип первоначального списка на экране
         typeOfCityList =  Integer.parseInt(prefSetting.getString("typeOfCitysList", "3"));
         Log.d(TAG,"MainActivity initSingletons typeOfCityList = " + typeOfCityList) ;
-
         //инициализируем синглтон города
         initCitySinglton(cityCurrent);
-
         //инициализируем синглтон списка
         initSingltonList(cityCurrent, typeOfCityList);
     }
@@ -156,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
         ArrayList<String> cityMarked = new ArrayList(Arrays.asList(citys));
         //если не первая загрузка, то очищаем список и делаем CityListLab=null
         // чтобы поменять список в синглтоне
-        if (CityListLab.getInstance(cityMarked)!=null){
+        if (CityListLab.getCitysList()!=null){
             CityListLab.clearCityListLab();
         }
         //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
