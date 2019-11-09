@@ -59,12 +59,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         }
     }
 
-    public void clearList() {
-        Log.d(TAG, "RecyclerViewCityAdapter clearList");
-        data.clear();
-        notifyDataSetChanged();
-    }
-
     private boolean isNotCityInList(String city) {
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).toUpperCase().equals(city.toUpperCase())) {

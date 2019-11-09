@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
+import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.singltones.CityLab;
@@ -242,6 +243,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private void handleMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+
             case R.id.menu_add: {
                 DialogFragment dialogFragment = new DialogCityAdd();
                 dialogFragment.show(Objects.requireNonNull(getFragmentManager()), "addCity");
@@ -249,10 +251,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
             }
             case R.id.menu_remove: {
                 recyclerViewCityAdapter.removeElement();
-                break;
-            }
-            case R.id.menu_clear: {
-                recyclerViewCityAdapter.clearList();
                 break;
             }
             case R.id.menu_cancel: {

@@ -39,15 +39,8 @@ public class CityListLab {
         }
     }
 
-    //удаление данных из списка по позиции
-    public static void removeSity(int position){
-
-        cityMarked.remove(position);
-    }
-
     //удаление данных из списка по названию
     public static void removeSity(String city){
-
         cityMarked.remove(city);
     }
 
