@@ -3,6 +3,9 @@ package com.geekbrains.city_weather.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.geekbrains.city_weather.R;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -16,6 +19,7 @@ import retrofit2.Response;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT_FORECAST;
 
@@ -45,29 +49,41 @@ public class BackgroundWeatherService extends IntentService {
         //делаем запрос о погоде и получаем ответ от сервера
         //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<WeatherRequestRestModel> response = getWeatherResponse(currentCity);
-        //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
-        if (response.body() != null && response.isSuccessful()) {
-            Log.d(TAG, "BackgroundWeatherService loadWeatherEng OK" );
+        Log.d(TAG, "BackgroundWeatherService response = " + response);
 
-            //делаем запрос о прогнозе погоды и получаем ответ от сервера
-            Response<ForecastRequestRestModel> responseForecast = getForecastResponse(currentCity);
+        //если телефон не может посылать запросы, response=null, обрабатываем эту ситуацию
+        if (response!=null){
+            //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
+            if (response.body() != null && response.isSuccessful()) {
+                Log.d(TAG, "BackgroundWeatherService loadWeatherEng OK" );
 
-            if (responseForecast.body() != null && responseForecast.isSuccessful()) {
-                Log.d(TAG, "BackgroundWeatherService loadForecastEng OK" );
-                broadcastIntent.putExtra(JAVA_OBJECT_FORECAST, responseForecast.body());
+                //делаем запрос о прогнозе погоды и получаем ответ от сервера
+                Response<ForecastRequestRestModel> responseForecast = getForecastResponse(currentCity);
+
+                if (responseForecast.body() != null && responseForecast.isSuccessful()) {
+                    Log.d(TAG, "BackgroundWeatherService loadForecastEng OK" );
+                    broadcastIntent.putExtra(JAVA_OBJECT_FORECAST, responseForecast.body());
+                }
+                broadcastIntent.putExtra(JAVA_OBJECT, response.body());
+                broadcastIntent.putExtra(CURRENT_CITY, currentCity);
+                broadcastIntent.putExtra(IS_JSON_NULL, false);
+                broadcastIntent.putExtra(IS_RESPONS_NULL, false);
+                sendBroadcast(broadcastIntent);
+
+                //а если не удалось получить ответ- посылаем интент для обработки ошибки
+            } else {
+                Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO" );
+                broadcastIntent.putExtra(CURRENT_CITY, currentCity);
+                broadcastIntent.putExtra(IS_JSON_NULL, true);
+                broadcastIntent.putExtra(IS_RESPONS_NULL, false);
+                sendBroadcast(broadcastIntent);
             }
-            broadcastIntent.putExtra(JAVA_OBJECT, response.body());
-            broadcastIntent.putExtra(CURRENT_CITY, currentCity);
-            broadcastIntent.putExtra(IS_JSON_NULL, false);
-            sendBroadcast(broadcastIntent);
-
-        //а если не удалось получить ответ- посылаем интент для обработки ошибки
-        } else {
-            Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO" );
-            broadcastIntent.putExtra(CURRENT_CITY, currentCity);
-            broadcastIntent.putExtra(IS_JSON_NULL, true);
+        }else {
+            Log.d(TAG, "BackgroundWeatherService response = null" );
+            broadcastIntent.putExtra(IS_RESPONS_NULL, true);
             sendBroadcast(broadcastIntent);
         }
+
     }
 
     private Response<ForecastRequestRestModel> getForecastResponse(String currentCity) {

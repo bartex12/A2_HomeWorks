@@ -45,6 +45,7 @@ import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATH
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT_FORECAST;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
@@ -448,44 +449,54 @@ public class WeatherFragment extends Fragment {
                 public void run() {
                     //сначала смотрим, а удалось ли сервису получить JAVA объект
                     boolean is_JSON_null =  intent.getBooleanExtra(IS_JSON_NULL, true);
-                    //если не удалось, то is_JSON_null = true
-                    if (is_JSON_null){
-                        String currentCity = intent.getStringExtra(CURRENT_CITY);
-                        Toast.makeText(getActivity(), R.string.place_not_found,
-                                Toast.LENGTH_LONG).show();
-                        Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
-                                CityListLab.getCitysList().size());
-                        CityListLab.removeSity(currentCity); //удаляем город из списка
-                        Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
-                                CityListLab.getCitysList().size());
-                        CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
-
-                        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
-                                .orientation  == Configuration.ORIENTATION_LANDSCAPE){
-                            //показываем фрагмент с погодой с городом по умолчанию
-                            showCityWhetherLand();
-                            //перегружаем фрагмент со списком для обновления списка
-                            setChooseCityFrag();
-                        }else {
-                            //показываем фрагмент со списком
-                            setChooseCityFrag();
-                        }
-                        //если JAVA объект получен, то получаем данные
+                    boolean isResponceNull =  intent.getBooleanExtra(IS_RESPONS_NULL, false);
+                    //сначала смотрим, ответ от сервера равен null или нет
+                    if (isResponceNull){
+                        Toast.makeText(getActivity(), getActivity().getResources()
+                                        .getString(R.string.tlf_problems),Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "ServiceFinishedReceiver: Возникли проблемы " +
+                                "с отправкой запроса. Возможно требуется перезагрузка телефона");
                     }else {
-                        //десериализуем объект WeatherRequestRestModel
-                        WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
-                                Objects.requireNonNull(intent.getExtras())
-                                .getSerializable(JAVA_OBJECT);
-                        //обрабатываем данные и выводим на экран
-                        renderWeather(modelWeather);
+                        //если не удалось, то is_JSON_null = true
+                        if (is_JSON_null){
+                            String currentCity = intent.getStringExtra(CURRENT_CITY);
+                            Toast.makeText(getActivity(), R.string.place_not_found,
+                                    Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
+                                    CityListLab.getCitysList().size());
+                            CityListLab.removeSity(currentCity); //удаляем город из списка
+                            Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
+                                    CityListLab.getCitysList().size());
+                            CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
 
-                        ForecastRequestRestModel modelForecast =(ForecastRequestRestModel)
-                                Objects.requireNonNull(intent.getExtras())
-                                        .getSerializable(JAVA_OBJECT_FORECAST);
-                        Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelForecast =" +
-                                modelForecast);
-                      renderForecast(modelForecast);
+                            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
+                                    .orientation  == Configuration.ORIENTATION_LANDSCAPE){
+                                //показываем фрагмент с погодой с городом по умолчанию
+                                showCityWhetherLand();
+                                //перегружаем фрагмент со списком для обновления списка
+                                setChooseCityFrag();
+                            }else {
+                                //показываем фрагмент со списком
+                                setChooseCityFrag();
+                            }
+                            //если JAVA объект получен, то получаем данные
+                        }else {
+                            //десериализуем объект WeatherRequestRestModel
+                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
+                                    Objects.requireNonNull(intent.getExtras())
+                                            .getSerializable(JAVA_OBJECT);
+                            //обрабатываем данные и выводим на экран
+                            renderWeather(modelWeather);
+
+                            ForecastRequestRestModel modelForecast =(ForecastRequestRestModel)
+                                    Objects.requireNonNull(intent.getExtras())
+                                            .getSerializable(JAVA_OBJECT_FORECAST);
+                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelForecast =" +
+                                    modelForecast);
+                            renderForecast(modelForecast);
+                        }
                     }
+
                 }
             });
         }
