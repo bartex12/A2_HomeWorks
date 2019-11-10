@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.geekbrains.city_weather.MainActivity;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.singltones.EventBus;
@@ -19,7 +18,6 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import static com.geekbrains.city_weather.MainActivity.toUpperCaseForFirstLetter;
 
 public class DialogCityChange extends DialogFragment {

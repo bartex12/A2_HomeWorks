@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.geekbrains.city_weather.MainActivity;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.singltones.EventBus;
