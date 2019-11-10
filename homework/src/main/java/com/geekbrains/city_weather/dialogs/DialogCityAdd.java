@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.geekbrains.city_weather.MainActivity;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.singltones.EventBus;
@@ -16,6 +18,8 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import static com.geekbrains.city_weather.MainActivity.toUpperCaseForFirstLetter;
 
 public class DialogCityAdd extends DialogFragment {
     public DialogCityAdd() {
@@ -30,6 +34,8 @@ public class DialogCityAdd extends DialogFragment {
         LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_choose_city, null);
         final EditText etCity = view.findViewById(R.id.editTextCity);
+        //почему то это не работает, пришлось сделать отдельную функцию toUpperCaseForFirstLetter()
+        etCity.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         final Button buttonOk = view.findViewById(R.id.buttonOk);
         etCity.requestFocus();
         etCity.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -41,7 +47,7 @@ public class DialogCityAdd extends DialogFragment {
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String city = etCity.getText().toString();
+                String city = toUpperCaseForFirstLetter(etCity.getText().toString());
                 if (city.trim().isEmpty()) {
                     Snackbar.make(v.getRootView(),
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
@@ -55,4 +61,6 @@ public class DialogCityAdd extends DialogFragment {
         });
         return builder.create();
     }
+
+
 }

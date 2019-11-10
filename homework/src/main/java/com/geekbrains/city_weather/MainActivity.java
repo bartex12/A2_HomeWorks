@@ -1,5 +1,6 @@
 package com.geekbrains.city_weather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -23,9 +24,11 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -74,11 +77,16 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         Log.d(TAG,"MainActivity onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"MainActivity onDestroy");
         //если пользовательский список. запоминаем в Preferences
         if (typeOfCityList == 3){
-            SharedPreferences defaultPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            saveLastMarkedList(defaultPrefs);
+            saveLastMarkedList(this, LAST_LIST );
         }
     }
 
@@ -172,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements
         Set<String> hs = PreferenceManager.getDefaultSharedPreferences(this)
                 .getStringSet(LAST_LIST, hsDefault);
         ArrayList<String> cityMarked = new ArrayList<>(hs);
+        Collections.sort(cityMarked);
         Log.d(TAG,"MainActivity initWithUserList cityMarked.size() = "+cityMarked.size());
        //если не первая загрузка, то очищаем список и делаем CityListLab=null
         // чтобы поменять список в синглтоне
@@ -225,14 +234,16 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
     }
 
-    private void saveLastMarkedList(SharedPreferences preferences) {
+    private void saveLastMarkedList(Context context, String key) {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
         Log.d(TAG,"MainActivity saveLastMarkedList");
         SharedPreferences.Editor editor = preferences.edit();
         ArrayList<String> markedList = CityListLab.getCitysList();
         Log.d(TAG,"MainActivity saveLastMarkedList markedList.size() = " + markedList.size());
         Set<String> set = new HashSet<>();
         set.addAll(markedList);
-        editor.putStringSet(LAST_LIST, set);
+        editor.putStringSet(key, set);
         Log.d(TAG,"MainActivity saveLastMarkedList set.size() = " + set.size());
         editor.apply();
     }
@@ -355,5 +366,19 @@ public class MainActivity extends AppCompatActivity implements
         ft.replace(container_id, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
+    }
+
+    //замена первых символов в словах на заглавные буквы
+    //https://ru.stackoverflow.com/questions/612500/Сделать-заглавным-первый-символ-в-каждом-слове
+    public static String toUpperCaseForFirstLetter(String text) {
+        StringBuilder builder = new StringBuilder(text);
+        //выставляем первый символ заглавным, если это буква
+        if (Character.isAlphabetic(text.codePointAt(0)))
+            builder.setCharAt(0, Character.toUpperCase(text.charAt(0)));
+        //крутимся в цикле, и меняем буквы, перед которыми пробел на заглавные
+        for (int i = 1; i < text.length(); i++)
+            if (Character.isAlphabetic(text.charAt(i)) && Character.isSpaceChar(text.charAt(i - 1)))
+                builder.setCharAt(i, Character.toUpperCase(text.charAt(i)));
+        return builder.toString();
     }
 }

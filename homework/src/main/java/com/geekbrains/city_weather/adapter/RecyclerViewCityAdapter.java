@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,8 +41,10 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     }
 
     public void addElement(String city) {
+        Log.d(TAG, "RecyclerViewCityAdapter addElement");
         if (isNotCityInList(city)){
             data.add(city);
+            Collections.sort(data);
             notifyDataSetChanged();
         }else {
             Toast.makeText(context, context.getResources()
@@ -50,11 +54,9 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
 
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
-        Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         if (data.size() > 0) {
             data.remove(posItem);
             notifyDataSetChanged();
-            Log.d(TAG, "RecyclerViewCityAdapter removeElement size" + CityListLab.getCitysList().size());
         }
     }
 

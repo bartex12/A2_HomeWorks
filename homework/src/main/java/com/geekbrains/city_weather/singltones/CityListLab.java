@@ -1,6 +1,7 @@
 package com.geekbrains.city_weather.singltones;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class CityListLab {
 
@@ -29,6 +30,7 @@ public class CityListLab {
     public static void addCity(String city){
         if (isNotCityInList(city)){
             cityMarked.add(city);
+            Collections.sort(cityMarked);
         }
     }
 
