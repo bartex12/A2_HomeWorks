@@ -3,9 +3,6 @@ package com.geekbrains.city_weather.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.geekbrains.city_weather.R;
 
 import java.io.IOException;
 import java.util.Objects;
