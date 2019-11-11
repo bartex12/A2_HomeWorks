@@ -76,17 +76,17 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         Log.d(TAG,"MainActivity onStop");
-
+        //если пользовательский список. запоминаем в Preferences
+        if (typeOfCityList == 3){
+            saveLastMarkedList(this, LAST_LIST );
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG,"MainActivity onDestroy");
-        //если пользовательский список. запоминаем в Preferences
-        if (typeOfCityList == 3){
-            saveLastMarkedList(this, LAST_LIST );
-        }
+       //сохранение списка делаем в onStop - при нажатии на среднюю кнопку телефона onStop->onResume
     }
 
     @Override
