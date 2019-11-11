@@ -46,14 +46,15 @@ public class DialogCityAdd extends DialogFragment {
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String city = toUpperCaseForFirstLetter(etCity.getText().toString());
+                String city =  etCity.getText().toString();
                 if (city.trim().isEmpty()) {
                     Snackbar.make(v.getRootView(),
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
                             Snackbar.LENGTH_SHORT).show();
                 } else {
+                    String newCity = toUpperCaseForFirstLetter(city);
                     //пушим ивент добавления города и ловим city во фрагменте ChooseCityFrag
-                    EventBus.getBus().post(new AddItemEvent(city));
+                    EventBus.getBus().post(new AddItemEvent(newCity));
                     Objects.requireNonNull(getDialog()).dismiss();  //закрывает только диалог
                 }
             }

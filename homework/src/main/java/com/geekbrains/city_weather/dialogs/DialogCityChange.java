@@ -52,14 +52,15 @@ public class DialogCityChange extends DialogFragment {
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String city = toUpperCaseForFirstLetter(etCity.getText().toString());
+                String city =  etCity.getText().toString();
                 if (city.trim().isEmpty()) {
                     Snackbar.make(v.getRootView(),
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
                             Snackbar.LENGTH_SHORT).show();
                 } else {
+                    String newCity = toUpperCaseForFirstLetter(city);
                     //пушим ивент изменения города и ловим city во фрагменте ChooseCityFrag
-                    EventBus.getBus().post(new ChangeItemEvent(city));
+                    EventBus.getBus().post(new ChangeItemEvent(newCity));
                     Objects.requireNonNull(getDialog()).dismiss();  //закрывает только диалог
                 }
             }
