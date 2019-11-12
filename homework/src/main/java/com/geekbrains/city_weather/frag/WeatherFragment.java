@@ -19,9 +19,12 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
+import com.geekbrains.city_weather.database.DataWeather;
+import com.geekbrains.city_weather.events.GetWeatherEvent;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
+import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -81,7 +84,7 @@ public class WeatherFragment extends Fragment {
     private String[] iconArray = new String[5];
     private ImageView imageView;
 
-    //когда серви с BackgroundWeatherService отправляет уведомление о завершении
+    //когда сервис BackgroundWeatherService отправляет уведомление о завершении
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
@@ -206,15 +209,21 @@ public class WeatherFragment extends Fragment {
 
         try {
             setPlaceName(modelWeather.name, modelWeather.sys.country);
-            setUpdatedText(modelWeather.dt);
+            String lastUpdate = setUpdatedText(modelWeather.dt);
             setDescription(modelWeather.weather[0].description);
-            setWind(modelWeather.wind.speed);
-            setPressure(modelWeather.main.pressure);
-            setCurrentTemp(modelWeather.main.temp);
+            String windSpeed = setWind(modelWeather.wind.speed);
+            String pressure = setPressure(modelWeather.main.pressure);
+            String temperature = setCurrentTemp(modelWeather.main.temp);
 
             loadImageWithPicasso(modelWeather.weather[0].id,
                     modelWeather.sys.sunrise * 1000,
                     modelWeather.sys.sunset * 1000);
+
+            //посылаем ивент с данными класса погоды в ChooseCityFrag
+            EventBus.getBus().post(new GetWeatherEvent(new DataWeather(modelWeather.name,
+                    modelWeather.sys.country,lastUpdate, modelWeather.weather[0].description,
+                    windSpeed, pressure, temperature, 1, 1 )));
+            Log.e(TAG, "послан ивент GetWeatherEvent");
 
         } catch (Exception exc) {
             exc.printStackTrace();
@@ -317,35 +326,39 @@ public class WeatherFragment extends Fragment {
         cityTextView.setText(name + ", " + country);
     }
 
-    private void setUpdatedText(long dt) {
+    private String setUpdatedText(long dt) {
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
         String updateOn = dateFormat.format(new Date(dt * 1000));
         String updatedText = Objects.requireNonNull(getActivity()).getResources()
                 .getString(R.string.lastUpdate) + updateOn;
         textViewLastUpdate.setText(updatedText);
+        return updatedText;
     }
 
     private void setDescription(String description){
         textViewWhether.setText(description);
     }
 
-    private void setWind(float wind){
+    private String setWind(float wind){
         String windSpeed = Objects.requireNonNull(getActivity()).getString(R.string.windSpeed);
         String ms = getActivity().getString(R.string.ms);
         String windText = windSpeed + " " + wind + " " + ms;
         textViewWind.setText(windText);
+        return windText;
     }
 
-    private void setPressure(float pressure) {
+    private String setPressure(float pressure) {
         String press = Objects.requireNonNull(getActivity()).getString(R.string.press);
         String hPa = getActivity().getString(R.string.hPa);
         String pressureText = press + " " + pressure + " " + hPa;
         textViewPressure.setText(pressureText);
+        return pressureText;
     }
 
-    private void setCurrentTemp(float temper){
+    private String setCurrentTemp(float temper){
         String currentText = String.format(Locale.getDefault(), "%.1f",temper) + "\u2103";
         textViewTemper.setText(currentText);
+        return currentText;
     }
 
     private String[] getIconsArray(int[] actualId) {
@@ -485,6 +498,8 @@ public class WeatherFragment extends Fragment {
                             WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT);
+                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelWeather =" +
+                                    modelWeather);
                             //обрабатываем данные и выводим на экран
                             renderWeather(modelWeather);
 

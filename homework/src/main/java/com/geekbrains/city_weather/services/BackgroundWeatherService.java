@@ -40,9 +40,8 @@ public class BackgroundWeatherService extends IntentService {
 
         //получаем текущий город из интента
         final String currentCity = Objects.requireNonNull(intent).getStringExtra(CURRENT_CITY);
-        // создаём интент широковещательного сообщения с фильтром
+        // создаём интент широковещательного сообщения с фильтром и ловим его в WeatherFragment
         Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
-
         //делаем запрос о погоде и получаем ответ от сервера
         //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<WeatherRequestRestModel> response = getWeatherResponse(currentCity);

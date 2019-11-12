@@ -7,18 +7,20 @@ public class DataWeather {
     private String country;
     private String lastUpdate;
     private String description;
-    private float windSpeed;
-    private float pressure;
-    private float temperature;
+    private String windSpeed;
+    private String pressure;
+    private String temperature;
     private int iconCod;
+    private int isLastCity;
 
     public DataWeather( ){
         //пустой конструктор
     }
 
-    //основной конструктор
+    //полный конструктор
     public DataWeather(long _id, String cityName, String country, String lastUpdate,
-                    String description, float windSpeed, float pressure, float temperature, int iconCod){
+                    String description, String windSpeed, String pressure,
+                       String temperature, int iconCod, int isLastCity){
         this._id = _id;
         this.cityName = cityName;
         this.country = country;
@@ -28,11 +30,13 @@ public class DataWeather {
         this.pressure = pressure;
         this.temperature = temperature;
         this.iconCod = iconCod;
+        this.isLastCity = isLastCity;
     }
 
-    //спец конструктор
+    // конструктор без id
     public DataWeather(String cityName, String country, String lastUpdate,
-                       String description, float windSpeed, float pressure, float temperature, int iconCod){
+                       String description, String windSpeed, String pressure,
+                       String temperature, int iconCod, int isLastCity){
         this.cityName = cityName;
         this.country = country;
         this.lastUpdate = lastUpdate;
@@ -41,11 +45,12 @@ public class DataWeather {
         this.pressure = pressure;
         this.temperature = temperature;
         this.iconCod = iconCod;
+        this.isLastCity = isLastCity;
     }
 
     public DataWeather getDataWeatherDefault(){
-        return  new DataWeather("***", "***", "***",
-                "***", 999,0, 999, 999);
+        return  new DataWeather("Saint Petersburg", "RU", "***",
+                "***", "***","***", "***", 999, 0);
     }
 
     public long get_id() {
@@ -88,27 +93,27 @@ public class DataWeather {
         this.description = description;
     }
 
-    public float getWindSpeed() {
+    public String getWindSpeed() {
         return windSpeed;
     }
 
-    public void setWindSpeed(float windSpeed) {
+    public void setWindSpeed(String windSpeed) {
         this.windSpeed = windSpeed;
     }
 
-    public float getPressure() {
+    public String getPressure() {
         return pressure;
     }
 
-    public void setPressure(float pressure) {
+    public void setPressure(String pressure) {
         this.pressure = pressure;
     }
 
-    public float getTemperature() {
+    public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
+    public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
@@ -118,5 +123,13 @@ public class DataWeather {
 
     public void setIconCod(int iconCod) {
         this.iconCod = iconCod;
+    }
+
+    public int getLastCity() {
+        return isLastCity;
+    }
+
+    public void setLastCity(int lastCity) {
+        isLastCity = lastCity;
     }
 }

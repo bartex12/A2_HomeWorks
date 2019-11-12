@@ -20,9 +20,11 @@ import android.widget.TextView;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
+import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
+import com.geekbrains.city_weather.events.GetWeatherEvent;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import com.geekbrains.city_weather.singltones.EventBus;
@@ -196,6 +198,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     public void initDB(){
         database = new WeatherDataBaseHelper(getActivity()).getWritableDatabase();
+
     }
 
 
@@ -242,7 +245,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                     }
                 };
         // вызываем конструктор адаптера, передаём список
-        recyclerViewCityAdapter = new RecyclerViewCityAdapter(CityListLab.getCitysList());
+        recyclerViewCityAdapter = new RecyclerViewCityAdapter(database);
         // передаём ссылку на интерфейс чтобы отработать реакцию на выбор города в списке
         recyclerViewCityAdapter.setOnCityClickListener(onCityClickListener);
         recyclerViewMarked.setLayoutManager(layoutManager);
@@ -328,7 +331,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
         //добавляем город в список синглтона
-        CityListLab.addCity(event.city);
+        //CityListLab.addCity(event.city);
         //устанавливаем город текущим городом
         CityLab.setCurrentCity(event.city);
         // показываем погоду в городе с учётом ориентации экрана
@@ -340,10 +343,19 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Subscribe
     @SuppressWarnings("unused")
     public void onAddEvent(AddItemEvent event) {
+        Log.d(TAG, "ChooseCityFrag onAddEvent event.city =" + event.city);
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
         //добавляем город в список синглтона
         CityListLab.addCity(event.city);
+    }
+
+    //реакция на событие AddItemEvent Событие создаётся в DialogCityAdd
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onGetWeatherEvent(GetWeatherEvent event) {
+        Log.d(TAG, "ChooseCityFrag onGetWeatherEvent event.dataWeather =" + event.dataWeather);
+        WeatherTable.addCityWeather(event.dataWeather, database);
     }
 
 }

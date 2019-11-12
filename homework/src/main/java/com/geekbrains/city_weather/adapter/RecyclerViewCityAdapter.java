@@ -2,6 +2,8 @@ package com.geekbrains.city_weather.adapter;
 
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
+import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,9 +20,12 @@ import java.util.Collections;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
+
 public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCityAdapter.ViewHolder>{
     private static final String TAG = "33333";
     private ArrayList<String> data;
+    private SQLiteDatabase database;
     private OnCityClickListener onCityClickListener;
     private int posItem = 0;
     private Context context;
@@ -28,12 +34,18 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         void onCityClick(String city);
     }
 
-    public RecyclerViewCityAdapter(ArrayList<String> data) {
+    public RecyclerViewCityAdapter(SQLiteDatabase database) {
+        this.database = database;
+        data = WeatherTable.getAllCitys(database);
+
         if (data != null) {
-            this.data = data;
+            if (data.size() == 0){
+                data.add(DEFAULT_CITY);
+            }
         }else{
             this.data = new ArrayList<>();
         }
+        Log.d(TAG, "RecyclerViewCityAdapter конструктор data = " + data);
     }
 
     public void setOnCityClickListener(OnCityClickListener onCityClickListener){

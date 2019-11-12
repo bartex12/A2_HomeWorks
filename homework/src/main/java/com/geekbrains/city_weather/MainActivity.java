@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"MainActivity onResume");
-        // готовим
         initSingletons();
         doOrientationBasedActions();
     }
@@ -129,70 +128,8 @@ public class MainActivity extends AppCompatActivity implements
         //это последний запомненный город из Preferences
         String cityCurrent = prefSetting.getString(LAST_CITY,
                 getResources().getString(R.string.saint_petersburg));
-        //это тип первоначального списка на экране
-        typeOfCityList =  Integer.parseInt(prefSetting.getString("typeOfCitysList", "3"));
-        Log.d(TAG,"MainActivity initSingletons typeOfCityList = " + typeOfCityList) ;
-        //инициализируем синглтон города
-        initCitySinglton(cityCurrent);
-        //инициализируем синглтон списка
-        initSingltonList(cityCurrent, typeOfCityList);
-    }
-
-    private void initCitySinglton(String cityCurrent) {
-        Log.d(TAG,"MainActivity initCitySinglton");
         //инициализируем значение  синглтона CityLab последним городом из Preferences
         CityLab.getInstance(cityCurrent);
-    }
-
-    private void initSingltonList(String cityCurrent, int typeOfCityList) {
-        Log.d(TAG,"MainActivity initSingltonList");
-        if (typeOfCityList == 1){
-            initWithFixList(cityCurrent, R.array.cities_of_the_world);
-        }else if (typeOfCityList == 2){
-            initWithFixList(cityCurrent, R.array.cities_of_the_russia);
-        }else if (typeOfCityList == 3){
-            initWithUserList(cityCurrent);
-        }
-    }
-
-    private void initWithFixList(String cityCurrent, int stringArray) {
-        Log.d(TAG,"MainActivity initWithFixList");
-        String[] citys = getResources().getStringArray(stringArray);
-        ArrayList<String> cityMarked = new ArrayList(Arrays.asList(citys));
-        //если не первая загрузка, то очищаем список и делаем CityListLab=null
-        // чтобы поменять список в синглтоне
-        if (CityListLab.getCitysList()!=null){
-            CityListLab.clearCityListLab();
-        }
-        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
-        CityListLab.getInstance(cityMarked);
-        //добавляем в список последний запомненный город, если его там нет
-        CityListLab.addCity(cityCurrent);
-        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
-    }
-
-    private void initWithUserList(String cityCurrent) {
-        Log.d(TAG,"MainActivity initWithUserList");
-        String cityDefault = getResources().getString(R.string.saint_petersburg);
-        HashSet<String> hsDefault = new HashSet<>();
-        hsDefault.add(cityDefault);
-        Set<String> hs = PreferenceManager.getDefaultSharedPreferences(this)
-                .getStringSet(LAST_LIST, hsDefault);
-        ArrayList<String> cityMarked = new ArrayList<>(hs);
-        Collections.sort(cityMarked);
-        Log.d(TAG,"MainActivity initWithUserList cityMarked.size() = "+cityMarked.size());
-       //если не первая загрузка, то очищаем список и делаем CityListLab=null
-        // чтобы поменять список в синглтоне
-        if (CityListLab.getCitysList()!=null){
-            CityListLab.clearCityListLab();
-        }
-        //инициализируем список синглтона CityListLab новым списком cityMarked
-        CityListLab.getInstance(cityMarked);
-        //добавляем в список последний запомненный город, если его там нет
-        CityListLab.addCity(cityCurrent);
-        //добавляем город по умолчанию. если его там нет
-        CityListLab.addCityInPosition(0, cityDefault);
-        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
     }
 
     //действия с фрагментами в зависимости от ориентации телефона
