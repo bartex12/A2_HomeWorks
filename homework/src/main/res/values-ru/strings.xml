@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ms">м/с</string>
+    <string name="press">Давление</string>
+    <string name="windSpeed">Скорость ветра</string>
+    <string name="about_me">Приложение сделано на расслабоне</string>
+    <string name="ok">OK</string>
+    <string name="NotShow">Не показывать давление и скорость ветра</string>
+    <string name="show">Показать давление и скорость ветра</string>
+    <string name="about">О приложении</string>
+    <string name="settings">Настройки</string>
+    <string name="addParam">Дополнительные параметры</string>
+    <string name="show_city">Показать город</string>
+    <string name="place_not_found">Место не обнаружено. Город удалён</string>
+    <string name="input_city">Введите  название  города</string>
+    <string name="connecting">Подключение к серверу…</string>
+    <string name="hPa">гПа</string>
+    <string name="lastUpdate">Обновлено: </string>
+    <string name="inputCitiName">Введите название города</string>
+    <string name="add_city">Добавить город</string>
+    <string name="add">Добавить</string>
+    <string name="cancel">Назад</string>
+    <string name="clear">Очистить список</string>
+    <string name="navigation_drawer_close">Закрыть панель навигации</string>
+    <string name="navigation_drawer_open">Открыть панель навигации</string>
+    <string name="help">Справка</string>
+    <string name="willBeHelp">Здесь будет справка</string>
+    <string name="aboutAppMessage">Погодное приложение GeekBrains Андроид продвинутый уровень</string>
+    <string name="saint_petersburg">Saint Petersburg</string>
+    <string name="addision">Дополнительно</string>
+    <string name="share">Поделиться</string>
+    <string name="send">Оценить</string>
+    <string name="willBeLink">Здесь будет ссылка на приложение в PlayMarket</string>
+    <string name="willBeEstimate">Здесь будет ссылка на страницу приложения в PlayMarket</string>
+    <string name="weather_application">Погодное приложение</string>
+    <string name="geekbrains">GeekBrains Андроид-продвинутый уровень</string>
+    <string name="addParamTempHumid">Данные с сенсоров</string>
+    <string name="showTempHumid">Показывать температуру и влажность</string>
+    <string name="NotShowTempHumid">Не показывать температуру и влажность</string>
+    <string name="will_be_fine">ВСЁ БУДЕТ ХОРОШО</string>
+    <string name="No_temperature_sensor">Датчик температуры отсутствует</string>
+    <string name="No_humidity_sensor">Датчик влажности отсутствует</string>
+    <string name="temperature">Температура</string>
+    <string name="Relative_humidity">Отн. влажность</string>
+    <string name="forExit">Для выхода нажмите  НАЗАД  ещё раз</string>
+    <string name="app_name">Погода</string>
+    <string name="txt">текст</string>
+    <string name="is_in_list">Такой город уже есть в списке</string>
+    <string name="remove_city">Удалить город</string>
+    <string name="tlf_problems">Возникли проблемы с отправкой запроса. Возможно требуется перезагрузка телефона</string>
+
+</resources>
