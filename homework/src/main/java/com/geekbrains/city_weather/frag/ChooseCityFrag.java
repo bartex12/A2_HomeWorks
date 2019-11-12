@@ -3,6 +3,7 @@ package com.geekbrains.city_weather.frag;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
+import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
@@ -54,6 +56,9 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private TextView textTempHere;
     private TextView textHumidity;
 
+    SQLiteDatabase database;
+
+
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
     }
@@ -70,6 +75,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "ChooseCityFrag onViewCreated");
 
+        initDB();
         initSensors();
         initViews(view);
         initRecycledView();
@@ -187,6 +193,11 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         handleMenuItemClick(item);
         return super.onContextItemSelected(item);
     }
+
+    public void initDB(){
+        database = new WeatherDataBaseHelper(getActivity()).getWritableDatabase();
+    }
+
 
     private void initSensors() {
         sensorManager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
