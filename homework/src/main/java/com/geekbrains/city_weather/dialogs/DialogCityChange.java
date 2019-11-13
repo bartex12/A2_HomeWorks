@@ -58,6 +58,7 @@ public class DialogCityChange extends DialogFragment {
                             Objects.requireNonNull(getActivity()).getString(R.string.inputCitiName),
                             Snackbar.LENGTH_SHORT).show();
                 } else {
+                    //делаем первую букву заглавной
                     String newCity = toUpperCaseForFirstLetter(city);
                     //пушим ивент изменения города и ловим city во фрагменте ChooseCityFrag
                     EventBus.getBus().post(new ChangeItemEvent(newCity));

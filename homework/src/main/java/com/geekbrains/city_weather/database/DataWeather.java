@@ -10,8 +10,8 @@ public class DataWeather {
     private String windSpeed;
     private String pressure;
     private String temperature;
-    private int iconCod;
-    private int isLastCity;
+    private String iconCod;
+    private long updateSec;
 
     public DataWeather( ){
         //пустой конструктор
@@ -20,7 +20,7 @@ public class DataWeather {
     //полный конструктор
     public DataWeather(long _id, String cityName, String country, String lastUpdate,
                     String description, String windSpeed, String pressure,
-                       String temperature, int iconCod, int isLastCity){
+                       String temperature, String iconCod, long updateSec){
         this._id = _id;
         this.cityName = cityName;
         this.country = country;
@@ -30,13 +30,13 @@ public class DataWeather {
         this.pressure = pressure;
         this.temperature = temperature;
         this.iconCod = iconCod;
-        this.isLastCity = isLastCity;
+        this.updateSec = updateSec;
     }
 
     // конструктор без id
     public DataWeather(String cityName, String country, String lastUpdate,
                        String description, String windSpeed, String pressure,
-                       String temperature, int iconCod, int isLastCity){
+                       String temperature, String iconCod, long updateSec){
         this.cityName = cityName;
         this.country = country;
         this.lastUpdate = lastUpdate;
@@ -45,12 +45,12 @@ public class DataWeather {
         this.pressure = pressure;
         this.temperature = temperature;
         this.iconCod = iconCod;
-        this.isLastCity = isLastCity;
+        this.updateSec = updateSec;
     }
 
     public DataWeather getDataWeatherDefault(){
         return  new DataWeather("Saint Petersburg", "RU", "***",
-                "***", "***","***", "***", 999, 0);
+                "***", "***","***", "***", "***", 0);
     }
 
     public long get_id() {
@@ -117,19 +117,19 @@ public class DataWeather {
         this.temperature = temperature;
     }
 
-    public int getIconCod() {
+    public String getIconCod() {
         return iconCod;
     }
 
-    public void setIconCod(int iconCod) {
+    public void setIconCod(String iconCod) {
         this.iconCod = iconCod;
     }
 
-    public int getLastCity() {
-        return isLastCity;
+    public long getUpdateSec() {
+        return updateSec;
     }
 
-    public void setLastCity(int lastCity) {
-        isLastCity = lastCity;
+    public void setUpdateSec(long updateSec) {
+        this.updateSec = updateSec;
     }
 }

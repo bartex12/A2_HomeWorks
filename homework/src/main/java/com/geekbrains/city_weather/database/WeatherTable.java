@@ -22,7 +22,7 @@ public class WeatherTable {
     private final static String COLUMN_PRESSURE = "pressure";
     private final static String COLUMN_TEMPERATURE = "temperature";
     private final static String COLUMN_ICON = "iconCod";
-    private final static String COLUMN_IS_LAST_CITY = "isLastCity";
+    private final static String COLUMN_UPDATE_SEC = "updateSec";
 
     static void createTable(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE " + TABLE_NAME + " ("
@@ -34,8 +34,8 @@ public class WeatherTable {
                 + COLUMN_WIND_SPEED + " TEXT NOT NULL,"
                 + COLUMN_PRESSURE + " TEXT NOT NULL,"
                 + COLUMN_TEMPERATURE + " TEXT NOT NULL,"
-                + COLUMN_ICON + " INTEGER NOT NULL,"
-                + COLUMN_IS_LAST_CITY + " INTEGER NOT NULL DEFAULT 0);");
+                + COLUMN_ICON + " TEXT NOT NULL,"
+                + COLUMN_UPDATE_SEC + " REAL NOT NULL DEFAULT 0);");
     }
 
     static void onUpgrade(SQLiteDatabase database) {
@@ -54,13 +54,14 @@ public class WeatherTable {
         values.put(COLUMN_PRESSURE, dataWeather.getPressure());
         values.put(COLUMN_TEMPERATURE, dataWeather.getTemperature());
         values.put(COLUMN_ICON, dataWeather.getIconCod());
-        values.put(COLUMN_IS_LAST_CITY, dataWeather.getIconCod());
+        values.put(COLUMN_UPDATE_SEC, dataWeather.getUpdateSec());
 
         database.insert(TABLE_NAME, null, values);
     }
 
-    static void replaceCityWeather(String cityToEdit,
+    public static void replaceCityWeather(String cityToEdit,
                                           DataWeather newDataWeather, SQLiteDatabase database) {
+        Log.d(TAG, "WeatherTable replaceCityWeather");
         ContentValues values = new ContentValues();
 
         values.put(COLUMN_CITY, newDataWeather.getCityName());
@@ -71,23 +72,55 @@ public class WeatherTable {
         values.put(COLUMN_PRESSURE, newDataWeather.getPressure());
         values.put(COLUMN_TEMPERATURE, newDataWeather.getTemperature());
         values.put(COLUMN_ICON, newDataWeather.getIconCod());
-        values.put(COLUMN_IS_LAST_CITY, newDataWeather.getLastCity());
+        values.put(COLUMN_UPDATE_SEC, newDataWeather.getUpdateSec());
 
 
-        database.update(TABLE_NAME, values, COLUMN_CITY + "=" + cityToEdit, null);
+        int updateNumber = database.update(TABLE_NAME, values,
+                COLUMN_CITY + " = ? ",
+                            new String[]{cityToEdit});
+
+        Log.d(TAG, "WeatherTable replaceCityWeather updateNumber = " + updateNumber);
+        Log.d(TAG, "WeatherTable replaceCityWeather long = "
+                + getLastUpdate(database, cityToEdit));
     }
 
-    static void deleteCityWeather(String cityToDelete, SQLiteDatabase database) {
+    public static void deleteCityWeather(String cityToDelete, SQLiteDatabase database) {
         database.delete(TABLE_NAME, COLUMN_CITY + " = " + cityToDelete, null);
     }
 
-    static void deleteAllDataFromCityWeather(SQLiteDatabase database) {
+    public static void deleteAllDataFromCityWeather(SQLiteDatabase database) {
         database.delete(TABLE_NAME, null, null);
     }
 
+    //******************************  begin getLastUpdate  *********************************************
+    //метод для выбора из базы данных времени последнего обновления погоды для города city
+    public static long getLastUpdate(SQLiteDatabase database, String city) {
+        Log.d(TAG, "WeatherTable getLastUpdate");
+        String dataQuery = "SELECT " + COLUMN_UPDATE_SEC
+                         + " FROM " + TABLE_NAME
+                         +  " WHERE " + COLUMN_CITY + " = ? " ;
+        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
+        return getLastUpdateFromCursor(cursor);
+    }
+
+    private static long getLastUpdateFromCursor(Cursor cursor){
+        long updateSec = -1;
+
+        if(cursor != null && cursor.moveToFirst()) {
+            updateSec = cursor.getLong(cursor.getColumnIndex(COLUMN_UPDATE_SEC));
+            Log.d(TAG, "WeatherTable getLastUpdateFromCursor updateSec = " + updateSec);
+        }
+        try { cursor.close(); } catch (Exception ignored) {}
+        return updateSec;
+    }
+    //************************************* end  getLastUpdate  ************************************
+
+    //=================================== begin getAllCitys  ================================
     //метод выбора списка городов
-    public static ArrayList<String> getAllCitys(SQLiteDatabase database) {
-        String dataQuery = "SELECT " + COLUMN_CITY + " FROM " + TABLE_NAME;
+     public static ArrayList<String> getAllCitys(SQLiteDatabase database) {
+         Log.d(TAG, "WeatherTable getAllCitys");
+        String dataQuery = "SELECT " + COLUMN_CITY
+                        + " FROM " + TABLE_NAME;
         Cursor cursor = database.rawQuery(dataQuery, null);
         return getCityFromCursor(cursor);
     }
@@ -107,12 +140,15 @@ public class WeatherTable {
         try { cursor.close(); } catch (Exception ignored) {}
         return cityList == null ? new ArrayList<String>(0) : cityList;
     }
+    //=================================== end getAllCitys  ================================
 
+    //++++++++++++++++++++++++++++++++++ begin getOneCityWeatherLine +++++++++++++++++++++++++++
     //этот метод для вывода погоды по заданному городу city
-    static DataWeather getOneCityWeatherLine(SQLiteDatabase database, String city) {
-
-        String dataQuery = "SELECT  * FROM " + TABLE_NAME +  " WHERE " + COLUMN_CITY + " = " + city;
-        Cursor cursor = database.rawQuery(dataQuery, null);
+    public static DataWeather getOneCityWeatherLine(SQLiteDatabase database, String city) {
+        Log.d(TAG, "WeatherTable getOneCityWeatherLine");
+        String dataQuery = "SELECT  * FROM " + TABLE_NAME
+                        +  " WHERE " + COLUMN_CITY + " = ? " ;
+        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
         return getCityWeatherFromWeatherCursor(cursor);
     }
 
@@ -140,16 +176,17 @@ public class WeatherTable {
         String windSpeed = cursor.getString(cursor.getColumnIndex(COLUMN_WIND_SPEED));
         String pressure = cursor.getString(cursor.getColumnIndex(COLUMN_PRESSURE));
         String temperature = cursor.getString(cursor.getColumnIndex(COLUMN_TEMPERATURE));
-        int iconCod = cursor.getInt(cursor.getColumnIndex(COLUMN_ICON));
-        int isLastCity = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_LAST_CITY));
+        String iconCod = cursor.getString(cursor.getColumnIndex(COLUMN_ICON));
+        long updateSec = cursor.getLong(cursor.getColumnIndex(COLUMN_UPDATE_SEC));
 
         //создаём экземпляр класса DataWeather в конструкторе
         return new DataWeather(id, cityName, country,
-                lastUpdate, description, windSpeed,pressure,temperature,iconCod,isLastCity);
+                lastUpdate, description, windSpeed,pressure,temperature,iconCod,updateSec);
     }
+    //++++++++++++++++++++++++++++++++++ end getOneCityWeatherLine +++++++++++++++++++++++++++
 
     //этот метод возможно пригодится для вывода статистики  по городам
-    static List<DataWeather> getAllCityWeatherLines(SQLiteDatabase database) {
+    public static List<DataWeather> getAllCityWeatherLines(SQLiteDatabase database) {
 
         String dataQuery = "SELECT  * FROM " + TABLE_NAME;
         Cursor cursor = database.rawQuery(dataQuery, null);
@@ -158,6 +195,7 @@ public class WeatherTable {
 
     //получаем список объектов DataWeather
     private static List<DataWeather> getResultFromWeatherCursor(Cursor cursor) {
+        Log.d(TAG, "WeatherTable getResultFromWeatherCursor");
         //список объектов с погодными данными DataWeather
         List<DataWeather> listOfDataWeather = null;
 

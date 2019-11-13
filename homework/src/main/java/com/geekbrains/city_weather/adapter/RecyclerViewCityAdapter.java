@@ -45,7 +45,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         }else{
             this.data = new ArrayList<>();
         }
-        Log.d(TAG, "RecyclerViewCityAdapter конструктор data = " + data);
+        Log.d(TAG, "RecyclerViewCityAdapter - /конструктор/ data.size() = " + data.size());
     }
 
     public void setOnCityClickListener(OnCityClickListener onCityClickListener){

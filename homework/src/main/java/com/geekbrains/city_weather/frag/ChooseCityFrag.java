@@ -20,11 +20,9 @@ import android.widget.TextView;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
-import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
-import com.geekbrains.city_weather.events.GetWeatherEvent;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
 import com.geekbrains.city_weather.singltones.EventBus;
@@ -161,6 +159,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onDestroy() {
         Log.d(TAG, "ChooseCityFrag onDestroy");
         super.onDestroy();
+
     }
 
     //********************************** Жесть **************************************************
@@ -198,9 +197,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     public void initDB(){
         database = new WeatherDataBaseHelper(getActivity()).getWritableDatabase();
-
     }
-
 
     private void initSensors() {
         sensorManager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
@@ -244,9 +241,10 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                         showCityWhetherWithOrientation();
                     }
                 };
-        // вызываем конструктор адаптера, передаём список
+        // вызываем конструктор адаптера, передаём базу данных
         recyclerViewCityAdapter = new RecyclerViewCityAdapter(database);
         // передаём ссылку на интерфейс чтобы отработать реакцию на выбор города в списке
+        //второй вариант передать ссылку - сделать это в конструкторе адаптера - так было раньше
         recyclerViewCityAdapter.setOnCityClickListener(onCityClickListener);
         recyclerViewMarked.setLayoutManager(layoutManager);
         recyclerViewMarked.setAdapter(recyclerViewCityAdapter);
@@ -328,15 +326,13 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @SuppressWarnings("unused")
     public void onChangeEvent(ChangeItemEvent event) {
         Log.d(TAG, "ChooseCityFrag onChangeEvent event.city =" + event.city);
-        //добавляем город в список адаптера
+        //добавляем город в список адаптера - если город не будет найден, он автоматически
+        // удалится при обновлении списка из базы данных в конструкторе адаптера
         recyclerViewCityAdapter.addElement(event.city);
-        //добавляем город в список синглтона
-        //CityListLab.addCity(event.city);
         //устанавливаем город текущим городом
         CityLab.setCurrentCity(event.city);
         // показываем погоду в городе с учётом ориентации экрана
         showCityWhetherWithOrientation();
-
     }
 
     //реакция на событие AddItemEvent Событие создаётся в DialogCityAdd
@@ -346,17 +342,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         Log.d(TAG, "ChooseCityFrag onAddEvent event.city =" + event.city);
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
-        //добавляем город в список синглтона
-        CityListLab.addCity(event.city);
     }
-
-    //реакция на событие AddItemEvent Событие создаётся в DialogCityAdd
-    @Subscribe
-    @SuppressWarnings("unused")
-    public void onGetWeatherEvent(GetWeatherEvent event) {
-        Log.d(TAG, "ChooseCityFrag onGetWeatherEvent event.dataWeather =" + event.dataWeather);
-        WeatherTable.addCityWeather(event.dataWeather, database);
-    }
-
 }
 

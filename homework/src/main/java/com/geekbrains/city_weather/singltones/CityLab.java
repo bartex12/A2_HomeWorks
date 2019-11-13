@@ -1,11 +1,13 @@
 package com.geekbrains.city_weather.singltones;
 
+import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
+
 public class CityLab {
 
     private static String currentCity;
     private static CityLab cityLab;
 
-    //статический метод синглета
+    //статический метод синглтона
     public static CityLab getInstance(String city){
         if (cityLab == null){
             cityLab = new CityLab(city);
@@ -28,6 +30,6 @@ public class CityLab {
     }
 
     public static void setCityDefault() {
-        CityLab.currentCity = "Saint Petersburg";
+        CityLab.currentCity = DEFAULT_CITY;
     }
 }

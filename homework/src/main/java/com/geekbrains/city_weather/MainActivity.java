@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.geekbrains.city_weather.database.DataWeather;
+import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -36,6 +40,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
@@ -51,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout drawer;
     private int typeOfCityList ;
     private boolean doubleBackToExitPressedOnce;
+    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Log.d(TAG,"MainActivity onCreate");
 
+        initDB();
         initFab();
         initPrefs();
         initviews();
@@ -84,8 +91,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //сохранение списка делаем в onStop - при нажатии на среднюю кнопку телефона onStop->onResume
         Log.d(TAG,"MainActivity onDestroy");
-       //сохранение списка делаем в onStop - при нажатии на среднюю кнопку телефона onStop->onResume
+        //закрываем базу данных
+        database.close();
     }
 
     @Override
@@ -119,6 +128,10 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void initDB(){
+        database = new WeatherDataBaseHelper(this).getWritableDatabase();
     }
 
     private void initSingletons() {
@@ -317,4 +330,6 @@ public class MainActivity extends AppCompatActivity implements
                 builder.setCharAt(i, Character.toUpperCase(text.charAt(i)));
         return builder.toString();
     }
+
+
 }
