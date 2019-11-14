@@ -300,6 +300,4 @@ public class MainActivity extends AppCompatActivity implements
                 builder.setCharAt(i, Character.toUpperCase(text.charAt(i)));
         return builder.toString();
     }
-
-
 }
