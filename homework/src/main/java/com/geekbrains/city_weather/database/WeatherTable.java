@@ -84,8 +84,14 @@ public class WeatherTable {
                 + getLastUpdate(database, cityToEdit));
     }
 
-    public static void deleteCityWeather(String cityToDelete, SQLiteDatabase database) {
-        database.delete(TABLE_NAME, COLUMN_CITY + " = " + cityToDelete, null);
+    public static void deleteCityWeatherByCity(String cityToDelete, SQLiteDatabase database) {
+
+        database.delete(TABLE_NAME, COLUMN_CITY + " =? ", new String[]{cityToDelete});
+    }
+
+    public static void deleteCityWeatherById(int id, SQLiteDatabase database) {
+
+        database.delete(TABLE_NAME, COLUMN_ID + " =? ", new String[]{String.valueOf(id)});
     }
 
     public static void deleteAllDataFromCityWeather(SQLiteDatabase database) {

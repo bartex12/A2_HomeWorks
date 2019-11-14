@@ -35,6 +35,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     }
 
     public RecyclerViewCityAdapter(SQLiteDatabase database) {
+
         this.database = database;
         data = WeatherTable.getAllCitys(database);
 
@@ -67,6 +68,8 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {
+            Log.d(TAG, "RecyclerViewCityAdapter removeElement city = " + data.get(posItem));
+            WeatherTable.deleteCityWeatherByCity(data.get(posItem), database);
             data.remove(posItem);
             notifyDataSetChanged();
         }
