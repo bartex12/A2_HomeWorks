@@ -1,6 +1,5 @@
 package com.geekbrains.city_weather;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -12,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
@@ -21,17 +19,10 @@ import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.CityListLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,12 +31,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
-import static com.geekbrains.city_weather.constants.AppConstants.LAST_LIST;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 
@@ -54,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "33333";
     private DrawerLayout drawer;
-    private int typeOfCityList ;
     private boolean doubleBackToExitPressedOnce;
     SQLiteDatabase database;
 
@@ -82,10 +70,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         Log.d(TAG,"MainActivity onStop");
-        //если пользовательский список. запоминаем в Preferences
-        if (typeOfCityList == 3){
-            saveLastMarkedList(this, LAST_LIST );
-        }
     }
 
     @Override
@@ -181,20 +165,6 @@ public class MainActivity extends AppCompatActivity implements
         //устанавливаем из настроек значения по умолчанию для первой загрузки
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
-    }
-
-    private void saveLastMarkedList(Context context, String key) {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(context);
-        Log.d(TAG,"MainActivity saveLastMarkedList");
-        SharedPreferences.Editor editor = preferences.edit();
-        ArrayList<String> markedList = CityListLab.getCitysList();
-        Log.d(TAG,"MainActivity saveLastMarkedList markedList.size() = " + markedList.size());
-        Set<String> set = new HashSet<>();
-        set.addAll(markedList);
-        editor.putStringSet(key, set);
-        Log.d(TAG,"MainActivity saveLastMarkedList set.size() = " + set.size());
-        editor.apply();
     }
 
     private void showMessageDialogFfagment(String message) {

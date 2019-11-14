@@ -24,7 +24,6 @@ import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.CityListLab;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
 
@@ -56,7 +55,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private TextView textTempHere;
     private TextView textHumidity;
 
-    SQLiteDatabase database;
+    private SQLiteDatabase database;
 
 
     public static ChooseCityFrag newInstance() {
@@ -195,7 +194,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         return super.onContextItemSelected(item);
     }
 
-    public void initDB(){
+    private void initDB(){
         database = new WeatherDataBaseHelper(getActivity()).getWritableDatabase();
     }
 

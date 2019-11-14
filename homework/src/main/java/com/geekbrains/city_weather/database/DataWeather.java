@@ -48,88 +48,29 @@ public class DataWeather {
         this.updateSec = updateSec;
     }
 
-    public DataWeather getDataWeatherDefault(){
-        return  new DataWeather("Saint Petersburg", "RU", "***",
-                "***", "***","***", "***", "***", 0);
-    }
-
-    public long get_id() {
-        return _id;
-    }
-
-    public void set_id(long _id) {
-        this._id = _id;
-    }
-
+    public long get_id() {return _id; }
     public String getCityName() {
         return cityName;
     }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
+    public String getCountry() { return country; }
     public String getLastUpdate() {
         return lastUpdate;
     }
-
-    public void setLastUpdate(String lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
     public String getDescription() {
         return description;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getWindSpeed() {
         return windSpeed;
     }
-
-    public void setWindSpeed(String windSpeed) {
-        this.windSpeed = windSpeed;
-    }
-
     public String getPressure() {
         return pressure;
     }
-
-    public void setPressure(String pressure) {
-        this.pressure = pressure;
-    }
-
     public String getTemperature() {
         return temperature;
     }
+    public String getIconCod() {return iconCod; }
+    public long getUpdateSec() {return updateSec; }
 
-    public void setTemperature(String temperature) {
-        this.temperature = temperature;
     }
 
-    public String getIconCod() {
-        return iconCod;
-    }
 
-    public void setIconCod(String iconCod) {
-        this.iconCod = iconCod;
-    }
-
-    public long getUpdateSec() {
-        return updateSec;
-    }
-
-    public void setUpdateSec(long updateSec) {
-        this.updateSec = updateSec;
-    }
-}

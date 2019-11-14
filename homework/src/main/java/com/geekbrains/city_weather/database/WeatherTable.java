@@ -4,9 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class WeatherTable {
 
@@ -89,11 +88,6 @@ public class WeatherTable {
         database.delete(TABLE_NAME, COLUMN_CITY + " =? ", new String[]{cityToDelete});
     }
 
-    public static void deleteCityWeatherById(int id, SQLiteDatabase database) {
-
-        database.delete(TABLE_NAME, COLUMN_ID + " =? ", new String[]{String.valueOf(id)});
-    }
-
     public static void deleteAllDataFromCityWeather(SQLiteDatabase database) {
         database.delete(TABLE_NAME, null, null);
     }
@@ -116,7 +110,7 @@ public class WeatherTable {
             updateSec = cursor.getLong(cursor.getColumnIndex(COLUMN_UPDATE_SEC));
             Log.d(TAG, "WeatherTable getLastUpdateFromCursor updateSec = " + updateSec);
         }
-        try { cursor.close(); } catch (Exception ignored) {}
+        try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
         return updateSec;
     }
     //************************************* end  getLastUpdate  ************************************
@@ -143,7 +137,7 @@ public class WeatherTable {
             } while (cursor.moveToNext());
         }
 
-        try { cursor.close(); } catch (Exception ignored) {}
+        try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
         return cityList == null ? new ArrayList<String>(0) : cityList;
     }
     //=================================== end getAllCitys  ================================
@@ -167,7 +161,7 @@ public class WeatherTable {
             dataWeather = getWeatherDataFromCurcor(cursor);
             Log.d(TAG, "WeatherTable getCityWeatherFromWeatherCursor dataWeather = " + dataWeather);
         }
-        try { cursor.close(); } catch (Exception ignored) {}
+        try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
         return dataWeather;
     }
 
@@ -191,32 +185,5 @@ public class WeatherTable {
     }
     //++++++++++++++++++++++++++++++++++ end getOneCityWeatherLine +++++++++++++++++++++++++++
 
-    //этот метод возможно пригодится для вывода статистики  по городам
-    public static List<DataWeather> getAllCityWeatherLines(SQLiteDatabase database) {
 
-        String dataQuery = "SELECT  * FROM " + TABLE_NAME;
-        Cursor cursor = database.rawQuery(dataQuery, null);
-        return getResultFromWeatherCursor(cursor);
-    }
-
-    //получаем список объектов DataWeather
-    private static List<DataWeather> getResultFromWeatherCursor(Cursor cursor) {
-        Log.d(TAG, "WeatherTable getResultFromWeatherCursor");
-        //список объектов с погодными данными DataWeather
-        List<DataWeather> listOfDataWeather = null;
-
-        if(cursor != null && cursor.moveToFirst()) {
-            listOfDataWeather = new ArrayList<>(cursor.getCount());
-            do {
-                DataWeather dataWeather = getWeatherDataFromCurcor(cursor);
-                //добавляем в список
-                listOfDataWeather.add(dataWeather);
-
-            } while (cursor.moveToNext());
-            Log.d(TAG, "WeatherTable getResultFromWeatherCursor cursor.getCount() = " + cursor.getCount());
-        }
-
-        try { cursor.close(); } catch (Exception ignored) {}
-        return listOfDataWeather == null ? new ArrayList<DataWeather>(0) : listOfDataWeather;
-    }
 }

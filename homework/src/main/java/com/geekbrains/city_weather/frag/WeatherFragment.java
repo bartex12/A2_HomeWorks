@@ -26,7 +26,6 @@ import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.CityListLab;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -89,7 +88,7 @@ public class WeatherFragment extends Fragment {
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
-    SQLiteDatabase database;
+    private SQLiteDatabase database;
 
 
     public WeatherFragment() {
@@ -170,7 +169,7 @@ public class WeatherFragment extends Fragment {
         editor.apply();
     }
 
-    public void initDB(){
+    private void initDB(){
         database = new WeatherDataBaseHelper(getActivity()).getWritableDatabase();
     }
 
@@ -496,27 +495,56 @@ public class WeatherFragment extends Fragment {
     }
 
     private Drawable getIconFromIconCod(String iconCod) {
-
-        Drawable drawable = getActivity().getResources().getDrawable(R.drawable.what);
-
-        if (iconCod.equals("01d")||iconCod.equals("01n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.sun);
-        } else if(iconCod.equals("02d")||iconCod.equals("02n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.partly_cloudy);
-        }else if(iconCod.equals("03d")||iconCod.equals("03n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.cloudy);
-        }else if(iconCod.equals("04d")||iconCod.equals("04n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.cloudy);
-        }else if(iconCod.equals("09d")||iconCod.equals("09n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.rain);
-        }else if(iconCod.equals("10d")||iconCod.equals("10n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.little_rain);
-        }else if(iconCod.equals("11d")||iconCod.equals("11n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.boom);
-        }else if(iconCod.equals("13d")||iconCod.equals("13n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.snow);
-        }else if(iconCod.equals("50d")||iconCod.equals("50n") ) {
-            drawable = getActivity().getResources().getDrawable(R.drawable.smog);
+        Drawable drawable;
+        switch (iconCod) {
+            case "01d":
+            case "01n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.sun);
+                break;
+            case "02d":
+            case "02n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.partly_cloudy);
+                break;
+            case "03d":
+            case "03n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.cloudy);
+                break;
+            case "04d":
+            case "04n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.cloudy);
+                break;
+            case "09d":
+            case "09n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.rain);
+                break;
+            case "10d":
+            case "10n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.little_rain);
+                break;
+            case "11d":
+            case "11n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.boom);
+                break;
+            case "13d":
+            case "13n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.snow);
+                break;
+            case "50d":
+            case "50n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.smog);
+                break;
+            default:
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.what);
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -615,7 +643,7 @@ public class WeatherFragment extends Fragment {
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT);
                             Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelWeather =" +
-                                    modelWeather.dt);
+                                    Objects.requireNonNull(modelWeather).dt);
 
                             //обрабатываем данные и выводим на экран если всё OK, заносим данные в базу
                             renderWeather(modelWeather);

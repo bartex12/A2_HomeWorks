@@ -3,7 +3,6 @@ package com.geekbrains.city_weather.adapter;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +13,12 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.CityListLab;
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
-import java.util.Collections;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
+
 
 public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCityAdapter.ViewHolder>{
     private static final String TAG = "33333";
@@ -60,7 +55,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         Log.d(TAG, "RecyclerViewCityAdapter addElement");
         if (isNotCityInList(city)){
             data.add(city);
-            //Collections.sort(data);
             notifyDataSetChanged();
         }else {
             Toast.makeText(context, context.getResources()
