@@ -83,7 +83,7 @@ public class WeatherFragment extends Fragment {
     private TextView textViewPressure;
     private TextView textViewIcon;
     private String[] dates = new String[5];
-    private double[] temperuteres = new double[5];
+    private String[] temperuteres = new String[5];
     private String[] iconArray = new String[5];
     private ImageView imageView;
     //когда сервис BackgroundWeatherService отправляет уведомление о завершении
@@ -227,7 +227,7 @@ public class WeatherFragment extends Fragment {
                 //иначе  берём данные из базы
             }else{
                 Log.d(TAG, "***********  WeatherFragment getDataOfCityWeather  ************");
-                // получаем погодные данные для текущего города
+                // получаем из базы погодные данные для текущего города
                 getDataWetherForCity(currentCity);
                 getDataforecastForCity(currentCity);
             }
@@ -238,9 +238,9 @@ public class WeatherFragment extends Fragment {
             intent.putExtra(CURRENT_CITY, currentCity);
             Objects.requireNonNull(getActivity()).startService(intent);
         }
-
     }
 
+    //получаем данные погоды из базы и показываем их на экране
     private void getDataWetherForCity(String currentCity) {
         DataWeather dataWeather = WeatherTable.getOneCityWeatherLine( database, currentCity);
         Log.d(TAG, "WeatherFragment getDataWetherForCity dataWeather = " + dataWeather);
@@ -254,16 +254,17 @@ public class WeatherFragment extends Fragment {
         imageView.setImageDrawable(drawable);
     }
 
+    //получаем данные прогноза из базы и запускаем с ними RecyclerView
     private void getDataforecastForCity(String currentCity){
-        //DataForecast5Days[] dataForecast = ForecastTable.getOneCityForecast5Days(database, currentCity);
-        //Log.d(TAG, "WeatherFragment getDataforecastForCity size = " + dataForecast.length);
 
-        String[] dates = ForecastTable.getAllCityDays(database, currentCity);
-        String[] temperuteres = ForecastTable.getAllCityTemper(database, currentCity);
-        String[] iconArray = ForecastTable.getAllCityIcons(database, currentCity);
-        Log.d(TAG, "+++  getDataforecastForCity dates = " + dates[0]);
-        Log.d(TAG, "+++  getDataforecastForCity temperuteres = " + temperuteres[0]);
-        Log.d(TAG, "+++  getDataforecastForCity icon = " + iconArray[0]);
+         dates = ForecastTable.getAllCityDays(database, currentCity);
+         temperuteres = ForecastTable.getAllCityTemper(database, currentCity);
+         iconArray = ForecastTable.getAllCityIcons(database, currentCity);
+         Log.d(TAG, "+++  getDataforecastForCity dates = " + dates[0]);
+         Log.d(TAG, "+++  getDataforecastForCity temperuteres = " + temperuteres[0]);
+         Log.d(TAG, "+++  getDataforecastForCity icon = " + iconArray[0]);
+         //запускаем RecyclerView с данными из базы данных
+        initRecyclerView();
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
@@ -379,15 +380,17 @@ public class WeatherFragment extends Fragment {
     }
 
     //получение температуры для прогноза на 5 дней
-    private double[] getTempArray(ForecastRequestRestModel modelForecast){
+    private String[] getTempArray(ForecastRequestRestModel modelForecast){
         Log.e(TAG, "getTempArray list.length = " + modelForecast.list.length);
         double[] temper = new double[5];
+        String[] tempArray = new String[5];
         for (int i = 0; i < temper.length; i++) {
             temper[i] =  modelForecast.list[7 + 8*i].main.temp;
+            tempArray[i] = String.format(Locale.getDefault(),
+                    "%.1f", temper[i]) + "\u2103";
         }
         Log.e(TAG, "temper.length = " + temper.length);
-
-        return temper;
+        return tempArray;
     }
 
     //получение массива id для прогноза на 5 дней
@@ -419,21 +422,11 @@ public class WeatherFragment extends Fragment {
 
     private DataForecast[] getDataForecasts() {
         return new DataForecast[] {
-                    new DataForecast(dates[0], iconArray[0],
-                            String.format(Locale.getDefault(),
-                                    "%.1f", temperuteres[0]) + "\u2103"),
-                    new DataForecast(dates[1], iconArray[1],
-                            String.format(Locale.getDefault(),
-                                    "%.1f", temperuteres[1]) + "\u2103"),
-                    new DataForecast(dates[2], iconArray[2],
-                            String.format(Locale.getDefault(),
-                                    "%.1f", temperuteres[2]) + "\u2103"),
-                    new DataForecast(dates[3], iconArray[3],
-                            String.format(Locale.getDefault(),
-                                    "%.1f", temperuteres[3]) + "\u2103"),
-                    new DataForecast(dates[4], iconArray[4],
-                            String.format(Locale.getDefault(),
-                                    "%.1f", temperuteres[4]) + "\u2103")};
+                new DataForecast(dates[0], iconArray[0], temperuteres[0]),
+                new DataForecast(dates[1], iconArray[1], temperuteres[1]),
+                new DataForecast(dates[2], iconArray[2], temperuteres[2]),
+                new DataForecast(dates[3], iconArray[3], temperuteres[3]),
+                new DataForecast(dates[4], iconArray[4], temperuteres[4])};
     }
 
     // показываем/скрываем данные о ветре и давлении
