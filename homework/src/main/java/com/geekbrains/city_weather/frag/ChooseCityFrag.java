@@ -264,6 +264,11 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                 recyclerViewCityAdapter.removeElement();
                 break;
             }
+            case R.id.menu_clear: {
+                recyclerViewCityAdapter.clearList();
+                break;
+            }
+
             case R.id.menu_cancel: {
                 //TODO
                 break;

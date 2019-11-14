@@ -13,7 +13,10 @@ import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.database.WeatherTable;
+import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.CityListLab;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -57,7 +60,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         Log.d(TAG, "RecyclerViewCityAdapter addElement");
         if (isNotCityInList(city)){
             data.add(city);
-            Collections.sort(data);
+            //Collections.sort(data);
             notifyDataSetChanged();
         }else {
             Toast.makeText(context, context.getResources()
@@ -68,11 +71,27 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {
+            //если удаляемый город является текущим, делаем текущим город но умолчанию
+            if (data.get(posItem).equals(CityLab.getCity())){
+                CityLab.setCityDefault();
+            }
             Log.d(TAG, "RecyclerViewCityAdapter removeElement city = " + data.get(posItem));
             WeatherTable.deleteCityWeatherByCity(data.get(posItem), database);
             data.remove(posItem);
             notifyDataSetChanged();
         }
+    }
+
+    public void clearList() {
+        data.clear();
+        WeatherTable.deleteAllDataFromCityWeather(database);
+        //чтобы в списке всегда оставался один город - город по умолчанию
+        data.add(DEFAULT_CITY);
+        CityLab.setCityDefault();
+        Toast.makeText(context,
+                context.getResources().getString(R.string.avtoAdd),
+                Toast.LENGTH_LONG).show();
+        notifyDataSetChanged();
     }
 
     private boolean isNotCityInList(String city) {

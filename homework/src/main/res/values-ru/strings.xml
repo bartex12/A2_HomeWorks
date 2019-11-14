@@ -48,5 +48,6 @@
     <string name="is_in_list">Такой город уже есть в списке</string>
     <string name="remove_city">Удалить город</string>
     <string name="tlf_problems">Возникли проблемы с отправкой запроса. Возможно требуется перезагрузка телефона</string>
+    <string name="avtoAdd">Автоматически добавлен город по умолчанию</string>
 
 </resources>
