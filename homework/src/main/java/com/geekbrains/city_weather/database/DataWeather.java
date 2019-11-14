@@ -44,6 +44,11 @@ public class DataWeather {
         this.updateSec = updateSec;
     }
 
+    public static DataWeather getDataWeatherDefault(){
+        return  new DataWeather("Saint Petersburg", "RU", "***",
+                "***", "***","***", "***", "***", 0);
+    }
+
     public long get_id() {return _id; }
     public String getCityName() {
         return cityName;

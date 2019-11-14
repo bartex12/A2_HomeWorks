@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
+import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.singltones.CityLab;
 import java.util.ArrayList;
@@ -79,13 +80,22 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     public void clearList() {
         data.clear();
         WeatherTable.deleteAllDataFromCityWeather(database);
+        //добавляем в список город по умолчанию -Санкт-Петербург -  и в базу - параметры по умолчанию
+        addCityDefault();
+
+        notifyDataSetChanged();
+    }
+
+    private void addCityDefault() {
         //чтобы в списке всегда оставался один город - город по умолчанию
         data.add(DEFAULT_CITY);
+        //делаем текущим городом
         CityLab.setCityDefault();
+        //добавляем в базу пустые параметры - чтобы город не пропадал из списка при обновлении
+        WeatherTable.addCityWeather(DataWeather.getDataWeatherDefault(), database);
         Toast.makeText(context,
                 context.getResources().getString(R.string.avtoAdd),
                 Toast.LENGTH_LONG).show();
-        notifyDataSetChanged();
     }
 
     private boolean isNotCityInList(String city) {
