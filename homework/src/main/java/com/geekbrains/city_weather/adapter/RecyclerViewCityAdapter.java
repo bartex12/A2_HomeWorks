@@ -1,6 +1,5 @@
 package com.geekbrains.city_weather.adapter;
 
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
-
 
 public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCityAdapter.ViewHolder>{
     private static final String TAG = "33333";

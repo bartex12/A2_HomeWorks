@@ -169,7 +169,6 @@ public class WeatherTable {
     //получаем объект DataWeather из курсора
     private static DataWeather getWeatherDataFromCurcor(Cursor cursor) {
         // Узнаем индекс каждого столбца и Используем индекс для получения строки
-        long id = cursor.getLong(cursor.getColumnIndex(COLUMN_ID));
         String cityName = cursor.getString(cursor.getColumnIndex(COLUMN_CITY));
         String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
         String lastUpdate = cursor.getString(cursor.getColumnIndex(COLUMN_LAST_UPDATE));
@@ -181,7 +180,7 @@ public class WeatherTable {
         long updateSec = cursor.getLong(cursor.getColumnIndex(COLUMN_UPDATE_SEC));
 
         //создаём экземпляр класса DataWeather в конструкторе
-        return new DataWeather(id, cityName, country,
+        return new DataWeather(cityName, country,
                 lastUpdate, description, windSpeed,pressure,temperature,iconCod,updateSec);
     }
     //++++++++++++++++++++++++++++++++++ end getOneCityWeatherLine +++++++++++++++++++++++++++

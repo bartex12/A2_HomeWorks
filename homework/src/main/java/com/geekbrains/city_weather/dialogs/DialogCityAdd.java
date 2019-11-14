@@ -35,13 +35,13 @@ public class DialogCityAdd extends DialogFragment {
         final EditText etCity = view.findViewById(R.id.editTextCity);
         //почему то это не работает, пришлось сделать отдельную функцию toUpperCaseForFirstLetter()
         etCity.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        final Button buttonOk = view.findViewById(R.id.buttonOk);
         etCity.requestFocus();
         etCity.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(view);
         builder.setTitle(R.string.add_city);
         builder.setIcon(R.drawable.ic_business_red_24dp);
 
+        final Button buttonOk = view.findViewById(R.id.buttonOk);
         //действия при нажатии кнопки OK
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override

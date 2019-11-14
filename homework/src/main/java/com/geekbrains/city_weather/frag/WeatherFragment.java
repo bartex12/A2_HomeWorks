@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
-import com.geekbrains.city_weather.database.DataForecast5Days;
 import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
@@ -70,6 +69,9 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
  * с помощью запроса к погодному серверу через библиотеку Retrofit с конвертором GSON,
  * сериализуем ответ и передаём его  в интенте широковещательного сообщения в место обработки,
  * где десериализуем и обрабатывали в потоке GUI
+ *
+ * 4) на уроке A2L6 погодные данные пишем в базу данных и читаем их из базы,
+ * если с момента повторного обращения за погодными данными того же города прошло менее часа
  */
 public class WeatherFragment extends Fragment {
     private static final String TAG = "33333";

@@ -39,24 +39,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import static androidx.preference.PreferenceManager.*;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- *
- */
 public class ChooseCityFrag extends Fragment implements SensorEventListener {
+
     private static final String TAG = "33333";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
-
     private SensorManager sensorManager;
     private Sensor sensorTemp;
     private Sensor sensorHumidity;
     private TextView textTempHere;
     private TextView textHumidity;
-
     private SQLiteDatabase database;
-
 
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
@@ -158,7 +152,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onDestroy() {
         Log.d(TAG, "ChooseCityFrag onDestroy");
         super.onDestroy();
-
     }
 
     //********************************** Жесть **************************************************
@@ -267,9 +260,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                 recyclerViewCityAdapter.clearList();
                 break;
             }
-
             case R.id.menu_cancel: {
-                //TODO
                 break;
             }
         }
@@ -322,7 +313,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     //реакция на событие ChangeItemEvent Событие создаётся в DialogCityChange
@@ -346,7 +336,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         Log.d(TAG, "ChooseCityFrag onAddEvent event.city =" + event.city);
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
-
     }
 }
 
