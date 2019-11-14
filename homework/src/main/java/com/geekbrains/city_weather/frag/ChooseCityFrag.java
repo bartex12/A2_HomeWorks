@@ -99,7 +99,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         if (recyclerViewCityAdapter!= null){
             recyclerViewCityAdapter.notifyDataSetChanged();
         }
-        getPreferensis();
+        getPreferences();
         registerListenersOfSensors();
     }
 
@@ -124,7 +124,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private void getPreferensis() {
+    private void getPreferences() {
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting =
                 getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));

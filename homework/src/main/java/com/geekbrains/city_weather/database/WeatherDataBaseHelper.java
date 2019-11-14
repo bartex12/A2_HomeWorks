@@ -15,7 +15,9 @@ public class WeatherDataBaseHelper  extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         WeatherTable.createTable(db);
+        ForecastTable.createTable(db);
     }
 
     @Override

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
+import com.geekbrains.city_weather.database.DataForecast5Days;
 import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
@@ -90,7 +91,6 @@ public class WeatherFragment extends Fragment {
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
     private SQLiteDatabase database;
-    boolean isCityInBase;   // такой город есть в базе7
 
 
     public WeatherFragment() {
@@ -194,7 +194,7 @@ public class WeatherFragment extends Fragment {
     }
 
     //если последнее обновление в базе не найдено - идем на погодный сайт, а если
-    // последнее обновление было не более 10000 секунд назад - берём данные из базы
+    // последнее обновление было не более часа  назад - берём данные из базы
     private void getActualDataOfCityWeather(){
 
         //получаем текущий город из синглтона - куда город попал из Preferences
@@ -228,16 +228,8 @@ public class WeatherFragment extends Fragment {
             }else{
                 Log.d(TAG, "***********  WeatherFragment getDataOfCityWeather  ************");
                 // получаем погодные данные для текущего города
-                DataWeather dataWeather = WeatherTable.getOneCityWeatherLine( database, currentCity);
-                Log.d(TAG, "WeatherFragment getDataOfCityWeather dataWeather = " + dataWeather);
-                cityTextView.setText(dataWeather.getCityName());
-                textViewLastUpdate.setText(dataWeather.getLastUpdate());
-                textViewWhether.setText(dataWeather.getDescription());
-                textViewWind.setText(dataWeather.getWindSpeed());
-                textViewPressure.setText(dataWeather.getPressure());
-                textViewTemper.setText(dataWeather.getTemperature());
-                Drawable drawable = getIconFromIconCod(dataWeather.getIconCod());
-                imageView.setImageDrawable(drawable);
+                getDataWetherForCity(currentCity);
+                getDataforecastForCity(currentCity);
             }
         }else {
             //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
@@ -247,6 +239,31 @@ public class WeatherFragment extends Fragment {
             Objects.requireNonNull(getActivity()).startService(intent);
         }
 
+    }
+
+    private void getDataWetherForCity(String currentCity) {
+        DataWeather dataWeather = WeatherTable.getOneCityWeatherLine( database, currentCity);
+        Log.d(TAG, "WeatherFragment getDataWetherForCity dataWeather = " + dataWeather);
+        cityTextView.setText(dataWeather.getCityName());
+        textViewLastUpdate.setText(dataWeather.getLastUpdate());
+        textViewWhether.setText(dataWeather.getDescription());
+        textViewWind.setText(dataWeather.getWindSpeed());
+        textViewPressure.setText(dataWeather.getPressure());
+        textViewTemper.setText(dataWeather.getTemperature());
+        Drawable drawable = getIconFromIconCod(dataWeather.getIconCod());
+        imageView.setImageDrawable(drawable);
+    }
+
+    private void getDataforecastForCity(String currentCity){
+        //DataForecast5Days[] dataForecast = ForecastTable.getOneCityForecast5Days(database, currentCity);
+        //Log.d(TAG, "WeatherFragment getDataforecastForCity size = " + dataForecast.length);
+
+        String[] dates = ForecastTable.getAllCityDays(database, currentCity);
+        String[] temperuteres = ForecastTable.getAllCityTemper(database, currentCity);
+        String[] iconArray = ForecastTable.getAllCityIcons(database, currentCity);
+        Log.d(TAG, "+++  getDataforecastForCity dates = " + dates[0]);
+        Log.d(TAG, "+++  getDataforecastForCity temperuteres = " + temperuteres[0]);
+        Log.d(TAG, "+++  getDataforecastForCity icon = " + iconArray[0]);
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
@@ -308,7 +325,7 @@ public class WeatherFragment extends Fragment {
         Log.e(TAG, "addOrReplaceCityWeather modelWeather.dt = " + modelWeather.dt);
 
         ArrayList<String> ara = WeatherTable.getAllCitys(database);
-        isCityInBase = ara.contains(modelWeather.name);
+        boolean isCityInBase = ara.contains(modelWeather.name);
         if (isCityInBase){
             WeatherTable.replaceCityWeather(modelWeather.name, dataWeather, database);
             Log.e(TAG, "addOrReplaceCityWeather isCityInBase = true ");
@@ -331,14 +348,14 @@ public class WeatherFragment extends Fragment {
     private void addOrReplaceCityForecast(ForecastRequestRestModel modelForecast){
         //получаем массив объектов класса DataForecast
         DataForecast[] dataForecasts = getDataForecasts();
+        ArrayList<String> ara = ForecastTable.getAllCitysFromForecast(database);
+        boolean isCityInBase = ara.contains(modelForecast.city.name);
         if (isCityInBase){
+            Log.e(TAG, "addOrReplaceCityWeather replaceCityForecast");
            ForecastTable.replaceCityForecast(modelForecast.city.name, dataForecasts, database);
-
-
-            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = true ");
         }else {
+            Log.e(TAG, "addOrReplaceCityWeather addCityForecast");
             ForecastTable.addCityForecast(dataForecasts, database, modelForecast.city.name);
-            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = false");
         }
     }
 
@@ -369,6 +386,7 @@ public class WeatherFragment extends Fragment {
             temper[i] =  modelForecast.list[7 + 8*i].main.temp;
         }
         Log.e(TAG, "temper.length = " + temper.length);
+
         return temper;
     }
 
