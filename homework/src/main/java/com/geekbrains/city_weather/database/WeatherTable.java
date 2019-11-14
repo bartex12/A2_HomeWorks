@@ -89,6 +89,7 @@ public class WeatherTable {
     }
 
     public static void deleteAllDataFromCityWeather(SQLiteDatabase database) {
+
         database.delete(TABLE_NAME, null, null);
     }
 
@@ -120,7 +121,7 @@ public class WeatherTable {
      public static ArrayList<String> getAllCitys(SQLiteDatabase database) {
          Log.d(TAG, "WeatherTable getAllCitys");
         String dataQuery = "SELECT " + COLUMN_CITY
-                        + " FROM " + TABLE_NAME;
+                        + " FROM " + TABLE_NAME + " ORDER by "  + COLUMN_CITY;
         Cursor cursor = database.rawQuery(dataQuery, null);
         return getCityFromCursor(cursor);
     }

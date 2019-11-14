@@ -312,10 +312,10 @@ public class WeatherFragment extends Fragment {
         boolean isCityInBase = ara.contains(modelWeather.name);
         if (isCityInBase){
             WeatherTable.replaceCityWeather(modelWeather.name, dataWeather, database);
-            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = " + isCityInBase);
+            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = true ");
         }else {
             WeatherTable.addCityWeather(dataWeather, database);
-            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = " + isCityInBase);
+            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = false");
         }
     }
 

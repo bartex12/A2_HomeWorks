@@ -13,10 +13,6 @@ public class DataWeather {
     private String iconCod;
     private long updateSec;
 
-    public DataWeather( ){
-        //пустой конструктор
-    }
-
     //полный конструктор
     public DataWeather(long _id, String cityName, String country, String lastUpdate,
                     String description, String windSpeed, String pressure,
