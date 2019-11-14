@@ -214,9 +214,9 @@ public class WeatherFragment extends Fragment {
                     + lastUpdateOfCityWeather);
             Log.d(TAG, "*** WeatherFragment getDataOfCityWeather delta = " + delta);
 
-            //  для отладки время сделано 600 секунд
-            //  если прошло больше заданного времени с последнего обновления
-            if (delta>600){
+            //  для отладки время сделать 600 секунд
+            //  если прошло больше заданного времени (1 час) с последнего обновления
+            if (delta>3600){
                 //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
                 //для получения погодных данных
                 Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
@@ -449,6 +449,7 @@ public class WeatherFragment extends Fragment {
         return currentText;
     }
 
+    //получение массива символов иконок  для отображения в пятидневном прогнозе погоды
     private String[] getIconsArray(int[] actualId) {
 
         String[] icons = new String[5];
@@ -494,6 +495,8 @@ public class WeatherFragment extends Fragment {
         return icons;
     }
 
+    //получение изображений иконок в зависимости от кода иконки на сайте openweathermap.org
+    // для вывода иконок при обращении к базе данных на устройстве
     private Drawable getIconFromIconCod(String iconCod) {
         Drawable drawable;
         switch (iconCod) {
@@ -553,7 +556,7 @@ public class WeatherFragment extends Fragment {
         return drawable;
     }
 
-
+    //получение пути к иконкам на сайте openweathermap.org для вывода с Picasso
     private String getWeatherIconPath(int actualId, long sunrise, long sunset) {
         int id = actualId / 100;
         String icon = "";
