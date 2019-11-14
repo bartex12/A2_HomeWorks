@@ -120,7 +120,7 @@ public class WeatherFragment extends Fragment {
         initDB();
         initViews(view);
         initFonts();
-        getDataOfCityWeather();
+        getActualDataOfCityWeather();
     }
 
     @Override
@@ -193,7 +193,7 @@ public class WeatherFragment extends Fragment {
 
     //если последнее обновление в базе не найдено - идем на погодный сайт, а если
     // последнее обновление было не более 10000 секунд назад - берём данные из базы
-    private void getDataOfCityWeather(){
+    private void getActualDataOfCityWeather(){
 
         //получаем текущий город из синглтона - куда город попал из Preferences
         String currentCity = CityLab.getCity();
