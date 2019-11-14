@@ -22,6 +22,7 @@ import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
 import com.geekbrains.city_weather.database.DataWeather;
+import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
@@ -89,6 +90,7 @@ public class WeatherFragment extends Fragment {
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
 
     private SQLiteDatabase database;
+    boolean isCityInBase;   // такой город есть в базе7
 
 
     public WeatherFragment() {
@@ -226,7 +228,7 @@ public class WeatherFragment extends Fragment {
             }else{
                 Log.d(TAG, "***********  WeatherFragment getDataOfCityWeather  ************");
                 // получаем погодные данные для текущего города
-                DataWeather dataWeather = WeatherTable.getOneCityWeatherLine( database,currentCity);
+                DataWeather dataWeather = WeatherTable.getOneCityWeatherLine( database, currentCity);
                 Log.d(TAG, "WeatherFragment getDataOfCityWeather dataWeather = " + dataWeather);
                 cityTextView.setText(dataWeather.getCityName());
                 textViewLastUpdate.setText(dataWeather.getLastUpdate());
@@ -291,8 +293,6 @@ public class WeatherFragment extends Fragment {
             //записываем город в синглтон - делаем его текущим
             CityLab.setCurrentCity(modelWeather.name);
 
-            //для стирания списка при отладке
-            //WeatherTable.deleteAllDataFromCityWeather(database);
         } catch (Exception exc) {
             exc.printStackTrace();
             Log.e(TAG, "One or more fields not found in the JSON data");
@@ -301,15 +301,14 @@ public class WeatherFragment extends Fragment {
 
     private void addOrReplaceCityWeather(WeatherRequestRestModel modelWeather, String lastUpdate,
                                          String windSpeed, String pressure, String temperature) {
-        //получаем класс DataWeather пока для картинок iconCod =1
-        //TODO сделать метод для картинок и подобрать картинки в сети
+        //получаем класс DataWeather
         DataWeather dataWeather = new DataWeather(modelWeather.name,
                 modelWeather.sys.country,lastUpdate, modelWeather.weather[0].description,
                 windSpeed, pressure, temperature, modelWeather.weather[0].icon, modelWeather.dt );
         Log.e(TAG, "addOrReplaceCityWeather modelWeather.dt = " + modelWeather.dt);
 
         ArrayList<String> ara = WeatherTable.getAllCitys(database);
-        boolean isCityInBase = ara.contains(modelWeather.name);
+        isCityInBase = ara.contains(modelWeather.name);
         if (isCityInBase){
             WeatherTable.replaceCityWeather(modelWeather.name, dataWeather, database);
             Log.e(TAG, "addOrReplaceCityWeather isCityInBase = true ");
@@ -323,8 +322,24 @@ public class WeatherFragment extends Fragment {
         dates = getDateArray(modelForecast);
         temperuteres = getTempArray(modelForecast);
         iconArray = getIconsArray(getIdArray(modelForecast));
+
+        addOrReplaceCityForecast(modelForecast);
         //после формирования данных для адаптера инициализируем сам адаптер
         initRecyclerView();
+    }
+
+    private void addOrReplaceCityForecast(ForecastRequestRestModel modelForecast){
+        //получаем массив объектов класса DataForecast
+        DataForecast[] dataForecasts = getDataForecasts();
+        if (isCityInBase){
+           ForecastTable.replaceCityForecast(modelForecast.city.name, dataForecasts, database);
+
+
+            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = true ");
+        }else {
+            ForecastTable.addCityForecast(dataForecasts, database, modelForecast.city.name);
+            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = false");
+        }
     }
 
     private void loadImageWithPicasso(int actualId, long sunrise, long sunset){
@@ -370,23 +385,8 @@ public class WeatherFragment extends Fragment {
 
     //загрузка данных в адаптер списка прогноза на 5 дней
     private void  initRecyclerView(){
-        //иконки
-        DataForecast[] data = new DataForecast[] {
-                new DataForecast(dates[0], iconArray[0],
-                        String.format(Locale.getDefault(),
-                                "%.1f", temperuteres[0]) + "\u2103"),
-                new DataForecast(dates[1], iconArray[1],
-                        String.format(Locale.getDefault(),
-                                "%.1f", temperuteres[1]) + "\u2103"),
-                new DataForecast(dates[2], iconArray[2],
-                        String.format(Locale.getDefault(),
-                                "%.1f", temperuteres[2]) + "\u2103"),
-                new DataForecast(dates[3], iconArray[3],
-                        String.format(Locale.getDefault(),
-                                "%.1f", temperuteres[3]) + "\u2103"),
-                new DataForecast(dates[4], iconArray[4],
-                        String.format(Locale.getDefault(),
-                                "%.1f", temperuteres[4]) + "\u2103")};
+
+        DataForecast[] data = getDataForecasts();
 
         ArrayList<DataForecast> list = new ArrayList<>(data.length);
         list.addAll(Arrays.asList(data));
@@ -397,6 +397,25 @@ public class WeatherFragment extends Fragment {
 
         recyclerViewForecast.setLayoutManager(layoutManager);
         recyclerViewForecast.setAdapter(cardAdapter);
+    }
+
+    private DataForecast[] getDataForecasts() {
+        return new DataForecast[] {
+                    new DataForecast(dates[0], iconArray[0],
+                            String.format(Locale.getDefault(),
+                                    "%.1f", temperuteres[0]) + "\u2103"),
+                    new DataForecast(dates[1], iconArray[1],
+                            String.format(Locale.getDefault(),
+                                    "%.1f", temperuteres[1]) + "\u2103"),
+                    new DataForecast(dates[2], iconArray[2],
+                            String.format(Locale.getDefault(),
+                                    "%.1f", temperuteres[2]) + "\u2103"),
+                    new DataForecast(dates[3], iconArray[3],
+                            String.format(Locale.getDefault(),
+                                    "%.1f", temperuteres[3]) + "\u2103"),
+                    new DataForecast(dates[4], iconArray[4],
+                            String.format(Locale.getDefault(),
+                                    "%.1f", temperuteres[4]) + "\u2103")};
     }
 
     // показываем/скрываем данные о ветре и давлении

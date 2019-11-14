@@ -10,4 +10,16 @@ public class DataForecast {
         this.weatherIcon = weatherIcon;
         this.temp = temp;
     }
+
+    public String getDay() {
+        return day;
+    }
+
+    public String getWeatherIcon() {
+        return weatherIcon;
+    }
+
+    public String getTemp() {
+        return temp;
+    }
 }
