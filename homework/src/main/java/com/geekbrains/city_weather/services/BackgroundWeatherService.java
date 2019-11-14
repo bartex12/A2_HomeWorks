@@ -40,9 +40,8 @@ public class BackgroundWeatherService extends IntentService {
 
         //получаем текущий город из интента
         final String currentCity = Objects.requireNonNull(intent).getStringExtra(CURRENT_CITY);
-        // создаём интент широковещательного сообщения с фильтром
+        // создаём интент широковещательного сообщения с фильтром и ловим его в WeatherFragment
         Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
-
         //делаем запрос о погоде и получаем ответ от сервера
         //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<WeatherRequestRestModel> response = getWeatherResponse(currentCity);
@@ -53,7 +52,8 @@ public class BackgroundWeatherService extends IntentService {
             //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
             if (response.body() != null && response.isSuccessful()) {
                 Log.d(TAG, "BackgroundWeatherService loadWeatherEng OK" );
-
+                Log.d(TAG, "BackgroundWeatherService loadWeatherEng response.body().dt = "+
+                        response.body().dt);
                 //делаем запрос о прогнозе погоды и получаем ответ от сервера
                 Response<ForecastRequestRestModel> responseForecast = getForecastResponse(currentCity);
 
@@ -62,7 +62,6 @@ public class BackgroundWeatherService extends IntentService {
                     broadcastIntent.putExtra(JAVA_OBJECT_FORECAST, responseForecast.body());
                 }
                 broadcastIntent.putExtra(JAVA_OBJECT, response.body());
-                broadcastIntent.putExtra(CURRENT_CITY, currentCity);
                 broadcastIntent.putExtra(IS_JSON_NULL, false);
                 broadcastIntent.putExtra(IS_RESPONS_NULL, false);
                 sendBroadcast(broadcastIntent);
@@ -70,7 +69,6 @@ public class BackgroundWeatherService extends IntentService {
                 //а если не удалось получить ответ- посылаем интент для обработки ошибки
             } else {
                 Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO" );
-                broadcastIntent.putExtra(CURRENT_CITY, currentCity);
                 broadcastIntent.putExtra(IS_JSON_NULL, true);
                 broadcastIntent.putExtra(IS_RESPONS_NULL, false);
                 sendBroadcast(broadcastIntent);

@@ -2,6 +2,7 @@ package com.geekbrains.city_weather.adapter;
 
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,16 +11,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.singltones.CityListLab;
+import com.geekbrains.city_weather.database.DataWeather;
+import com.geekbrains.city_weather.database.WeatherTable;
+import com.geekbrains.city_weather.singltones.CityLab;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
+
 
 public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCityAdapter.ViewHolder>{
     private static final String TAG = "33333";
     private ArrayList<String> data;
+    private SQLiteDatabase database;
     private OnCityClickListener onCityClickListener;
     private int posItem = 0;
     private Context context;
@@ -28,12 +33,19 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         void onCityClick(String city);
     }
 
-    public RecyclerViewCityAdapter(ArrayList<String> data) {
+    public RecyclerViewCityAdapter(SQLiteDatabase database) {
+
+        this.database = database;
+        data = WeatherTable.getAllCitys(database);
+
         if (data != null) {
-            this.data = data;
+            if (data.size() == 0){
+                data.add(DEFAULT_CITY);
+            }
         }else{
             this.data = new ArrayList<>();
         }
+        Log.d(TAG, "RecyclerViewCityAdapter - /конструктор/ data.size() = " + data.size());
     }
 
     public void setOnCityClickListener(OnCityClickListener onCityClickListener){
@@ -44,7 +56,6 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         Log.d(TAG, "RecyclerViewCityAdapter addElement");
         if (isNotCityInList(city)){
             data.add(city);
-            Collections.sort(data);
             notifyDataSetChanged();
         }else {
             Toast.makeText(context, context.getResources()
@@ -55,9 +66,36 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
     public void removeElement() {
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {
+            //если удаляемый город является текущим, делаем текущим город но умолчанию
+            if (data.get(posItem).equals(CityLab.getCity())){
+                CityLab.setCityDefault();
+            }
+            Log.d(TAG, "RecyclerViewCityAdapter removeElement city = " + data.get(posItem));
+            WeatherTable.deleteCityWeatherByCity(data.get(posItem), database);
             data.remove(posItem);
             notifyDataSetChanged();
         }
+    }
+
+    public void clearList() {
+        data.clear();
+        WeatherTable.deleteAllDataFromCityWeather(database);
+        //добавляем в список город по умолчанию -Санкт-Петербург -  и в базу - параметры по умолчанию
+        addCityDefault();
+
+        notifyDataSetChanged();
+    }
+
+    private void addCityDefault() {
+        //чтобы в списке всегда оставался один город - город по умолчанию
+        data.add(DEFAULT_CITY);
+        //делаем текущим городом
+        CityLab.setCityDefault();
+        //добавляем в базу пустые параметры - чтобы город не пропадал из списка при обновлении
+        WeatherTable.addCityWeather(DataWeather.getDataWeatherDefault(), database);
+        Toast.makeText(context,
+                context.getResources().getString(R.string.avtoAdd),
+                Toast.LENGTH_LONG).show();
     }
 
     private boolean isNotCityInList(String city) {

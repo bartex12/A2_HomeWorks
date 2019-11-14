@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +21,11 @@ import android.widget.Toast;
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
+import com.geekbrains.city_weather.database.DataWeather;
+import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
+import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.CityListLab;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -80,10 +84,12 @@ public class WeatherFragment extends Fragment {
     private double[] temperuteres = new double[5];
     private String[] iconArray = new String[5];
     private ImageView imageView;
-
-    //когда серви с BackgroundWeatherService отправляет уведомление о завершении
+    //когда сервис BackgroundWeatherService отправляет уведомление о завершении
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
+
+    private SQLiteDatabase database;
+
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -101,17 +107,20 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "WeatherFragment onAttach" );
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "WeatherFragment onViewCreated" );
+
+        initDB();
         initViews(view);
         initFonts();
-
-        //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
-        //для получения погодных данных
-        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-        intent.putExtra(CURRENT_CITY, CityLab.getCity());
-        Objects.requireNonNull(getActivity()).startService(intent);
-        Log.d(TAG, "WeatherFragment onViewCreated" );
+        getActualDataOfCityWeather();
     }
 
     @Override
@@ -160,6 +169,10 @@ public class WeatherFragment extends Fragment {
         editor.apply();
     }
 
+    private void initDB(){
+        database = new WeatherDataBaseHelper(getActivity()).getWritableDatabase();
+    }
+
     private void initViews(View view) {
         recyclerViewForecast = view.findViewById(R.id.recyclerViewForecast);
         cityTextView = view.findViewById(R.id.greetingsTextView);
@@ -178,6 +191,62 @@ public class WeatherFragment extends Fragment {
         textViewIcon.setTypeface(weatherFont);
     }
 
+    //если последнее обновление в базе не найдено - идем на погодный сайт, а если
+    // последнее обновление было не более 10000 секунд назад - берём данные из базы
+    private void getActualDataOfCityWeather(){
+
+        //получаем текущий город из синглтона - куда город попал из Preferences
+        String currentCity = CityLab.getCity();
+        //получаем список городов из базы
+        ArrayList<String> ara = WeatherTable.getAllCitys(database);
+        Log.d(TAG, "WeatherFragment getDataOfCityWeather delta = " + ara.toString());
+        boolean isCityInDatabase = ara.contains(currentCity);
+        Log.d(TAG, "WeatherFragment getDataOfCityWeather isCityInDatabase = " + isCityInDatabase);
+
+        //если текущий город есть в базе
+        if (isCityInDatabase){
+            //получаем время последнего обновления погоды по этому городу
+            long lastUpdateOfCityWeather = WeatherTable.getLastUpdate(database, currentCity);
+            long delta = System.currentTimeMillis()/1000 - lastUpdateOfCityWeather;
+            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather /1000 = "
+                    + System.currentTimeMillis()/1000);
+            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather lastUpdateOfCityWeather = "
+                    + lastUpdateOfCityWeather);
+            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather delta = " + delta);
+
+            //  для отладки время сделать 600 секунд
+            //  если прошло больше заданного времени (1 час) с последнего обновления
+            if (delta>3600){
+                //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+                //для получения погодных данных
+                Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+                intent.putExtra(CURRENT_CITY, currentCity);
+                Objects.requireNonNull(getActivity()).startService(intent);
+                //иначе  берём данные из базы
+            }else{
+                Log.d(TAG, "***********  WeatherFragment getDataOfCityWeather  ************");
+                // получаем погодные данные для текущего города
+                DataWeather dataWeather = WeatherTable.getOneCityWeatherLine( database,currentCity);
+                Log.d(TAG, "WeatherFragment getDataOfCityWeather dataWeather = " + dataWeather);
+                cityTextView.setText(dataWeather.getCityName());
+                textViewLastUpdate.setText(dataWeather.getLastUpdate());
+                textViewWhether.setText(dataWeather.getDescription());
+                textViewWind.setText(dataWeather.getWindSpeed());
+                textViewPressure.setText(dataWeather.getPressure());
+                textViewTemper.setText(dataWeather.getTemperature());
+                Drawable drawable = getIconFromIconCod(dataWeather.getIconCod());
+                imageView.setImageDrawable(drawable);
+            }
+        }else {
+            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+            //для получения погодных данных
+            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+            intent.putExtra(CURRENT_CITY, currentCity);
+            Objects.requireNonNull(getActivity()).startService(intent);
+        }
+
+    }
+
     // Показать погоду во фрагменте в альбомной ориентации
     private void showCityWhetherLand() {
 
@@ -188,7 +257,7 @@ public class WeatherFragment extends Fragment {
         ft.replace(R.id.content_super_r, weatherFrag, WEATHER_FRAFMENT_TAG);  // замена фрагмента
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
         ft.commit();
-        Log.d(TAG, "MainActivity onCityChange Фрагмент = " +
+        Log.d(TAG, "WeatherFragment onCityChange Фрагмент = " +
                 getFragmentManager().findFragmentById(R.id.content_super));
     }
 
@@ -206,19 +275,47 @@ public class WeatherFragment extends Fragment {
 
         try {
             setPlaceName(modelWeather.name, modelWeather.sys.country);
-            setUpdatedText(modelWeather.dt);
+            String lastUpdate = setUpdatedText(modelWeather.dt);
             setDescription(modelWeather.weather[0].description);
-            setWind(modelWeather.wind.speed);
-            setPressure(modelWeather.main.pressure);
-            setCurrentTemp(modelWeather.main.temp);
+            String windSpeed = setWind(modelWeather.wind.speed);
+            String pressure = setPressure(modelWeather.main.pressure);
+            String temperature = setCurrentTemp(modelWeather.main.temp);
 
             loadImageWithPicasso(modelWeather.weather[0].id,
                     modelWeather.sys.sunrise * 1000,
                     modelWeather.sys.sunset * 1000);
 
+            //добавляем или заменяем погодные данные для города modelWeather.name
+            addOrReplaceCityWeather(modelWeather, lastUpdate, windSpeed, pressure, temperature);
+
+            //записываем город в синглтон - делаем его текущим
+            CityLab.setCurrentCity(modelWeather.name);
+
+            //для стирания списка при отладке
+            //WeatherTable.deleteAllDataFromCityWeather(database);
         } catch (Exception exc) {
             exc.printStackTrace();
             Log.e(TAG, "One or more fields not found in the JSON data");
+        }
+    }
+
+    private void addOrReplaceCityWeather(WeatherRequestRestModel modelWeather, String lastUpdate,
+                                         String windSpeed, String pressure, String temperature) {
+        //получаем класс DataWeather пока для картинок iconCod =1
+        //TODO сделать метод для картинок и подобрать картинки в сети
+        DataWeather dataWeather = new DataWeather(modelWeather.name,
+                modelWeather.sys.country,lastUpdate, modelWeather.weather[0].description,
+                windSpeed, pressure, temperature, modelWeather.weather[0].icon, modelWeather.dt );
+        Log.e(TAG, "addOrReplaceCityWeather modelWeather.dt = " + modelWeather.dt);
+
+        ArrayList<String> ara = WeatherTable.getAllCitys(database);
+        boolean isCityInBase = ara.contains(modelWeather.name);
+        if (isCityInBase){
+            WeatherTable.replaceCityWeather(modelWeather.name, dataWeather, database);
+            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = true ");
+        }else {
+            WeatherTable.addCityWeather(dataWeather, database);
+            Log.e(TAG, "addOrReplaceCityWeather isCityInBase = false");
         }
     }
 
@@ -317,37 +414,42 @@ public class WeatherFragment extends Fragment {
         cityTextView.setText(name + ", " + country);
     }
 
-    private void setUpdatedText(long dt) {
+    private String setUpdatedText(long dt) {
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
         String updateOn = dateFormat.format(new Date(dt * 1000));
         String updatedText = Objects.requireNonNull(getActivity()).getResources()
                 .getString(R.string.lastUpdate) + updateOn;
         textViewLastUpdate.setText(updatedText);
+        return updatedText;
     }
 
     private void setDescription(String description){
         textViewWhether.setText(description);
     }
 
-    private void setWind(float wind){
+    private String setWind(float wind){
         String windSpeed = Objects.requireNonNull(getActivity()).getString(R.string.windSpeed);
         String ms = getActivity().getString(R.string.ms);
         String windText = windSpeed + " " + wind + " " + ms;
         textViewWind.setText(windText);
+        return windText;
     }
 
-    private void setPressure(float pressure) {
+    private String setPressure(float pressure) {
         String press = Objects.requireNonNull(getActivity()).getString(R.string.press);
         String hPa = getActivity().getString(R.string.hPa);
         String pressureText = press + " " + pressure + " " + hPa;
         textViewPressure.setText(pressureText);
+        return pressureText;
     }
 
-    private void setCurrentTemp(float temper){
+    private String setCurrentTemp(float temper){
         String currentText = String.format(Locale.getDefault(), "%.1f",temper) + "\u2103";
         textViewTemper.setText(currentText);
+        return currentText;
     }
 
+    //получение массива символов иконок  для отображения в пятидневном прогнозе погоды
     private String[] getIconsArray(int[] actualId) {
 
         String[] icons = new String[5];
@@ -393,6 +495,68 @@ public class WeatherFragment extends Fragment {
         return icons;
     }
 
+    //получение изображений иконок в зависимости от кода иконки на сайте openweathermap.org
+    // для вывода иконок при обращении к базе данных на устройстве
+    private Drawable getIconFromIconCod(String iconCod) {
+        Drawable drawable;
+        switch (iconCod) {
+            case "01d":
+            case "01n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.sun);
+                break;
+            case "02d":
+            case "02n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.partly_cloudy);
+                break;
+            case "03d":
+            case "03n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.cloudy);
+                break;
+            case "04d":
+            case "04n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.cloudy);
+                break;
+            case "09d":
+            case "09n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.rain);
+                break;
+            case "10d":
+            case "10n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.little_rain);
+                break;
+            case "11d":
+            case "11n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.boom);
+                break;
+            case "13d":
+            case "13n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.snow);
+                break;
+            case "50d":
+            case "50n":
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.smog);
+                break;
+            default:
+                drawable = Objects.requireNonNull(getActivity())
+                        .getResources().getDrawable(R.drawable.what);
+        }
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            imageView.setVisibility(View.GONE);
+        }
+        return drawable;
+    }
+
+    //получение пути к иконкам на сайте openweathermap.org для вывода с Picasso
     private String getWeatherIconPath(int actualId, long sunrise, long sunset) {
         int id = actualId / 100;
         String icon = "";
@@ -459,21 +623,17 @@ public class WeatherFragment extends Fragment {
                     }else {
                         //если не удалось, то is_JSON_null = true
                         if (is_JSON_null){
-                            String currentCity = intent.getStringExtra(CURRENT_CITY);
                             Toast.makeText(getActivity(), R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
-                            Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
-                                    CityListLab.getCitysList().size());
-                            CityListLab.removeSity(currentCity); //удаляем город из списка
-                            Log.e(TAG, "ServiceFinishedReceiver CitysList().size() =" +
-                                    CityListLab.getCitysList().size());
-                            CityLab.setCityDefault();  //устанавливаем текущий город Saint Petersburg
+
+                            CityLab.setCityDefault();  //делаем текущим город Saint Petersburg
 
                             if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
                                     .orientation  == Configuration.ORIENTATION_LANDSCAPE){
                                 //показываем фрагмент с погодой с городом по умолчанию
                                 showCityWhetherLand();
                                 //перегружаем фрагмент со списком для обновления списка
+                                //поскольку в базу данных город не заносился, в списке его не будет
                                 setChooseCityFrag();
                             }else {
                                 //показываем фрагмент со списком
@@ -485,7 +645,10 @@ public class WeatherFragment extends Fragment {
                             WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT);
-                            //обрабатываем данные и выводим на экран
+                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelWeather =" +
+                                    Objects.requireNonNull(modelWeather).dt);
+
+                            //обрабатываем данные и выводим на экран если всё OK, заносим данные в базу
                             renderWeather(modelWeather);
 
                             ForecastRequestRestModel modelForecast =(ForecastRequestRestModel)
@@ -496,10 +659,9 @@ public class WeatherFragment extends Fragment {
                             renderForecast(modelForecast);
                         }
                     }
-
                 }
             });
         }
     }
 }
-//1 hPa = 0.75006375541921 mmHg
+//TODO 1 hPa = 0.75006375541921 mmHg

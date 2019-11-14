@@ -1,15 +1,17 @@
 package com.geekbrains.city_weather;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.dialogs.DialogCityChange;
 import com.geekbrains.city_weather.dialogs.MessageDialog;
@@ -17,17 +19,10 @@ import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.CityListLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,7 +35,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
-import static com.geekbrains.city_weather.constants.AppConstants.LAST_LIST;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 
@@ -49,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "33333";
     private DrawerLayout drawer;
-    private int typeOfCityList ;
     private boolean doubleBackToExitPressedOnce;
+    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Log.d(TAG,"MainActivity onCreate");
 
+        initDB();
         initFab();
         initPrefs();
         initviews();
@@ -67,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Log.d(TAG,"MainActivity onResume");
-        // готовим
         initSingletons();
         doOrientationBasedActions();
     }
@@ -76,17 +70,15 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         Log.d(TAG,"MainActivity onStop");
-        //если пользовательский список. запоминаем в Preferences
-        if (typeOfCityList == 3){
-            saveLastMarkedList(this, LAST_LIST );
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //сохранение списка делаем в onStop - при нажатии на среднюю кнопку телефона onStop->onResume
         Log.d(TAG,"MainActivity onDestroy");
-       //сохранение списка делаем в onStop - при нажатии на среднюю кнопку телефона onStop->onResume
+        //закрываем базу данных
+        database.close();
     }
 
     @Override
@@ -122,6 +114,10 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    public void initDB(){
+        database = new WeatherDataBaseHelper(this).getWritableDatabase();
+    }
+
     private void initSingletons() {
         Log.d(TAG,"MainActivity initSingletons");
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
@@ -129,70 +125,8 @@ public class MainActivity extends AppCompatActivity implements
         //это последний запомненный город из Preferences
         String cityCurrent = prefSetting.getString(LAST_CITY,
                 getResources().getString(R.string.saint_petersburg));
-        //это тип первоначального списка на экране
-        typeOfCityList =  Integer.parseInt(prefSetting.getString("typeOfCitysList", "3"));
-        Log.d(TAG,"MainActivity initSingletons typeOfCityList = " + typeOfCityList) ;
-        //инициализируем синглтон города
-        initCitySinglton(cityCurrent);
-        //инициализируем синглтон списка
-        initSingltonList(cityCurrent, typeOfCityList);
-    }
-
-    private void initCitySinglton(String cityCurrent) {
-        Log.d(TAG,"MainActivity initCitySinglton");
         //инициализируем значение  синглтона CityLab последним городом из Preferences
         CityLab.getInstance(cityCurrent);
-    }
-
-    private void initSingltonList(String cityCurrent, int typeOfCityList) {
-        Log.d(TAG,"MainActivity initSingltonList");
-        if (typeOfCityList == 1){
-            initWithFixList(cityCurrent, R.array.cities_of_the_world);
-        }else if (typeOfCityList == 2){
-            initWithFixList(cityCurrent, R.array.cities_of_the_russia);
-        }else if (typeOfCityList == 3){
-            initWithUserList(cityCurrent);
-        }
-    }
-
-    private void initWithFixList(String cityCurrent, int stringArray) {
-        Log.d(TAG,"MainActivity initWithFixList");
-        String[] citys = getResources().getStringArray(stringArray);
-        ArrayList<String> cityMarked = new ArrayList(Arrays.asList(citys));
-        //если не первая загрузка, то очищаем список и делаем CityListLab=null
-        // чтобы поменять список в синглтоне
-        if (CityListLab.getCitysList()!=null){
-            CityListLab.clearCityListLab();
-        }
-        //инициализируем список синглтона CityListLab, ссылка на cityMarked теперь доступна
-        CityListLab.getInstance(cityMarked);
-        //добавляем в список последний запомненный город, если его там нет
-        CityListLab.addCity(cityCurrent);
-        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
-    }
-
-    private void initWithUserList(String cityCurrent) {
-        Log.d(TAG,"MainActivity initWithUserList");
-        String cityDefault = getResources().getString(R.string.saint_petersburg);
-        HashSet<String> hsDefault = new HashSet<>();
-        hsDefault.add(cityDefault);
-        Set<String> hs = PreferenceManager.getDefaultSharedPreferences(this)
-                .getStringSet(LAST_LIST, hsDefault);
-        ArrayList<String> cityMarked = new ArrayList<>(hs);
-        Collections.sort(cityMarked);
-        Log.d(TAG,"MainActivity initWithUserList cityMarked.size() = "+cityMarked.size());
-       //если не первая загрузка, то очищаем список и делаем CityListLab=null
-        // чтобы поменять список в синглтоне
-        if (CityListLab.getCitysList()!=null){
-            CityListLab.clearCityListLab();
-        }
-        //инициализируем список синглтона CityListLab новым списком cityMarked
-        CityListLab.getInstance(cityMarked);
-        //добавляем в список последний запомненный город, если его там нет
-        CityListLab.addCity(cityCurrent);
-        //добавляем город по умолчанию. если его там нет
-        CityListLab.addCityInPosition(0, cityDefault);
-        Log.d(TAG,"MainActivity onCreate city_current = " + CityLab.getCity());
     }
 
     //действия с фрагментами в зависимости от ориентации телефона
@@ -231,20 +165,6 @@ public class MainActivity extends AppCompatActivity implements
         //устанавливаем из настроек значения по умолчанию для первой загрузки
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
-    }
-
-    private void saveLastMarkedList(Context context, String key) {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(context);
-        Log.d(TAG,"MainActivity saveLastMarkedList");
-        SharedPreferences.Editor editor = preferences.edit();
-        ArrayList<String> markedList = CityListLab.getCitysList();
-        Log.d(TAG,"MainActivity saveLastMarkedList markedList.size() = " + markedList.size());
-        Set<String> set = new HashSet<>();
-        set.addAll(markedList);
-        editor.putStringSet(key, set);
-        Log.d(TAG,"MainActivity saveLastMarkedList set.size() = " + set.size());
-        editor.apply();
     }
 
     private void showMessageDialogFfagment(String message) {
