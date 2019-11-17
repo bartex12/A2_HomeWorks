@@ -85,6 +85,7 @@ public class WeatherFragment extends Fragment {
     private TextView textViewWind;
     private TextView textViewPressure;
     private TextView textViewIcon;
+    private String[] descriptions = new String[5];
     private String[] dates = new String[5];
     private String[] temperuteres = new String[5];
     private String[] iconArray = new String[5];
@@ -344,6 +345,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void renderForecast(ForecastRequestRestModel modelForecast) {
+        descriptions = getDescrArray(modelForecast);
         dates = getDateArray(modelForecast);
         temperuteres = getTempArray(modelForecast);
         iconArray = getIconsArray(getIdArray(modelForecast));
@@ -366,11 +368,6 @@ public class WeatherFragment extends Fragment {
             ForecastTable.addCityForecast(dataForecasts, database, modelForecast.city.name);
         }
     }
-
-//    private void loadImageWithPicasso(int actualId, long sunrise, long sunset){
-//        String path =getWeatherIconPath(actualId,sunrise,sunset);
-//        Picasso.get().load(path).into(imageView);
-//    }
 
     //получение даты для прогноза на 5 дней
     private String[] getDateArray(ForecastRequestRestModel modelForecast) {
@@ -400,6 +397,20 @@ public class WeatherFragment extends Fragment {
         return tempArray;
     }
 
+    //получение описания погоды для прогноза на 5 дней
+    private String[] getDescrArray(ForecastRequestRestModel modelForecast) {
+        Log.e(TAG, "getDescrArray list.length = " + modelForecast.list.length);
+        //double[] descr = new double[5];
+        String[] descrArray = new String[5];
+        for (int i = 0; i < descrArray.length; i++) {
+            descrArray[i] = modelForecast.list[7 + 8 * i].weather[0].description;
+//            tempArray[i] = String.format(Locale.getDefault(),
+//                    "%.1f", descr[i]) + "\u2103";
+        }
+        Log.e(TAG, "descrArray.length = " + descrArray.length);
+        return descrArray;
+    }
+
     //получение массива id для прогноза на 5 дней
     private int[] getIdArray(ForecastRequestRestModel modelForecast) {
         Log.e(TAG, "getIdArray list.length = " + modelForecast.list.length);
@@ -410,6 +421,18 @@ public class WeatherFragment extends Fragment {
         Log.e(TAG, "id.length = " + id.length);
         return id;
     }
+
+    //получение массива id для прогноза на 5 дней
+    private String[] getIconsArray(ForecastRequestRestModel modelForecast) {
+        Log.e(TAG, "getIconsArray list.length = " + modelForecast.list.length);
+        String[] icons = new String[5];
+        for (int i = 0; i < icons.length; i++) {
+            icons[i] = modelForecast.list[7 + 8 * i].weather[0].icon;
+        }
+        Log.e(TAG, "icons.length = " + icons.length);
+        return icons;
+    }
+
 
     //загрузка данных в адаптер списка прогноза на 5 дней
     private void  initRecyclerView(){
@@ -523,6 +546,71 @@ public class WeatherFragment extends Fragment {
                             break;
                         }
                     }
+                }
+            }
+            Log.e(TAG, "icons.length = " + icons.length);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        return icons;
+    }
+
+    //получение массива символов иконок  для отображения в пятидневном прогнозе погоды
+    private Drawable[] getIconsArrayNew(String[] iconCod) {
+
+        Drawable[] icons = new Drawable[5];
+        try {
+            for (int i = 0; i < icons.length; i++) {
+
+                switch (iconCod[i]) {
+                    case "01d":
+                    case "01n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.clear_sky_01d);
+                        break;
+                    case "02d":
+                    case "02n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.few_clouds_02d);
+                        break;
+                    case "03d":
+                    case "03n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.scattered_clouds_03d);
+                        break;
+                    case "04d":
+                    case "04n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.broken_clouds_04d);
+                        break;
+                    case "09d":
+                    case "09n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.shower_rain_09d);
+                        break;
+                    case "10d":
+                    case "10n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.rain_10d);
+                        break;
+                    case "11d":
+                    case "11n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.thunderstorm_11d);
+                        break;
+                    case "13d":
+                    case "13n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.snow_13d);
+                        break;
+                    case "50d":
+                    case "50n":
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.mist_50d);
+                        break;
+                    default:
+                        icons[i] = Objects.requireNonNull(getActivity())
+                                .getResources().getDrawable(R.drawable.what);
                 }
             }
             Log.e(TAG, "icons.length = " + icons.length);
