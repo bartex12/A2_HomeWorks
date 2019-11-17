@@ -24,7 +24,7 @@
         android:layout_marginBottom="10dp" />
 
     <TextView
-        android:id="@+id/textViewIcon"
+        android:id="@+id/textViewDayNew"
         style="@style/WhetherCityStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         android:layout_gravity="center_horizontal" />
 
     <TextView
-        android:id="@+id/textViewTemper"
+        android:id="@+id/textViewDescrNew"
         style="@style/WhetherCityStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

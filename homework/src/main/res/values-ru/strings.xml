@@ -40,7 +40,7 @@
     <string name="will_be_fine">ВСЁ БУДЕТ ХОРОШО</string>
     <string name="No_temperature_sensor">Датчик температуры отсутствует</string>
     <string name="No_humidity_sensor">Датчик влажности отсутствует</string>
-    <string name="temperature">Температура</string>
+    <string name="temperature">+ 24 </string>
     <string name="Relative_humidity">Отн. влажность</string>
     <string name="forExit">Для выхода нажмите  НАЗАД  ещё раз</string>
     <string name="app_name">Погода</string>
@@ -49,5 +49,8 @@
     <string name="remove_city">Удалить город</string>
     <string name="tlf_problems">Возникли проблемы с отправкой запроса. Возможно требуется перезагрузка телефона</string>
     <string name="avtoAdd">Автоматически добавлен город по умолчанию</string>
+    <string name="sunny">Солнечно</string>
+    <string name="_18">18 ноября</string>
+    <string name="icon_descr">Иконка</string>
 
 </resources>

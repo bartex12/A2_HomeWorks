@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
@@ -27,7 +28,6 @@ import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -42,10 +43,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import rest.weather_model.WeatherRequestRestModel;
 import rest.forecast_model.ForecastRequestRestModel;
+import rest.weather_model.WeatherRequestRestModel;
 
-import static androidx.preference.PreferenceManager.*;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
@@ -182,10 +183,10 @@ public class WeatherFragment extends Fragment {
         cityTextView = view.findViewById(R.id.greetingsTextView);
         textViewLastUpdate = view.findViewById(R.id.textViewLastUpdate);
         textViewWhether = view.findViewById(R.id.textViewWhether);
-        textViewTemper = view.findViewById(R.id.textViewTemper);
+        textViewTemper = view.findViewById(R.id.textViewDescrNew);
         textViewWind = view.findViewById(R.id.textViewWind);
         textViewPressure = view.findViewById(R.id.textViewPressure);
-        textViewIcon = view.findViewById(R.id.textViewIcon);
+        textViewIcon = view.findViewById(R.id.textViewDayNew);
         imageView = view.findViewById(R.id.imageView);
     }
 

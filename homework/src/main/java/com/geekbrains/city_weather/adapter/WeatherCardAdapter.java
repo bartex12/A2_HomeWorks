@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.geekbrains.city_weather.R;
+
 import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,15 +48,15 @@ public class WeatherCardAdapter extends RecyclerView.Adapter<WeatherCardAdapter.
 
     class CardViewHolder extends RecyclerView.ViewHolder {
 
+        TextView textViewTemper;
         TextView textViewDay;
         TextView textViewIcon;
-        TextView textViewTemper;
 
         CardViewHolder(@NonNull View itemView) {
             super(itemView);
+            textViewTemper = itemView.findViewById(R.id.textViewTemper);
             textViewDay = itemView.findViewById(R.id.textViewDay);
             textViewIcon = itemView.findViewById(R.id.textViewIcon);
-            textViewTemper = itemView.findViewById(R.id.textViewTemper);
             Typeface weatherFont = Typeface.createFromAsset(
                     context.getAssets(), "fonts/weather.ttf");
             textViewIcon.setTypeface(weatherFont);
