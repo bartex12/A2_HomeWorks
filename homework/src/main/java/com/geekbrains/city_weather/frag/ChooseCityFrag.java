@@ -28,6 +28,7 @@ import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
 
 import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -36,7 +37,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static androidx.preference.PreferenceManager.*;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 public class ChooseCityFrag extends Fragment implements SensorEventListener {
@@ -86,6 +87,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getBus().register(this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         initRecycledView();
@@ -95,12 +102,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         }
         getPreferences();
         registerListenersOfSensors();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getBus().register(this);
     }
 
     @Override
