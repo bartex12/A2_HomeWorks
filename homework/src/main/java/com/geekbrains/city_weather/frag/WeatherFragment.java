@@ -55,6 +55,10 @@ import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT_FORECAST;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
+import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_DATA_UPDATE;
+import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_DESCRIPTION;
+import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_ICON;
+import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_TEMP;
 
 /**
  *  Варианты получения погодных данных в приложении:
@@ -253,10 +257,15 @@ public class WeatherFragment extends Fragment {
     //получаем данные прогноза из базы и запускаем с ними RecyclerView
     private void getDataforecastForCity(String currentCity){
 
-        descriptions = ForecastTable.getAllCityDescription(database, currentCity);
-        dates = ForecastTable.getAllCityDays(database, currentCity);
-        temperuteres = ForecastTable.getAllCityTemper(database, currentCity);
-        iconArray = ForecastTable.getAllCityIcons(database, currentCity);
+        descriptions = ForecastTable.getArrayElementsForCityForecast(database,
+                currentCity, COLUMN_DESCRIPTION);
+        dates = ForecastTable.getArrayElementsForCityForecast(database,
+                currentCity, COLUMN_DATA_UPDATE);
+        temperuteres = ForecastTable.getArrayElementsForCityForecast(database,
+                currentCity, COLUMN_TEMP);
+        iconArray = ForecastTable.getArrayElementsForCityForecast(database,
+                currentCity, COLUMN_ICON);
+
         iconArrayNew = getIconsArrayForecast(iconArray);  //Drawable
 
         Log.d(TAG, "+++  getDataforecastForCity descriptions = " + descriptions[0]);

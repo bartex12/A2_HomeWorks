@@ -16,10 +16,10 @@ public class ForecastTable {
     private final static String TABLE_NAME = "forecast";
     private final static String COLUMN_ID= "_id";
     private final static String COLUMN_CITY = "city";
-    private final static String COLUMN_DESCRIPTION = "description";
-    private final static String COLUMN_TEMP = "temper";
-    private final static String COLUMN_DATA_UPDATE = "dataUpdate";
-    private final static String COLUMN_ICON = "iconCod";
+    public final static String COLUMN_DESCRIPTION = "description";
+    public final static String COLUMN_TEMP = "temper";
+    public final static String COLUMN_DATA_UPDATE = "dataUpdate";
+    public final static String COLUMN_ICON = "iconCod";
 
     static void createTable(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE " + TABLE_NAME + " ("
@@ -109,7 +109,6 @@ public class ForecastTable {
                 cityList.add(cursor.getString(cursor.getColumnIndex(COLUMN_CITY)));
             } while (cursor.moveToNext());
         }
-
         try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
         return cityList == null ? new ArrayList<String>(0) : cityList;
     }
@@ -131,130 +130,42 @@ public class ForecastTable {
         //попали на первую запись, плюс вернулось true, если запись есть
         if(cursor != null && cursor.moveToFirst()) {
             idList = new ArrayList<>(cursor.getCount());
-
             do {
                 idList.add(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
             } while (cursor.moveToNext());
         }
-
         try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
         return idList == null ? new ArrayList<Integer>(0) : idList;
     }
     //=================================== end getAllCityIds  ================================
 
-    //=================================== begin getAllCityTemper  ================================
-    //метод выбора массива описаний для выбранного города
-    public static String[] getAllCityDescription(SQLiteDatabase database, String city) {
-        Log.d(TAG, "ForecastTable getAllCityDescription");
-        String dataQuery = "SELECT " + COLUMN_DESCRIPTION
+    //=================================== begin getArrayElementsForCityForecast  ================================
+    //метод выбора массива элементов прогноза для выбранного города
+    public static String[] getArrayElementsForCityForecast(SQLiteDatabase database,
+                                                           String city, String column) {
+        Log.d(TAG, "ForecastTable getArrayElementsForCityForecast");
+        String dataQuery = "SELECT " + column
                 + " FROM " + TABLE_NAME + " WHERE " + COLUMN_CITY + " = ? ";
         Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
-        return getDescriptionFromCursor(cursor);
+        return getElementsFromCursor(cursor, column);
     }
 
-    //обработка курсора для метода вывода списка описаний getAllCityDescription()
-    private static String[] getDescriptionFromCursor(Cursor cursor) {
-        String[] descr = null;
+    //обработка курсора для метода выбора массива элементов прогноза для выбранного города
+    private static String[] getElementsFromCursor(Cursor cursor, String column) {
+        String[] elements = null;
         //попали на первую запись, плюс вернулось true, если запись есть
         if (cursor != null && cursor.moveToFirst()) {
-            descr = new String[cursor.getCount()];
+            elements = new String[cursor.getCount()];
 
             do {
-                int position = cursor.getPosition();
-                descr[position] = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+                elements[cursor.getPosition()] = cursor.getString(cursor.getColumnIndex(column));
             } while (cursor.moveToNext());
         }
-
         try {
             Objects.requireNonNull(cursor).close();
         } catch (Exception ignored) {
         }
-        return descr;
+        return elements;
     }
-    //=================================== end getAllCityTemper  ================================
-
-
-    //=================================== begin getAllCityTemper  ================================
-    //метод выбора массива температур для выбранного города
-    public static String[] getAllCityTemper(SQLiteDatabase database, String city) {
-        Log.d(TAG, "ForecastTable getAllCityTemper");
-        String dataQuery = "SELECT " + COLUMN_TEMP
-                + " FROM " + TABLE_NAME +  " WHERE " + COLUMN_CITY + " = ? ";
-        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
-        return getTempersFromCursor(cursor);
-    }
-
-    //обработка курсора для метода вывода списка городов getAllCitys()
-    private static String[] getTempersFromCursor(Cursor cursor) {
-        String[] tempers = null;
-        //попали на первую запись, плюс вернулось true, если запись есть
-        if(cursor != null && cursor.moveToFirst()) {
-            tempers = new String[cursor.getCount()];
-
-            do {
-                int position = cursor.getPosition();
-                tempers[position] = cursor.getString(cursor.getColumnIndex(COLUMN_TEMP));
-            } while (cursor.moveToNext());
-        }
-
-        try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
-        return tempers;
-    }
-    //=================================== end getAllCityTemper  ================================
-
-    //=================================== begin getAllCityDays  ================================
-    //метод выбора массива дат прогноза для выбранного города
-    public static String[] getAllCityDays(SQLiteDatabase database, String city) {
-        Log.d(TAG, "ForecastTable getAllCityDays");
-        String dataQuery = "SELECT " + COLUMN_DATA_UPDATE
-                + " FROM " + TABLE_NAME +  " WHERE " + COLUMN_CITY + " = ? ";
-        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
-        return getDaysFromCursor(cursor);
-    }
-
-    //обработка курсора для метода вывода списка городов getAllCitys()
-    private static String[] getDaysFromCursor(Cursor cursor) {
-        String[] days = null;
-        //попали на первую запись, плюс вернулось true, если запись есть
-        if(cursor != null && cursor.moveToFirst()) {
-            days = new String[cursor.getCount()];
-
-            do {
-                int position = cursor.getPosition();
-                days[position] = cursor.getString(cursor.getColumnIndex(COLUMN_DATA_UPDATE));
-            } while (cursor.moveToNext());
-        }
-
-        try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
-        return days;
-    }
-    //=================================== end getAllCityDays  ================================
-
-    //=================================== begin getAllCityIcons  ================================
-    //метод выбора массива иконок  прогноза для выбранного города
-    public static String[] getAllCityIcons(SQLiteDatabase database, String city) {
-        Log.d(TAG, "ForecastTable getAllCityIcons");
-        String dataQuery = "SELECT " + COLUMN_ICON
-                + " FROM " + TABLE_NAME +  " WHERE " + COLUMN_CITY + " = ? ";
-        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
-        return getIconsFromCursor(cursor);
-    }
-
-    //обработка курсора для метода вывода списка городов getAllCitys()
-    private static String[] getIconsFromCursor(Cursor cursor) {
-        String[] icons = null;
-        //попали на первую запись, плюс вернулось true, если запись есть
-        if(cursor != null && cursor.moveToFirst()) {
-            icons = new String[cursor.getCount()];
-
-            do {
-                int position = cursor.getPosition();
-                icons[position] = cursor.getString(cursor.getColumnIndex(COLUMN_ICON));
-            } while (cursor.moveToNext());
-        }
-
-        try { Objects.requireNonNull(cursor).close(); } catch (Exception ignored) {}
-        return icons;
-    }
-    //=================================== end getAllCityIcons  ================================
+    //=================================== end getArrayElementsForCityForecast  ================================
 }
