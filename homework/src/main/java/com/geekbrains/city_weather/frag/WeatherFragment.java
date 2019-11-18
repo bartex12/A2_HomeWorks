@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.adapter.DataForecast;
-import com.geekbrains.city_weather.adapter.WeatherCardAdapter;
+import com.geekbrains.city_weather.adapter.DataForecastNew;
+import com.geekbrains.city_weather.adapter.WeatherCardAdapterNew;
 import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
@@ -84,11 +83,11 @@ public class WeatherFragment extends Fragment {
     private TextView textViewTemper;
     private TextView textViewWind;
     private TextView textViewPressure;
-    private TextView textViewIcon;
     private String[] descriptions = new String[5];
     private String[] dates = new String[5];
     private String[] temperuteres = new String[5];
     private String[] iconArray = new String[5];
+    private Drawable[] iconArrayNew = new Drawable[5];
     private ImageView imageView;
     //когда сервис BackgroundWeatherService отправляет уведомление о завершении
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
@@ -125,7 +124,6 @@ public class WeatherFragment extends Fragment {
 
         initDB();
         initViews(view);
-        initFonts();
         getActualDataOfCityWeather();
     }
 
@@ -187,14 +185,7 @@ public class WeatherFragment extends Fragment {
         textViewTemper = view.findViewById(R.id.textViewDescrNew);
         textViewWind = view.findViewById(R.id.textViewWind);
         textViewPressure = view.findViewById(R.id.textViewPressure);
-        textViewIcon = view.findViewById(R.id.textViewDayNew);
         imageView = view.findViewById(R.id.imageView);
-    }
-
-    private void initFonts() {
-        Typeface weatherFont = Typeface.createFromAsset(
-                Objects.requireNonNull(getActivity()).getAssets(), "fonts/weather.ttf");
-        textViewIcon.setTypeface(weatherFont);
     }
 
     //если последнее обновление в базе не найдено - идем на погодный сайт, а если
@@ -262,12 +253,17 @@ public class WeatherFragment extends Fragment {
     //получаем данные прогноза из базы и запускаем с ними RecyclerView
     private void getDataforecastForCity(String currentCity){
 
-         dates = ForecastTable.getAllCityDays(database, currentCity);
-         temperuteres = ForecastTable.getAllCityTemper(database, currentCity);
-         iconArray = ForecastTable.getAllCityIcons(database, currentCity);
-         Log.d(TAG, "+++  getDataforecastForCity dates = " + dates[0]);
-         Log.d(TAG, "+++  getDataforecastForCity temperuteres = " + temperuteres[0]);
-         Log.d(TAG, "+++  getDataforecastForCity icon = " + iconArray[0]);
+        descriptions = ForecastTable.getAllCityDescription(database, currentCity);
+        dates = ForecastTable.getAllCityDays(database, currentCity);
+        temperuteres = ForecastTable.getAllCityTemper(database, currentCity);
+        iconArray = ForecastTable.getAllCityIcons(database, currentCity);
+        iconArrayNew = getIconsArrayForecast(iconArray);  //Drawable
+
+        Log.d(TAG, "+++  getDataforecastForCity descriptions = " + descriptions[0]);
+        Log.d(TAG, "+++  getDataforecastForCity dates = " + dates[0]);
+        Log.d(TAG, "+++  getDataforecastForCity temperuteres = " + temperuteres[0]);
+        Log.d(TAG, "+++  getDataforecastForCity icon = " + iconArray[0]);
+
          //запускаем RecyclerView с данными из базы данных
         initRecyclerView();
     }
@@ -296,8 +292,8 @@ public class WeatherFragment extends Fragment {
         ft.commit();
     }
 
+    //получаем погодные  из модели погоды для города modelWeather.name
     private void renderWeather(WeatherRequestRestModel modelWeather) {
-
         try {
             setPlaceName(modelWeather.name, modelWeather.sys.country);
             String lastUpdate = setUpdatedText(modelWeather.dt);
@@ -308,10 +304,6 @@ public class WeatherFragment extends Fragment {
 
             Drawable drawable = getIconFromIconCod(modelWeather.weather[0].icon);
             imageView.setImageDrawable(drawable);
-
-//            loadImageWithPicasso(modelWeather.weather[0].id,
-//                    modelWeather.sys.sunrise * 1000,
-//                    modelWeather.sys.sunset * 1000);
 
             //добавляем или заменяем погодные данные для города modelWeather.name
             addOrReplaceCityWeather(modelWeather, lastUpdate, windSpeed, pressure, temperature);
@@ -344,28 +336,31 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    //получаем погодные данные пятидневного прогноза из модели прогноза
     private void renderForecast(ForecastRequestRestModel modelForecast) {
         descriptions = getDescrArray(modelForecast);
         dates = getDateArray(modelForecast);
         temperuteres = getTempArray(modelForecast);
-        iconArray = getIconsArray(getIdArray(modelForecast));
+        iconArray = getIconsArray(modelForecast);  //String - коды иконок
+        iconArrayNew = getIconsArrayForecast(iconArray);  //Drawable - изображения иконок
 
+        //добавляем или изменяем данные прогноза в базе данных для города modelForecast.city.name
         addOrReplaceCityForecast(modelForecast);
-        //после формирования данных для адаптера инициализируем сам адаптер
+        //теперь, после формирования данных для адаптера, инициализируем сам адаптер
         initRecyclerView();
     }
 
     private void addOrReplaceCityForecast(ForecastRequestRestModel modelForecast){
-        //получаем массив объектов класса DataForecast
-        DataForecast[] dataForecasts = getDataForecasts();
+        //получаем массив объектов класса DataForecastNew
+        DataForecastNew[] dataForecastsNew = getDataForecastsNew();
         ArrayList<String> ara = ForecastTable.getAllCitysFromForecast(database);
         boolean isCityInBase = ara.contains(modelForecast.city.name);
         if (isCityInBase){
             Log.e(TAG, "addOrReplaceCityWeather replaceCityForecast");
-           ForecastTable.replaceCityForecast(modelForecast.city.name, dataForecasts, database);
+            ForecastTable.replaceCityForecast(modelForecast.city.name, dataForecastsNew, database);
         }else {
             Log.e(TAG, "addOrReplaceCityWeather addCityForecast");
-            ForecastTable.addCityForecast(dataForecasts, database, modelForecast.city.name);
+            ForecastTable.addCityForecast(dataForecastsNew, database, modelForecast.city.name);
         }
     }
 
@@ -399,27 +394,13 @@ public class WeatherFragment extends Fragment {
 
     //получение описания погоды для прогноза на 5 дней
     private String[] getDescrArray(ForecastRequestRestModel modelForecast) {
-        Log.e(TAG, "getDescrArray list.length = " + modelForecast.list.length);
-        //double[] descr = new double[5];
+
         String[] descrArray = new String[5];
         for (int i = 0; i < descrArray.length; i++) {
             descrArray[i] = modelForecast.list[7 + 8 * i].weather[0].description;
-//            tempArray[i] = String.format(Locale.getDefault(),
-//                    "%.1f", descr[i]) + "\u2103";
         }
         Log.e(TAG, "descrArray.length = " + descrArray.length);
         return descrArray;
-    }
-
-    //получение массива id для прогноза на 5 дней
-    private int[] getIdArray(ForecastRequestRestModel modelForecast) {
-        Log.e(TAG, "getIdArray list.length = " + modelForecast.list.length);
-        int[] id = new int[5];
-        for (int i = 0; i < id.length; i++) {
-            id[i] = modelForecast.list[7 + 8 * i].weather[0].id;
-        }
-        Log.e(TAG, "id.length = " + id.length);
-        return id;
     }
 
     //получение массива id для прогноза на 5 дней
@@ -433,30 +414,35 @@ public class WeatherFragment extends Fragment {
         return icons;
     }
 
-
     //загрузка данных в адаптер списка прогноза на 5 дней
     private void  initRecyclerView(){
 
-        DataForecast[] data = getDataForecasts();
+        DataForecastNew[] data = getDataForecastsNew();
 
-        ArrayList<DataForecast> list = new ArrayList<>(data.length);
+        ArrayList<DataForecastNew> list = new ArrayList<>(data.length);
         list.addAll(Arrays.asList(data));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false);
-        WeatherCardAdapter cardAdapter = new WeatherCardAdapter(getActivity(), list);
+        WeatherCardAdapterNew cardAdapter = new WeatherCardAdapterNew(getActivity(), list);
 
         recyclerViewForecast.setLayoutManager(layoutManager);
         recyclerViewForecast.setAdapter(cardAdapter);
     }
 
-    private DataForecast[] getDataForecasts() {
-        return new DataForecast[] {
-                new DataForecast(dates[0], iconArray[0], temperuteres[0]),
-                new DataForecast(dates[1], iconArray[1], temperuteres[1]),
-                new DataForecast(dates[2], iconArray[2], temperuteres[2]),
-                new DataForecast(dates[3], iconArray[3], temperuteres[3]),
-                new DataForecast(dates[4], iconArray[4], temperuteres[4])};
+    private DataForecastNew[] getDataForecastsNew() {
+        return new DataForecastNew[]{
+                new DataForecastNew(descriptions[0], temperuteres[0], dates[0],
+                        iconArray[0], iconArrayNew[0]),
+                new DataForecastNew(descriptions[1], temperuteres[1], dates[1],
+                        iconArray[1], iconArrayNew[1]),
+                new DataForecastNew(descriptions[2], temperuteres[2], dates[2],
+                        iconArray[2], iconArrayNew[2]),
+                new DataForecastNew(descriptions[3], temperuteres[3], dates[3],
+                        iconArray[3], iconArrayNew[3]),
+                new DataForecastNew(descriptions[4], temperuteres[4], dates[4],
+                        iconArray[4], iconArrayNew[4])
+        };
     }
 
     // показываем/скрываем данные о ветре и давлении
@@ -484,6 +470,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void setDescription(String description){
+        //описание
         textViewWhether.setText(description);
     }
 
@@ -510,108 +497,13 @@ public class WeatherFragment extends Fragment {
     }
 
     //получение массива символов иконок  для отображения в пятидневном прогнозе погоды
-    private String[] getIconsArray(int[] actualId) {
-
-        String[] icons = new String[5];
-        try {
-            for (int i = 0; i < icons.length; i++) {
-                int id = actualId[i] / 100;
-
-                if (actualId[i] == 800) {
-                    icons[i] = getString(R.string.weather_sunny);
-                } else {
-                    switch (id) {
-                        case 2: {
-                            icons[i] = getString(R.string.weather_thunder);
-                            break;
-                        }
-                        case 3: {
-                            icons[i] = getString(R.string.weather_drizzle);
-                            break;
-                        }
-                        case 5: {
-                            icons[i] = getString(R.string.weather_rainy);
-                            break;
-                        }
-                        case 6: {
-                            icons[i] = getString(R.string.weather_snowy);
-                            break;
-                        }
-                        case 7: {
-                            icons[i] = getString(R.string.weather_foggy);
-                            break;
-                        }
-                        case 8: {
-                            icons[i] = getString(R.string.weather_cloudy);
-                            break;
-                        }
-                    }
-                }
-            }
-            Log.e(TAG, "icons.length = " + icons.length);
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-        return icons;
-    }
-
-    //получение массива символов иконок  для отображения в пятидневном прогнозе погоды
-    private Drawable[] getIconsArrayNew(String[] iconCod) {
+    private Drawable[] getIconsArrayForecast(String[] iconCod) {
 
         Drawable[] icons = new Drawable[5];
         try {
             for (int i = 0; i < icons.length; i++) {
-
-                switch (iconCod[i]) {
-                    case "01d":
-                    case "01n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.clear_sky_01d);
-                        break;
-                    case "02d":
-                    case "02n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.few_clouds_02d);
-                        break;
-                    case "03d":
-                    case "03n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.scattered_clouds_03d);
-                        break;
-                    case "04d":
-                    case "04n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.broken_clouds_04d);
-                        break;
-                    case "09d":
-                    case "09n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.shower_rain_09d);
-                        break;
-                    case "10d":
-                    case "10n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.rain_10d);
-                        break;
-                    case "11d":
-                    case "11n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.thunderstorm_11d);
-                        break;
-                    case "13d":
-                    case "13n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.snow_13d);
-                        break;
-                    case "50d":
-                    case "50n":
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.mist_50d);
-                        break;
-                    default:
-                        icons[i] = Objects.requireNonNull(getActivity())
-                                .getResources().getDrawable(R.drawable.what);
-                }
+                //получаем рисунок иконки из ресурсов в зависимости от кода иконки
+                icons[i] = getDrawable(iconCod[i]);
             }
             Log.e(TAG, "icons.length = " + icons.length);
         } catch (IllegalStateException e) {
@@ -623,7 +515,18 @@ public class WeatherFragment extends Fragment {
     //получение изображений иконок в зависимости от кода иконки на сайте openweathermap.org
     // для вывода иконок при обращении к базе данных на устройстве
     private Drawable getIconFromIconCod(String iconCod) {
+        //получаем рисунок иконки из ресурсов в зависимости от кода иконки
+        Drawable drawable = getDrawable(iconCod);
+        //еслиальбомная ориентация, не показываем рисунок иконки на экране
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            imageView.setVisibility(View.GONE);
+        }
+        return drawable;
+    }
+
+    private Drawable getDrawable(String iconCod) {
         Drawable drawable;
+
         switch (iconCod) {
             case "01d":
             case "01n":
@@ -667,65 +570,17 @@ public class WeatherFragment extends Fragment {
                 break;
             case "50d":
             case "50n":
+//                icons[i] = Objects.requireNonNull(getActivity())
+//                            .getResources().getDrawable(R.drawable.mist_50d);
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.mist_50d);
+                        .getResources().getDrawable(R.drawable.foggy_50d);
                 break;
             default:
                 drawable = Objects.requireNonNull(getActivity())
                         .getResources().getDrawable(R.drawable.what);
         }
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            imageView.setVisibility(View.GONE);
-        }
         return drawable;
     }
-//
-//    //получение пути к иконкам на сайте openweathermap.org для вывода с Picasso
-//    private String getWeatherIconPath(int actualId, long sunrise, long sunset) {
-//        int id = actualId / 100;
-//        String icon = "";
-//
-//        if (actualId == 800) {
-//            long currentTime = new Date().getTime();
-//            if (currentTime >= sunrise && currentTime < sunset) {
-//                icon = "http://openweathermap.org/img/wn/01d@2x.png";
-//            } else {
-//                icon = "http://openweathermap.org/img/wn/01d@2x.png";
-//            }
-//        } else {
-//            switch (id) {
-//                case 2: {
-//                    icon = "http://openweathermap.org/img/wn/11d@2x.png";
-//                    break;
-//                }
-//                case 3: {
-//                    icon = "http://openweathermap.org/img/wn/09d@2x.png";
-//                    break;
-//                }
-//                case 5: {
-//                    icon = "http://openweathermap.org/img/wn/10d@2x.png";
-//                    break;
-//                }
-//                case 6: {
-//                    icon = "http://openweathermap.org/img/wn/13d@2x.png";
-//                    break;
-//                }
-//                case 7: {
-//                    icon = "http://openweathermap.org/img/wn/50d@2x.png";
-//                    break;
-//                }
-//                case 8: {
-//                    icon = "http://openweathermap.org/img/wn/04d@2x.png";
-//                    break;
-//                }
-//            }
-//        }
-//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            imageView.setVisibility(View.GONE);
-//        }
-//        return icon;
-//    }
 
     private class ServiceFinishedReceiver extends BroadcastReceiver {
 

@@ -1,10 +1,10 @@
 package com.geekbrains.city_weather.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.geekbrains.city_weather.R;
@@ -16,10 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class WeatherCardAdapter extends RecyclerView.Adapter<WeatherCardAdapter.CardViewHolder> {
 
-    private ArrayList<DataForecast> dataForecast = new ArrayList<>();
+    private ArrayList<DataForecastNew> dataForecast = new ArrayList<>();
     private Context context;
 
-    public WeatherCardAdapter(Context context, ArrayList<DataForecast> data) {
+    public WeatherCardAdapter(Context context, ArrayList<DataForecastNew> data) {
         if (data != null) {
             dataForecast = data;
         }
@@ -30,15 +30,16 @@ public class WeatherCardAdapter extends RecyclerView.Adapter<WeatherCardAdapter.
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_list_forecast, parent, false);
+                .inflate(R.layout.item_list_forecast_new, parent, false);
         return new CardViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        holder.textViewDay.setText(dataForecast.get(position).day);
-        holder.textViewIcon.setText(dataForecast.get(position).weatherIcon);
-        holder.textViewTemper.setText(dataForecast.get(position).temp);
+        holder.textViewDescr.setText(dataForecast.get(position).getDescriptionNew());
+        holder.textViewTemper.setText(dataForecast.get(position).getTempNew());
+        holder.textViewDay.setText(dataForecast.get(position).getDayNew());
+        holder.imageView.setImageDrawable(dataForecast.get(position).getIconDraw());
     }
 
     @Override
@@ -48,18 +49,17 @@ public class WeatherCardAdapter extends RecyclerView.Adapter<WeatherCardAdapter.
 
     class CardViewHolder extends RecyclerView.ViewHolder {
 
+        TextView textViewDescr;
         TextView textViewTemper;
         TextView textViewDay;
-        TextView textViewIcon;
+        ImageView imageView;
 
         CardViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewTemper = itemView.findViewById(R.id.textViewTemper);
-            textViewDay = itemView.findViewById(R.id.textViewDay);
-            textViewIcon = itemView.findViewById(R.id.textViewIcon);
-            Typeface weatherFont = Typeface.createFromAsset(
-                    context.getAssets(), "fonts/weather.ttf");
-            textViewIcon.setTypeface(weatherFont);
+            textViewDescr = itemView.findViewById(R.id.textViewDescrNew);
+            textViewTemper = itemView.findViewById(R.id.textViewTemperNew);
+            textViewDay = itemView.findViewById(R.id.textViewDayNew);
+            imageView = itemView.findViewById(R.id.imageViewIcon);
         }
     }
 }

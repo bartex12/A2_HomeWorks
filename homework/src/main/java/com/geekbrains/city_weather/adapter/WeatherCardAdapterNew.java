@@ -38,7 +38,7 @@ public class WeatherCardAdapterNew extends RecyclerView.Adapter<WeatherCardAdapt
         holder.textViewDescrNew.setText(dataForecastNew.get(position).getDescriptionNew());
         holder.textViewTemperNew.setText(dataForecastNew.get(position).getTempNew());
         holder.textViewDayNew.setText(dataForecastNew.get(position).getDayNew());
-        holder.imageViewIcon.setImageDrawable(dataForecastNew.get(position).getWeatherIconNew());
+        holder.imageViewIcon.setImageDrawable(dataForecastNew.get(position).getIconDraw());
     }
 
     @Override

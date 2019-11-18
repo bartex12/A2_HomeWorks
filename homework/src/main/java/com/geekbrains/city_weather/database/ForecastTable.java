@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.geekbrains.city_weather.adapter.DataForecast;
+import com.geekbrains.city_weather.adapter.DataForecastNew;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -16,15 +16,16 @@ public class ForecastTable {
     private final static String TABLE_NAME = "forecast";
     private final static String COLUMN_ID= "_id";
     private final static String COLUMN_CITY = "city";
+    private final static String COLUMN_DESCRIPTION = "description";
     private final static String COLUMN_TEMP = "temper";
     private final static String COLUMN_DATA_UPDATE = "dataUpdate";
     private final static String COLUMN_ICON = "iconCod";
-
 
     static void createTable(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE " + TABLE_NAME + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_CITY + " TEXT NOT NULL,"
+                + COLUMN_DESCRIPTION + " TEXT NOT NULL,"
                 + COLUMN_TEMP + " TEXT NOT NULL,"
                 + COLUMN_DATA_UPDATE + " TEXT NOT NULL,"
                 + COLUMN_ICON + " TEXT NOT NULL);");
@@ -35,16 +36,16 @@ public class ForecastTable {
     }
 
     //добавление массива данных пятидневного прогноза для  заданного города city
-    public static void addCityForecast(DataForecast[] dataForecast, SQLiteDatabase database, String city) {
+    public static void addCityForecast(DataForecastNew[] dataForecast, SQLiteDatabase database, String city) {
 
-        for (DataForecast forecast : dataForecast) {
-
+        for (DataForecastNew forecast : dataForecast) {
             ContentValues values = new ContentValues();
 
             values.put(COLUMN_CITY, city);
-            values.put(COLUMN_TEMP, forecast.getTemp());
-            values.put(COLUMN_DATA_UPDATE, forecast.getDay());
-            values.put(COLUMN_ICON, forecast.getWeatherIcon());
+            values.put(COLUMN_DESCRIPTION, forecast.getDescriptionNew());
+            values.put(COLUMN_TEMP, forecast.getTempNew());
+            values.put(COLUMN_DATA_UPDATE, forecast.getDayNew());
+            values.put(COLUMN_ICON, forecast.getIconCodNew());
 
             database.insert(TABLE_NAME, null, values);
         }
@@ -52,7 +53,7 @@ public class ForecastTable {
 
     //замена массива строк с данными прогноза на 5 дней для заданного города cityToEdit
     public static void replaceCityForecast(String cityToEdit,
-                                           DataForecast[] newDataForecast, SQLiteDatabase database) {
+                                           DataForecastNew[] newDataForecast, SQLiteDatabase database) {
         Log.d(TAG, "ForecastTable replaceCityForecast");
 
         //сначала получаем массив id нужных нам строк для замены данных с городом cityToEdit
@@ -64,9 +65,10 @@ public class ForecastTable {
         //потом перебираем эти строки и меняем данные
         for (int i = 0; i<newDataForecast.length; i++){
             ContentValues values = new ContentValues();
-            values.put(COLUMN_TEMP, newDataForecast[i].getTemp());
-            values.put(COLUMN_DATA_UPDATE, newDataForecast[i].getDay());
-            values.put(COLUMN_ICON, newDataForecast[i].getWeatherIcon());
+            values.put(COLUMN_DESCRIPTION, newDataForecast[i].getDescriptionNew());
+            values.put(COLUMN_TEMP, newDataForecast[i].getTempNew());
+            values.put(COLUMN_DATA_UPDATE, newDataForecast[i].getDayNew());
+            values.put(COLUMN_ICON, newDataForecast[i].getIconCodNew());
 
             database.update(TABLE_NAME, values,
                     COLUMN_CITY + " = ? " + " AND " + COLUMN_ID + " =? " ,
@@ -139,6 +141,38 @@ public class ForecastTable {
         return idList == null ? new ArrayList<Integer>(0) : idList;
     }
     //=================================== end getAllCityIds  ================================
+
+    //=================================== begin getAllCityTemper  ================================
+    //метод выбора массива описаний для выбранного города
+    public static String[] getAllCityDescription(SQLiteDatabase database, String city) {
+        Log.d(TAG, "ForecastTable getAllCityDescription");
+        String dataQuery = "SELECT " + COLUMN_DESCRIPTION
+                + " FROM " + TABLE_NAME + " WHERE " + COLUMN_CITY + " = ? ";
+        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
+        return getDescriptionFromCursor(cursor);
+    }
+
+    //обработка курсора для метода вывода списка описаний getAllCityDescription()
+    private static String[] getDescriptionFromCursor(Cursor cursor) {
+        String[] descr = null;
+        //попали на первую запись, плюс вернулось true, если запись есть
+        if (cursor != null && cursor.moveToFirst()) {
+            descr = new String[cursor.getCount()];
+
+            do {
+                int position = cursor.getPosition();
+                descr[position] = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+            } while (cursor.moveToNext());
+        }
+
+        try {
+            Objects.requireNonNull(cursor).close();
+        } catch (Exception ignored) {
+        }
+        return descr;
+    }
+    //=================================== end getAllCityTemper  ================================
+
 
     //=================================== begin getAllCityTemper  ================================
     //метод выбора массива температур для выбранного города

@@ -7,16 +7,16 @@ public class DataForecastNew {
     private String descriptionNew;
     private String tempNew;
     private String dayNew;
-    private Drawable weatherIconNew;
     private String iconCodNew;
+    private Drawable iconDraw;
 
     public DataForecastNew(String descriptionNew, String tempNew,
-                           String dayNew, Drawable weatherIconNew, String iconCodNew) {
+                           String dayNew, String iconCodNew, Drawable iconDraw) {
         this.descriptionNew = descriptionNew;
         this.tempNew = tempNew;
         this.dayNew = dayNew;
-        this.weatherIconNew = weatherIconNew;
         this.iconCodNew = iconCodNew;
+        this.iconDraw = iconDraw;
     }
 
     public String getDescriptionNew() {
@@ -31,11 +31,11 @@ public class DataForecastNew {
         return dayNew;
     }
 
-    public Drawable getWeatherIconNew() {
-        return weatherIconNew;
-    }
-
     public String getIconCodNew() {
         return iconCodNew;
+    }
+
+    public Drawable getIconDraw() {
+        return iconDraw;
     }
 }
