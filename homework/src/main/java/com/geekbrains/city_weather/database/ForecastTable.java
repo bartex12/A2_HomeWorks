@@ -57,11 +57,13 @@ public class ForecastTable {
         Log.d(TAG, "ForecastTable replaceCityForecast");
 
         //сначала получаем массив id нужных нам строк для замены данных с городом cityToEdit
-        ArrayList<Integer> list = getAllCityIds(database);
+        ArrayList<Integer> list = getAllCityIds(database, cityToEdit);
         int[] id = new int[list.size()];
         for(int i = 0; i < list.size(); i++){
             id[i] = list.get(i);
         }
+        Log.d(TAG, "ForecastTable replaceCityForecast всего строк = " + id.length);
+
         //потом перебираем эти строки и меняем данные
         for (int i = 0; i<newDataForecast.length; i++){
             ContentValues values = new ContentValues();
@@ -70,9 +72,8 @@ public class ForecastTable {
             values.put(COLUMN_DATA_UPDATE, newDataForecast[i].getDayNew());
             values.put(COLUMN_ICON, newDataForecast[i].getIconCodNew());
 
-            database.update(TABLE_NAME, values,
-                    COLUMN_CITY + " = ? " + " AND " + COLUMN_ID + " =? " ,
-                    new String[]{cityToEdit, String.valueOf(id[i])});
+            database.update(TABLE_NAME, values, COLUMN_ID + " = ? ",
+                    new String[]{String.valueOf(id[i])});
         }
     }
 
@@ -115,12 +116,12 @@ public class ForecastTable {
     //=================================== end getAllCitysFromForecast  ================================
 
     //=================================== begin getAllCityIds  ================================
-    //метод выбора списка id
-    private static ArrayList<Integer> getAllCityIds(SQLiteDatabase database) {
+    //метод выбора списка id для города
+    private static ArrayList<Integer> getAllCityIds(SQLiteDatabase database, String city) {
         Log.d(TAG, "ForecastTable getAllCityIds");
         String dataQuery = "SELECT " + COLUMN_ID
-                + " FROM " + TABLE_NAME;
-        Cursor cursor = database.rawQuery(dataQuery, null);
+                + " FROM " + TABLE_NAME + " WHERE " + COLUMN_CITY + " = ? ";
+        Cursor cursor = database.rawQuery(dataQuery, new String[]{city});
         return getIdsFromCursor(cursor);
     }
 

@@ -87,11 +87,20 @@ public class WeatherFragment extends Fragment {
     private TextView textViewTemper;
     private TextView textViewWind;
     private TextView textViewPressure;
+
     private String[] descriptions = new String[5];
     private String[] dates = new String[5];
     private String[] temperuteres = new String[5];
     private String[] iconArray = new String[5];
     private Drawable[] iconArrayNew = new Drawable[5];
+
+    private String[] descriptionsModel = new String[5];
+    private String[] datesModel = new String[5];
+    private String[] temperuteresModel = new String[5];
+    private String[] iconArrayModel = new String[5];
+    private Drawable[] iconArrayNewModel = new Drawable[5];
+
+
     private ImageView imageView;
     //когда сервис BackgroundWeatherService отправляет уведомление о завершении
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
@@ -200,9 +209,9 @@ public class WeatherFragment extends Fragment {
         String currentCity = CityLab.getCity();
         //получаем список городов из базы
         ArrayList<String> ara = WeatherTable.getAllCitys(database);
-        Log.d(TAG, "WeatherFragment getDataOfCityWeather delta = " + ara.toString());
+        Log.d(TAG, "WeatherFragment getActualDataOfCityWeather ara = " + ara.toString());
         boolean isCityInDatabase = ara.contains(currentCity);
-        Log.d(TAG, "WeatherFragment getDataOfCityWeather isCityInDatabase = " + isCityInDatabase);
+        Log.d(TAG, "WeatherFragment getActualDataOfCityWeather isCityInDatabase = " + isCityInDatabase);
 
         //если текущий город есть в базе
         if (isCityInDatabase){
@@ -274,7 +283,7 @@ public class WeatherFragment extends Fragment {
         Log.d(TAG, "+++  getDataforecastForCity icon = " + iconArray[0]);
 
          //запускаем RecyclerView с данными из базы данных
-        initRecyclerView();
+        initRecyclerViewWithDatabaseData();
     }
 
     // Показать погоду во фрагменте в альбомной ориентации
@@ -345,23 +354,23 @@ public class WeatherFragment extends Fragment {
         }
     }
 
-    //получаем погодные данные пятидневного прогноза из модели прогноза
+    //получаем погодные данные пятидневного прогноза ИЗ МОДЕЛИ ПРОГНОЗА
     private void renderForecast(ForecastRequestRestModel modelForecast) {
-        descriptions = getDescrArray(modelForecast);
-        dates = getDateArray(modelForecast);
-        temperuteres = getTempArray(modelForecast);
-        iconArray = getIconsArray(modelForecast);  //String - коды иконок
-        iconArrayNew = getIconsArrayForecast(iconArray);  //Drawable - изображения иконок
+        descriptionsModel = getDescrArray(modelForecast);
+        datesModel = getDateArray(modelForecast);
+        temperuteresModel = getTempArray(modelForecast);
+        iconArrayModel = getIconsArray(modelForecast);  //String - коды иконок
+        iconArrayNewModel = getIconsArrayForecast(iconArrayModel);  //Drawable - изображения иконок
 
         //добавляем или изменяем данные прогноза в базе данных для города modelForecast.city.name
         addOrReplaceCityForecast(modelForecast);
         //теперь, после формирования данных для адаптера, инициализируем сам адаптер
-        initRecyclerView();
+        initRecyclerViewWithDataFromModel();
     }
 
     private void addOrReplaceCityForecast(ForecastRequestRestModel modelForecast){
         //получаем массив объектов класса DataForecastNew
-        DataForecastNew[] dataForecastsNew = getDataForecastsNew();
+        DataForecastNew[] dataForecastsNew = getDataForecastsFromModel();
         ArrayList<String> ara = ForecastTable.getAllCitysFromForecast(database);
         boolean isCityInBase = ara.contains(modelForecast.city.name);
         if (isCityInBase){
@@ -423,10 +432,10 @@ public class WeatherFragment extends Fragment {
         return icons;
     }
 
-    //загрузка данных в адаптер списка прогноза на 5 дней
-    private void  initRecyclerView(){
+    //загрузка данных из модели в адаптер списка прогноза на 5 дней
+    private void initRecyclerViewWithDataFromModel() {
 
-        DataForecastNew[] data = getDataForecastsNew();
+        DataForecastNew[] data = getDataForecastsFromModel();
 
         ArrayList<DataForecastNew> list = new ArrayList<>(data.length);
         list.addAll(Arrays.asList(data));
@@ -439,7 +448,38 @@ public class WeatherFragment extends Fragment {
         recyclerViewForecast.setAdapter(cardAdapter);
     }
 
-    private DataForecastNew[] getDataForecastsNew() {
+    //загрузка данных из базы данных в адаптер списка прогноза на 5 дней
+    private void initRecyclerViewWithDatabaseData() {
+
+        DataForecastNew[] data = getDataForecastsFromDatabase();
+
+        ArrayList<DataForecastNew> list = new ArrayList<>(data.length);
+        list.addAll(Arrays.asList(data));
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
+        WeatherCardAdapterNew cardAdapter = new WeatherCardAdapterNew(getActivity(), list);
+
+        recyclerViewForecast.setLayoutManager(layoutManager);
+        recyclerViewForecast.setAdapter(cardAdapter);
+    }
+
+    private DataForecastNew[] getDataForecastsFromModel() {
+        return new DataForecastNew[]{
+                new DataForecastNew(descriptionsModel[0], temperuteresModel[0], datesModel[0],
+                        iconArrayModel[0], iconArrayNewModel[0]),
+                new DataForecastNew(descriptionsModel[1], temperuteresModel[1], datesModel[1],
+                        iconArrayModel[1], iconArrayNewModel[1]),
+                new DataForecastNew(descriptionsModel[2], temperuteresModel[2], datesModel[2],
+                        iconArrayModel[2], iconArrayNewModel[2]),
+                new DataForecastNew(descriptionsModel[3], temperuteresModel[3], datesModel[3],
+                        iconArrayModel[3], iconArrayNewModel[3]),
+                new DataForecastNew(descriptionsModel[4], temperuteresModel[4], datesModel[4],
+                        iconArrayModel[4], iconArrayNewModel[4])
+        };
+    }
+
+    private DataForecastNew[] getDataForecastsFromDatabase() {
         return new DataForecastNew[]{
                 new DataForecastNew(descriptions[0], temperuteres[0], dates[0],
                         iconArray[0], iconArrayNew[0]),
