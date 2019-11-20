@@ -186,7 +186,7 @@ public class WeatherFragment extends Fragment {
         cityTextView = view.findViewById(R.id.greetingsTextView);
         textViewLastUpdate = view.findViewById(R.id.textViewLastUpdate);
         textViewWhether = view.findViewById(R.id.textViewWhether);
-        textViewTemper = view.findViewById(R.id.textViewDescrNew);
+        textViewTemper = view.findViewById(R.id.textViewTemper);
         textViewWind = view.findViewById(R.id.textViewWind);
         textViewPressure = view.findViewById(R.id.textViewPressure);
         imageView = view.findViewById(R.id.imageView);
@@ -208,6 +208,7 @@ public class WeatherFragment extends Fragment {
         if (isCityInDatabase){
             //получаем время последнего обновления погоды по этому городу
             long lastUpdateOfCityWeather = WeatherTable.getLastUpdate(database, currentCity);
+            //вычисляем разницу в мс между текущим временем и  временем последнего обновления
             long delta = System.currentTimeMillis()/1000 - lastUpdateOfCityWeather;
             Log.d(TAG, "*** WeatherFragment getDataOfCityWeather /1000 = "
                     + System.currentTimeMillis()/1000);
@@ -215,7 +216,6 @@ public class WeatherFragment extends Fragment {
                     + lastUpdateOfCityWeather);
             Log.d(TAG, "*** WeatherFragment getDataOfCityWeather delta = " + delta);
 
-            //  для отладки время сделать 600 секунд
             //  если прошло больше заданного времени (1 час) с последнего обновления
             if (delta>3600){
                 //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
@@ -540,49 +540,49 @@ public class WeatherFragment extends Fragment {
             case "01d":
             case "01n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.clear_sky_01d);
+                        .getResources().getDrawable(R.drawable.clear_sky_01d_);
                 break;
             case "02d":
             case "02n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.few_clouds_02d);
+                        .getResources().getDrawable(R.drawable.few_clouds_02d_);
                 break;
             case "03d":
             case "03n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.scattered_clouds_03d);
+                        .getResources().getDrawable(R.drawable.scattered_clouds_03d_);
                 break;
             case "04d":
             case "04n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.broken_clouds_04d);
+                        .getResources().getDrawable(R.drawable.broken_clouds_04d_);
                 break;
             case "09d":
             case "09n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.shower_rain_09d);
+                        .getResources().getDrawable(R.drawable.shower_rain_09d_);
                 break;
             case "10d":
             case "10n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.rain_10d);
+                        .getResources().getDrawable(R.drawable.rain_10d_);
                 break;
             case "11d":
             case "11n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.thunderstorm_11d);
+                        .getResources().getDrawable(R.drawable.thunderstorm_11d_);
                 break;
             case "13d":
             case "13n":
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.snow_13d);
+                        .getResources().getDrawable(R.drawable.snow_13d_);
                 break;
             case "50d":
             case "50n":
 //                icons[i] = Objects.requireNonNull(getActivity())
 //                            .getResources().getDrawable(R.drawable.mist_50d);
                 drawable = Objects.requireNonNull(getActivity())
-                        .getResources().getDrawable(R.drawable.foggy_50d);
+                        .getResources().getDrawable(R.drawable.mist_50d_);
                 break;
             default:
                 drawable = Objects.requireNonNull(getActivity())

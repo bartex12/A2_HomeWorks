@@ -22,6 +22,7 @@ import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
+
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
@@ -132,17 +134,20 @@ public class MainActivity extends AppCompatActivity implements
     //действия с фрагментами в зависимости от ориентации телефона
     private void doOrientationBasedActions() {
         Log.d(TAG,"MainActivity doOrientationBasedActions");
-        // Определение, можно ли будет расположить рядом данные в другом фрагменте
-        boolean isExistWhetherFrag = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
-        //если альбомная
-        if (isExistWhetherFrag) {
+        //если альбомная ориентация - можно будет расположить рядом данные в другом фрагменте
+        if (isLandscape()) {
             setChooseCityFrag();
             setWeatherFragment(R.id.content_super_r);
             //а если портретная
         } else {
             setWeatherFragment(R.id.content_super);
         }
+    }
+
+    // Определение, можно ли будет расположить рядом данные в другом фрагменте
+    private boolean isLandscape() {
+        return getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     private void initviews() {
@@ -179,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initFab() {
         FloatingActionButton fab = findViewById(R.id.fab_main);
+        if (isLandscape()) {
+            fab.hide();
+        }
         fab.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {

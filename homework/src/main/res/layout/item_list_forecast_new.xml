@@ -2,7 +2,6 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -20,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:gravity="start"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -28,8 +27,8 @@
                 style="@style/WhetherCityStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
                 android:text="@string/sunny" />
 
             <TextView
@@ -37,8 +36,8 @@
                 style="@style/GreetingCityStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
                 android:text="@string/temperature" />
 
             <TextView
@@ -46,8 +45,8 @@
                 style="@style/WhetherCityStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
                 android:text="@string/_18" />
 
         </LinearLayout>
@@ -61,11 +60,12 @@
 
             <ImageView
                 android:id="@+id/imageViewIcon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="start|end"
                 android:contentDescription="@string/icon_descr"
-                tools:srcCompat="@drawable/clear_sky_01d" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
         </LinearLayout>
 
     </LinearLayout>

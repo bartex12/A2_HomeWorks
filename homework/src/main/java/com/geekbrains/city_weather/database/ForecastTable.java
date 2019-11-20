@@ -82,7 +82,7 @@ public class ForecastTable {
         database.delete(TABLE_NAME, COLUMN_CITY + " =? ", new String[]{cityToDelete});
     }
 
-    //удаление пвсех записей из таблицы прогноза на 5 дней
+    //удаление всех записей из таблицы прогноза на 5 дней
     public static void deleteAllDataFromCityForecast(SQLiteDatabase database) {
 
         database.delete(TABLE_NAME, null, null);
