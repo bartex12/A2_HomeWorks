@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.geekbrains.city_weather.adapter.DataForecastNew;
+import com.geekbrains.city_weather.adapter.DataForecast;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -36,9 +36,9 @@ public class ForecastTable {
     }
 
     //добавление массива данных пятидневного прогноза для  заданного города city
-    public static void addCityForecast(DataForecastNew[] dataForecast, SQLiteDatabase database, String city) {
+    public static void addCityForecast(DataForecast[] dataForecast, SQLiteDatabase database, String city) {
 
-        for (DataForecastNew forecast : dataForecast) {
+        for (DataForecast forecast : dataForecast) {
             ContentValues values = new ContentValues();
 
             values.put(COLUMN_CITY, city);
@@ -53,7 +53,7 @@ public class ForecastTable {
 
     //замена массива строк с данными прогноза на 5 дней для заданного города cityToEdit
     public static void replaceCityForecast(String cityToEdit,
-                                           DataForecastNew[] newDataForecast, SQLiteDatabase database) {
+                                           DataForecast[] newDataForecast, SQLiteDatabase database) {
         Log.d(TAG, "ForecastTable replaceCityForecast");
 
         //сначала получаем массив id нужных нам строк для замены данных с городом cityToEdit
@@ -116,7 +116,7 @@ public class ForecastTable {
     //=================================== end getAllCitysFromForecast  ================================
 
     //=================================== begin getAllCityIds  ================================
-    //метод выбора списка id для города
+    //метод выбора списка id для города city
     private static ArrayList<Integer> getAllCityIds(SQLiteDatabase database, String city) {
         Log.d(TAG, "ForecastTable getAllCityIds");
         String dataQuery = "SELECT " + COLUMN_ID

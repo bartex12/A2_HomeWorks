@@ -15,10 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class WeatherCardAdapterNew extends RecyclerView.Adapter<WeatherCardAdapterNew.CardViewHolder> {
-    private ArrayList<DataForecastNew> dataForecastNew = new ArrayList<>();
+    private ArrayList<DataForecast> dataForecastNew = new ArrayList<>();
     private Context context;
 
-    public WeatherCardAdapterNew(Context context, ArrayList<DataForecastNew> data) {
+    public WeatherCardAdapterNew(Context context, ArrayList<DataForecast> data) {
         if (data != null) {
             dataForecastNew = data;
         }

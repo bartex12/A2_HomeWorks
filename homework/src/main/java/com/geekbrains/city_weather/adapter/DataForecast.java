@@ -1,25 +1,41 @@
 package com.geekbrains.city_weather.adapter;
 
+import android.graphics.drawable.Drawable;
+
 public class DataForecast {
-    String day;
-    String weatherIcon;
-    String temp;
 
-    public DataForecast(String day, String weatherIcon, String temp) {
-        this.day = day;
-        this.weatherIcon = weatherIcon;
-        this.temp = temp;
+    private String descriptionNew;
+    private String tempNew;
+    private String dayNew;
+    private String iconCodNew;
+    private Drawable iconDraw;
+
+    public DataForecast(String descriptionNew, String tempNew,
+                        String dayNew, String iconCodNew, Drawable iconDraw) {
+        this.descriptionNew = descriptionNew;
+        this.tempNew = tempNew;
+        this.dayNew = dayNew;
+        this.iconCodNew = iconCodNew;
+        this.iconDraw = iconDraw;
     }
 
-    public String getDay() {
-        return day;
+    public String getDescriptionNew() {
+        return descriptionNew;
     }
 
-    public String getWeatherIcon() {
-        return weatherIcon;
+    public String getTempNew() {
+        return tempNew;
     }
 
-    public String getTemp() {
-        return temp;
+    public String getDayNew() {
+        return dayNew;
+    }
+
+    public String getIconCodNew() {
+        return iconCodNew;
+    }
+
+    public Drawable getIconDraw() {
+        return iconDraw;
     }
 }

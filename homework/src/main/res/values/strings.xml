@@ -57,7 +57,7 @@
     <string name="txt">text</string>
     <string name="is_in_list">Such a city is already on the list</string>
     <string name="remove_city">Remove city</string>
-    <string name="tlf_problems">There were problems sending the request. Phone restart may be required</string>
+    <string name="tlf_problems">There were problems sending the request. Maybe no internet</string>
     <string name="avtoAdd">Default city added automatically</string>
     <string name="sunny">Sunny</string>
     <string name="_18">November 18th</string>

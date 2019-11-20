@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.adapter.DataForecastNew;
+import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapterNew;
 import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
@@ -369,8 +369,8 @@ public class WeatherFragment extends Fragment {
     }
 
     private void addOrReplaceCityForecast(ForecastRequestRestModel modelForecast){
-        //получаем массив объектов класса DataForecastNew
-        DataForecastNew[] dataForecastsNew = getDataForecastsFromModel();
+        //получаем массив объектов класса DataForecast
+        DataForecast[] dataForecastsNew = getDataForecastsFromModel();
         ArrayList<String> ara = ForecastTable.getAllCitysFromForecast(database);
         boolean isCityInBase = ara.contains(modelForecast.city.name);
         if (isCityInBase){
@@ -435,9 +435,9 @@ public class WeatherFragment extends Fragment {
     //загрузка данных из модели в адаптер списка прогноза на 5 дней
     private void initRecyclerViewWithDataFromModel() {
 
-        DataForecastNew[] data = getDataForecastsFromModel();
+        DataForecast[] data = getDataForecastsFromModel();
 
-        ArrayList<DataForecastNew> list = new ArrayList<>(data.length);
+        ArrayList<DataForecast> list = new ArrayList<>(data.length);
         list.addAll(Arrays.asList(data));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
@@ -451,9 +451,9 @@ public class WeatherFragment extends Fragment {
     //загрузка данных из базы данных в адаптер списка прогноза на 5 дней
     private void initRecyclerViewWithDatabaseData() {
 
-        DataForecastNew[] data = getDataForecastsFromDatabase();
+        DataForecast[] data = getDataForecastsFromDatabase();
 
-        ArrayList<DataForecastNew> list = new ArrayList<>(data.length);
+        ArrayList<DataForecast> list = new ArrayList<>(data.length);
         list.addAll(Arrays.asList(data));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
@@ -464,32 +464,32 @@ public class WeatherFragment extends Fragment {
         recyclerViewForecast.setAdapter(cardAdapter);
     }
 
-    private DataForecastNew[] getDataForecastsFromModel() {
-        return new DataForecastNew[]{
-                new DataForecastNew(descriptionsModel[0], temperuteresModel[0], datesModel[0],
+    private DataForecast[] getDataForecastsFromModel() {
+        return new DataForecast[]{
+                new DataForecast(descriptionsModel[0], temperuteresModel[0], datesModel[0],
                         iconArrayModel[0], iconArrayNewModel[0]),
-                new DataForecastNew(descriptionsModel[1], temperuteresModel[1], datesModel[1],
+                new DataForecast(descriptionsModel[1], temperuteresModel[1], datesModel[1],
                         iconArrayModel[1], iconArrayNewModel[1]),
-                new DataForecastNew(descriptionsModel[2], temperuteresModel[2], datesModel[2],
+                new DataForecast(descriptionsModel[2], temperuteresModel[2], datesModel[2],
                         iconArrayModel[2], iconArrayNewModel[2]),
-                new DataForecastNew(descriptionsModel[3], temperuteresModel[3], datesModel[3],
+                new DataForecast(descriptionsModel[3], temperuteresModel[3], datesModel[3],
                         iconArrayModel[3], iconArrayNewModel[3]),
-                new DataForecastNew(descriptionsModel[4], temperuteresModel[4], datesModel[4],
+                new DataForecast(descriptionsModel[4], temperuteresModel[4], datesModel[4],
                         iconArrayModel[4], iconArrayNewModel[4])
         };
     }
 
-    private DataForecastNew[] getDataForecastsFromDatabase() {
-        return new DataForecastNew[]{
-                new DataForecastNew(descriptions[0], temperuteres[0], dates[0],
+    private DataForecast[] getDataForecastsFromDatabase() {
+        return new DataForecast[]{
+                new DataForecast(descriptions[0], temperuteres[0], dates[0],
                         iconArray[0], iconArrayNew[0]),
-                new DataForecastNew(descriptions[1], temperuteres[1], dates[1],
+                new DataForecast(descriptions[1], temperuteres[1], dates[1],
                         iconArray[1], iconArrayNew[1]),
-                new DataForecastNew(descriptions[2], temperuteres[2], dates[2],
+                new DataForecast(descriptions[2], temperuteres[2], dates[2],
                         iconArray[2], iconArrayNew[2]),
-                new DataForecastNew(descriptions[3], temperuteres[3], dates[3],
+                new DataForecast(descriptions[3], temperuteres[3], dates[3],
                         iconArray[3], iconArrayNew[3]),
-                new DataForecastNew(descriptions[4], temperuteres[4], dates[4],
+                new DataForecast(descriptions[4], temperuteres[4], dates[4],
                         iconArray[4], iconArrayNew[4])
         };
     }
@@ -619,8 +619,6 @@ public class WeatherFragment extends Fragment {
                 break;
             case "50d":
             case "50n":
-//                icons[i] = Objects.requireNonNull(getActivity())
-//                            .getResources().getDrawable(R.drawable.mist_50d);
                 drawable = Objects.requireNonNull(getActivity())
                         .getResources().getDrawable(R.drawable.mist_50d_);
                 break;
