@@ -93,20 +93,16 @@ public class WeatherFragment extends Fragment {
     private String[] dates = new String[5];
     private String[] temperuteres = new String[5];
     private String[] iconArray = new String[5];
-    private Drawable[] iconArrayNew = new Drawable[5];
-
     private String[] descriptionsModel = new String[5];
     private String[] datesModel = new String[5];
     private String[] temperuteresModel = new String[5];
     private String[] iconArrayModel = new String[5];
     private Drawable[] iconArrayNewModel = new Drawable[5];
-
-
+    private Drawable[] iconArrayNew = new Drawable[5];
     private ImageView imageView;
     //когда сервис BackgroundWeatherService отправляет уведомление о завершении
     //мы его получаем и в  методе onReceive обрабатываем погодные данные
     private ServiceFinishedReceiver receiver = new ServiceFinishedReceiver();
-
     private SQLiteDatabase database;
 
 
@@ -197,6 +193,13 @@ public class WeatherFragment extends Fragment {
         textViewLastUpdate = view.findViewById(R.id.textViewLastUpdate);
         textViewWhether = view.findViewById(R.id.textViewWhether);
         textViewTemper = view.findViewById(R.id.textViewTemper);
+        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            //в портретной ориентации устанавливаем отступы
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) textViewTemper
+                    .getLayoutParams();
+            mlp.setMargins(0, 50, 0, 80);
+        }
         textViewWind = view.findViewById(R.id.textViewWind);
         textViewPressure = view.findViewById(R.id.textViewPressure);
         imageView = view.findViewById(R.id.imageView);
@@ -523,9 +526,13 @@ public class WeatherFragment extends Fragment {
         return updatedText;
     }
 
+    //описание
     private void setDescription(String description){
-        //описание
-        textViewWhether.setText(description);
+        StringBuilder builder = new StringBuilder(description);
+        //выставляем первый символ заглавным, если это буква
+        if (Character.isAlphabetic(description.codePointAt(0)))
+            builder.setCharAt(0, Character.toUpperCase(description.charAt(0)));
+        textViewWhether.setText(builder.toString());
     }
 
     private String setWind(float wind){

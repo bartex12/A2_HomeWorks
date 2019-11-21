@@ -122,6 +122,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.d(TAG, "onPrepareOptionsMenu");
+
+        //в альбомной  ориентации отключаем пункт меню - есть кнопка а в альбомной включаем
+        if (isLandscape()) {
+            //включаем видимость если произошли изменения данных -удаление, изменение, добавление
+            menu.findItem(R.id.navigation_choose_city).setVisible(true);
+        } else {
+            //включаем видимость если произошли изменения данных -удаление, изменение, добавление
+            menu.findItem(R.id.navigation_choose_city).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         Log.d(TAG, "MainActivity onOptionsItemSelected id = " + id);
