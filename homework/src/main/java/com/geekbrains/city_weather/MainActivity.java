@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
         // а если есть - получаем для местоположения устройства город с кодом страны
         // и пишем в Preferences, затем читаем в onResume() в методе initSingletons()
         //если разрешения НЕ ДАНЫ пользователем, выводим Toast и продолжаем работу,
-        // используя в качестве текущего города последний запомненный в Preferences/или дефолтный/
+        // используя в качестве текущего города последний запомненный ранее в Preferences/или дефолтный/
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
