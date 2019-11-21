@@ -29,6 +29,7 @@ import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -315,6 +316,7 @@ public class WeatherFragment extends Fragment {
         try {
             setPlaceName(modelWeather.name, modelWeather.sys.country);
             String lastUpdate = setUpdatedText(modelWeather.dt);
+            Log.e(TAG, "**--** setUpdated lastUpdate= " + lastUpdate);
             setDescription(modelWeather.weather[0].description);
             String windSpeed = setWind(modelWeather.wind.speed);
             String pressure = setPressure(modelWeather.main.pressure);
@@ -385,16 +387,19 @@ public class WeatherFragment extends Fragment {
     //получение даты для прогноза на 5 дней
     private String[] getDateArray(ForecastRequestRestModel modelForecast) {
         Log.e(TAG, "getDateArray list.length = " + modelForecast.list.length);
-        DateFormat dateFormat = DateFormat.getDateInstance();
+
+        //форматируем, чтобы был день недели и числос месяцем
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMM", Locale.getDefault());
         long dateTime;
         String[] dateTimeArray = new String[5];
         for (int i = 0; i < dateTimeArray.length; i++) {
             dateTime = modelForecast.list[7 + 8 * i].dt;
             dateTimeArray[i] = dateFormat.format(new Date(dateTime * 1000));
         }
-        Log.e(TAG, "dateTimeArray.length = " + dateTimeArray.length);
+        Log.e(TAG, "**-** dateTimeArray[0] = " + dateTimeArray[0]);
         return dateTimeArray;
     }
+
 
     //получение температуры для прогноза на 5 дней
     private String[] getTempArray(ForecastRequestRestModel modelForecast){
