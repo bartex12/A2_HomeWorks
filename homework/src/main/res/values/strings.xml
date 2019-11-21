@@ -63,4 +63,8 @@
     <string name="_18">November 18th</string>
     <string name="icon_descr">icon</string>
 
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBU-yFz18nPaBwqBDedSGvUkfBgDYEQ0zc</string>
+    <string name="permission">Permission received</string>
+    <string name="notPermission">The app does not have permission to locate</string>
+
 </resources>

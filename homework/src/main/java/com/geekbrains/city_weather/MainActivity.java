@@ -1,15 +1,23 @@
 package com.geekbrains.city_weather;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
@@ -23,12 +31,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
@@ -41,18 +53,37 @@ import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMEN
 
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener{
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "33333";
     private DrawerLayout drawer;
     private boolean doubleBackToExitPressedOnce;
     SQLiteDatabase database;
+    LocationManager mLocManager = null;
+    boolean permissionsGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG,"MainActivity onCreate");
+        Log.d(TAG, "MainActivity onCreate");
+
+        // если разрешений на определение местоположения нет, запрашиваем их,
+        // а если есть - получаем для местоположения устройства город с кодом страны
+        // и пишем в Preferences, затем читаем в onResume() в методе initSingletons()
+        //если разрешения НЕ ДАНЫ пользователем, выводим Toast и продолжаем работу,
+        // используя в качестве текущего города последний запомненный в Preferences/или дефолтный/
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+        } else {
+            //работаем с местоположением устройства
+            getMyLocationCity();
+        }
 
         initDB();
         initFab();
@@ -63,7 +94,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG,"MainActivity onResume");
+        Log.d(TAG, "MainActivity onResume");
+
         initSingletons();
         doOrientationBasedActions();
     }
@@ -71,14 +103,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(TAG,"MainActivity onStop");
+        Log.d(TAG, "MainActivity onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //сохранение списка делаем в onStop - при нажатии на среднюю кнопку телефона onStop->onResume
-        Log.d(TAG,"MainActivity onDestroy");
+        Log.d(TAG, "MainActivity onDestroy");
         //закрываем базу данных
         database.close();
     }
@@ -116,12 +148,50 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    public void initDB(){
+    private void getMyLocationCity() {
+        // получаем экземпляр LocationManager
+        mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //получаем местонахождение
+        @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
+                .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        //получаем из местоположения город с кодом страны
+        String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
+        //пишем найденный город с кодом страны  в preferences,
+        // чтобы прочитать в initSingletons() и сделать текущим
+        saveMyLocation(cityWithCountryCod);
+
+        Log.d(TAG, "MainActivity onResume  Местоположение: " + cityWithCountryCod +
+                " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude()
+        );
+    }
+
+    //получаем из местоположения город с кодом страны
+    private String getCityWithCountryCod(Location loc) {
+        String cityWithCountryCod = null;
+        Geocoder geo = new Geocoder(getBaseContext(), Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geo.getFromLocation(loc.getLatitude(),
+                    loc.getLongitude(), 1);
+            if (addresses.size() > 0) {
+                String cityName = addresses.get(0).getLocality();
+                String countryCod = addresses.get(0).getCountryCode();
+                //получаем город с кодом страны
+                cityWithCountryCod = cityName + ", " + countryCod;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cityWithCountryCod;
+    }
+
+    public void initDB() {
         database = new WeatherDataBaseHelper(this).getWritableDatabase();
     }
 
     private void initSingletons() {
-        Log.d(TAG,"MainActivity initSingletons");
+        Log.d(TAG, "MainActivity initSingletons");
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting = PreferenceManager.getDefaultSharedPreferences(this);
         //это последний запомненный город из Preferences
@@ -133,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //действия с фрагментами в зависимости от ориентации телефона
     private void doOrientationBasedActions() {
-        Log.d(TAG,"MainActivity doOrientationBasedActions");
+        Log.d(TAG, "MainActivity doOrientationBasedActions");
         //если альбомная ориентация - можно будет расположить рядом данные в другом фрагменте
         if (isLandscape()) {
             setChooseCityFrag();
@@ -187,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         if (isLandscape()) {
             fab.hide();
         }
-        fab.setOnClickListener( new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setChooseCityFrag();
@@ -238,36 +308,36 @@ public class MainActivity extends AppCompatActivity implements
         return false;
     }
 
-        @Override
+    @Override
     public void onBackPressed() {
 
         //если фрагмент - это WeatherFragment то isChooseCityFrag = true
         boolean isChooseCityFrag = getSupportFragmentManager().findFragmentById(
-                R.id.content_super)instanceof WeatherFragment;
+                R.id.content_super) instanceof WeatherFragment;
         Log.d(TAG, "MainActivity onBackPressed isChooseCityFrag = " + isChooseCityFrag);
 
-            //если шторка открыта- закрываем
+        //если шторка открыта- закрываем
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
             //если isChooseCityFrag==true то меняем фрагмент на ChooseCityFrag
-        } else if (isChooseCityFrag){
+        } else if (isChooseCityFrag) {
             setChooseCityFrag();
             //иначе мы в ChooseCityFrag и выходим из программы при повторном
             //нажатии в течение 2 секунд
             // http://qaru.site/questions/30293/clicking-the-back-button-twice-to-exit-an-activity
-        }else{
+        } else {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
                 return;
             }
             this.doubleBackToExitPressedOnce = true;
-                Snackbar.make(findViewById(android.R.id.content),
-                        Objects.requireNonNull(this).getString(R.string.forExit),
-                        Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content),
+                    Objects.requireNonNull(this).getString(R.string.forExit),
+                    Snackbar.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    doubleBackToExitPressedOnce=false;
+                    doubleBackToExitPressedOnce = false;
                 }
             }, 2000);
         }
@@ -307,5 +377,32 @@ public class MainActivity extends AppCompatActivity implements
             if (Character.isAlphabetic(text.charAt(i)) && Character.isSpaceChar(text.charAt(i - 1)))
                 builder.setCharAt(i, Character.toUpperCase(text.charAt(i)));
         return builder.toString();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            permissionsGranted = (grantResults.length > 1
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+            if (permissionsGranted) {
+                Toast.makeText(this, getResources().getString(R.string.permission),
+                        Toast.LENGTH_SHORT).show();
+                recreate();
+            } else {
+                Toast.makeText(this,
+                        getResources().getString(R.string.notPermission),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void saveMyLocation(String cityWithCountryCod) {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(LAST_CITY, cityWithCountryCod);
+        editor.apply();
     }
 }

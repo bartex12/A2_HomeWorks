@@ -52,5 +52,7 @@
     <string name="sunny">Солнечно</string>
     <string name="_18">18 ноября</string>
     <string name="icon_descr">Иконка</string>
+    <string name="permission">Разрешение получено</string>
+    <string name="notPermission">Приложение не имеет разрешения на определение местонахождения</string>
 
 </resources>
