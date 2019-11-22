@@ -171,15 +171,17 @@ public class MainActivity extends AppCompatActivity implements
         //получаем местонахождение
         @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
                 .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        //получаем из местоположения город с кодом страны
-        String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
-        //пишем найденный город с кодом страны  в preferences,
-        // чтобы прочитать в initSingletons() и сделать текущим
-        saveMyLocation(cityWithCountryCod);
-
-        Log.d(TAG, "MainActivity onResume  Местоположение: " + cityWithCountryCod +
-                " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude()
-        );
+        if (loc != null) {
+            //получаем из местоположения город с кодом страны
+            String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
+            //пишем найденный город с кодом страны  в preferences,
+            // чтобы прочитать в initSingletons() и сделать текущим
+            saveMyLocation(cityWithCountryCod);
+            Log.d(TAG, "MainActivity getMyLocationCity  город =" + cityWithCountryCod +
+                    " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude());
+        } else {
+            Log.d(TAG, "MainActivity getMyLocationCity  Location loc = null");
+        }
     }
 
     //получаем из местоположения город с кодом страны
