@@ -1,16 +1,12 @@
 package com.geekbrains.city_weather;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
+//import android.Manifest;
+//import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
@@ -32,16 +27,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
@@ -52,6 +43,17 @@ import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_T
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
+//import android.content.pm.PackageManager;
+//import android.location.Address;
+//import android.location.Geocoder;
+//import android.location.Location;
+//import android.location.LocationManager;
+//import android.widget.Toast;
+//import java.io.IOException;
+//import java.util.List;
+//import java.util.Locale;
+//import androidx.core.app.ActivityCompat;
+
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -60,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout drawer;
     private boolean doubleBackToExitPressedOnce;
     SQLiteDatabase database;
-    LocationManager mLocManager = null;
-    boolean permissionsGranted;
+//    LocationManager mLocManager = null;
+//    boolean permissionsGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +76,17 @@ public class MainActivity extends AppCompatActivity implements
         // и пишем в Preferences, затем читаем в onResume() в методе initSingletons()
         //если разрешения НЕ ДАНЫ пользователем, выводим Toast и продолжаем работу,
         // используя в качестве текущего города последний запомненный ранее в Preferences/или дефолтный/
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-        } else {
-            //работаем с местоположением устройства
-            getMyLocationCity();
-        }
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+//                            Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+//        } else {
+//            //работаем с местоположением устройства
+//            getMyLocationCity();
+//        }
 
         initDB();
         initFab();
@@ -164,43 +166,43 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private void getMyLocationCity() {
-        // получаем экземпляр LocationManager
-        mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//    private void getMyLocationCity() {
+//        // получаем экземпляр LocationManager
+//        mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//
+//        //получаем местонахождение
+//        @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
+//                .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+//        //получаем из местоположения город с кодом страны
+//        String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
+//        //пишем найденный город с кодом страны  в preferences,
+//        // чтобы прочитать в initSingletons() и сделать текущим
+//        saveMyLocation(cityWithCountryCod);
+//
+//        Log.d(TAG, "MainActivity onResume  Местоположение: " + cityWithCountryCod +
+//                " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude()
+//        );
+//    }
 
-        //получаем местонахождение
-        @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
-                .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        //получаем из местоположения город с кодом страны
-        String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
-        //пишем найденный город с кодом страны  в preferences,
-        // чтобы прочитать в initSingletons() и сделать текущим
-        saveMyLocation(cityWithCountryCod);
-
-        Log.d(TAG, "MainActivity onResume  Местоположение: " + cityWithCountryCod +
-                " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude()
-        );
-    }
-
-    //получаем из местоположения город с кодом страны
-    private String getCityWithCountryCod(Location loc) {
-        String cityWithCountryCod = null;
-        Geocoder geo = new Geocoder(getBaseContext(), Locale.getDefault());
-        List<Address> addresses;
-        try {
-            addresses = geo.getFromLocation(loc.getLatitude(),
-                    loc.getLongitude(), 1);
-            if (addresses.size() > 0) {
-                String cityName = addresses.get(0).getLocality();
-                String countryCod = addresses.get(0).getCountryCode();
-                //получаем город с кодом страны
-                cityWithCountryCod = cityName + ", " + countryCod;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return cityWithCountryCod;
-    }
+//    //получаем из местоположения город с кодом страны
+//    private String getCityWithCountryCod(Location loc) {
+//        String cityWithCountryCod = null;
+//        Geocoder geo = new Geocoder(getBaseContext(), Locale.getDefault());
+//        List<Address> addresses;
+//        try {
+//            addresses = geo.getFromLocation(loc.getLatitude(),
+//                    loc.getLongitude(), 1);
+//            if (addresses.size() > 0) {
+//                String cityName = addresses.get(0).getLocality();
+//                String countryCod = addresses.get(0).getCountryCode();
+//                //получаем город с кодом страны
+//                cityWithCountryCod = cityName + ", " + countryCod;
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return cityWithCountryCod;
+//    }
 
     public void initDB() {
         database = new WeatherDataBaseHelper(this).getWritableDatabase();
@@ -417,30 +419,30 @@ public class MainActivity extends AppCompatActivity implements
         return builder.toString();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == 100) {
-            permissionsGranted = (grantResults.length > 1
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED)
-                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
-            if (permissionsGranted) {
-                Toast.makeText(this, getResources().getString(R.string.permission),
-                        Toast.LENGTH_SHORT).show();
-                recreate();
-            } else {
-                Toast.makeText(this,
-                        getResources().getString(R.string.notPermission),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void saveMyLocation(String cityWithCountryCod) {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(LAST_CITY, cityWithCountryCod);
-        editor.apply();
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        if (requestCode == 100) {
+//            permissionsGranted = (grantResults.length > 1
+//                    && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+//                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+//            if (permissionsGranted) {
+//                Toast.makeText(this, getResources().getString(R.string.permission),
+//                        Toast.LENGTH_SHORT).show();
+//                recreate();
+//            } else {
+//                Toast.makeText(this,
+//                        getResources().getString(R.string.notPermission),
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+//
+//    private void saveMyLocation(String cityWithCountryCod) {
+//        SharedPreferences preferences =
+//                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putString(LAST_CITY, cityWithCountryCod);
+//        editor.apply();
+//    }
 }
