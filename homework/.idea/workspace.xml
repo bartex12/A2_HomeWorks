@@ -18,8 +18,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="542f984b-6456-4317-8c20-ccec589a7b16" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,6 +56,16 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="18" selection-start-column="18" selection-end-column="18" />
+            </state>
+          </provider>
+          <provider editor-type-id="android-manifest" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-500">
@@ -74,38 +87,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://D:/AndroidSDK/sources/android-24/android/os/Handler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="92" selection-start-line="92" selection-end-line="92" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://D:/AndroidSDK/sources/android-24/android/app/LoadedApk.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="1148" selection-start-line="1148" selection-end-line="1148" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://D:/AndroidSDK/sources/android-24/android/os/Looper.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="177" column="5" selection-start-line="177" selection-start-column="5" selection-end-line="177" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6460">
-              <caret line="43" selection-start-line="43" selection-start-column="2" selection-end-line="43" selection-end-column="42" />
+            <state relative-caret-position="-3520">
+              <caret line="41" column="74" selection-start-line="41" selection-start-column="74" selection-end-line="41" selection-end-column="74" />
             </state>
           </provider>
         </entry>
@@ -175,7 +170,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/TestActivity.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout-land/activity_main.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/dialogs/AboutDialog.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/res/layout-land/content_main.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/ic_help_outline_black_24dp.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/ic_settings_black_24dp.xml" />
@@ -212,7 +206,6 @@
         <option value="$PROJECT_DIR$/src/main/res/menu/activity_help_menu.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/HelpActivity.java" />
         <option value="$PROJECT_DIR$/src/main/res/raw/weather_help.txt" />
-        <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/activity_help.xml" />
         <option value="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values/arrays.xml" />
@@ -222,6 +215,8 @@
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -248,6 +243,11 @@
             <path>
               <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
               <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="manifests" type="f94875db:AndroidManifestsGroupNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
             </path>
             <path>
@@ -255,47 +255,6 @@
               <item name="homework" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="city_weather" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="frag" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="services" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="drawable" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="mipmap" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-            <path>
-              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
-              <item name="homework" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
             <path>
               <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
@@ -719,7 +678,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574429233169</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="приложение без гео блока - проверить как пройдёт тестирование на google play">
+      <created>1574437717891</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1574437717892</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TodoView">
@@ -733,7 +699,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
       <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.46714032" visible="true" weight="0.20647773" />
@@ -752,7 +717,7 @@
       <window_info anchor="bottom" id="Terminal" order="4" weight="0.3285968" />
       <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50040483" side_tool="true" weight="0.4742451" />
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.3285968" />
-      <window_info anchor="bottom" id="Build" order="7" weight="0.26287743" />
+      <window_info anchor="bottom" id="Build" order="7" visible="true" weight="0.26287743" />
       <window_info anchor="bottom" id="Android Profiler" order="8" />
       <window_info anchor="bottom" id="Messages" order="9" weight="0.3285968" />
       <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.49959514" weight="0.84547067" />
@@ -768,7 +733,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="сделал SnackBar на диалоговом окне выбора города&#10;если ничего не введено" />
     <MESSAGE value="сделал контекстное меню для списка городов во фрагменте&#10;//************************************************************************************&#10;//Действия по подключению контекстного меню для пунктов списка RecyclerView во фрагменте&#10;// 1 в onViewCreated фрагмента пишем registerForContextMenu(recyclerViewMarked);&#10;// 2 делаем метод onContextItemSelected(MenuItem item) как обычно (см ниже)&#10;// 3 ViewHolder адаптера implements View.OnCreateContextMenuListener и реализуем&#10;//onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) интерфейса&#10;// 4 присваиваем слушатель адаптеру во ViewHolder itemView.setOnCreateContextMenuListener(this);&#10;// 5  устанавливаем слушатель для долгих нажатий в onBindViewHolder адаптера&#10;// holder.textView.setOnLongClickListener(new View.OnLongClickListener()&#10;//*******************************************************************" />
     <MESSAGE value="перннёс иконку назад в деталях на правую сторону под большой палец&#10;добавил в настройки О приложении на главный экран" />
     <MESSAGE value="сделал Добавить город в toolBar и на плавающую кнопку" />
@@ -793,19 +757,13 @@
     <MESSAGE value="программно изменяю интервалы отступа некоторых View в портретной ориентации,&#10;чтобы лучше смотрелось на экране&#10;сделал 1 букву в описании погоды заглавной" />
     <MESSAGE value="добавил данные в пункты справка, поделиться, оценить&#10;написал короткую cправку в raw" />
     <MESSAGE value="удалил ненужный код" />
-    <option name="LAST_COMMIT_MESSAGE" value="удалил ненужный код" />
+    <MESSAGE value="приложение без гео блока - проверить как пройдёт тестирование на google play" />
+    <option name="LAST_COMMIT_MESSAGE" value="приложение без гео блока - проверить как пройдёт тестирование на google play" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Users/Public/.gradle/caches/modules-2/files-2.1/androidx.core/core/1.1.0/4ae37fad1fe95b42aa47a720908df37ba5d3c85e/core-1.1.0-sources.jar!/androidx/core/app/ActivityCompat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="109" column="16" selection-start-line="109" selection-start-column="16" selection-end-line="109" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/rest/IOpenWeather.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
@@ -827,13 +785,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="9" column="56" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-160">
-          <caret line="22" column="66" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="66" />
         </state>
       </provider>
     </entry>
@@ -1059,14 +1010,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/res/drawable/autumn4.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
-          <caret line="19" selection-start-line="19" selection-end-line="19" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_help.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -1096,13 +1039,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="103">
           <caret line="1148" selection-start-line="1148" selection-end-line="1148" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/AndroidSDK/sources/android-24/android/os/Handler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="92" selection-start-line="92" selection-end-line="92" />
         </state>
       </provider>
     </entry>
@@ -1137,13 +1073,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5180">
-          <caret line="304" column="49" selection-start-line="304" selection-start-column="49" selection-end-line="304" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
@@ -1153,8 +1082,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6460">
-          <caret line="43" selection-start-line="43" selection-start-column="2" selection-end-line="43" selection-end-column="42" />
+        <state relative-caret-position="-3520">
+          <caret line="41" column="74" selection-start-line="41" selection-start-column="74" selection-end-line="41" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/release/homework-release.apk">
+      <provider selected="true" editor-type-id="apk-viewer" />
+    </entry>
+    <entry file="file://D:/AndroidSDK/sources/android-24/android/os/Handler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="92" selection-start-line="92" selection-end-line="92" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5180">
+          <caret line="304" column="49" selection-start-line="304" selection-start-column="49" selection-end-line="304" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="18" selection-start-column="18" selection-end-column="18" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
         </state>
       </provider>
     </entry>
