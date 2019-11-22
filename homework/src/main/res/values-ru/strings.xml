@@ -3,7 +3,7 @@
     <string name="ms">м/с</string>
     <string name="press">Давление</string>
     <string name="windSpeed">Скорость ветра</string>
-    <string name="about_me">Приложение сделано на расслабоне</string>
+
     <string name="ok">OK</string>
     <string name="NotShow">Не показывать давление и скорость ветра</string>
     <string name="show">Показать давление и скорость ветра</string>
@@ -18,21 +18,17 @@
     <string name="lastUpdate">Обновлено: </string>
     <string name="inputCitiName">Введите название города</string>
     <string name="add_city">Добавить город</string>
-    <string name="add">Добавить</string>
     <string name="cancel">Назад</string>
     <string name="clear">Очистить список</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="help">Справка</string>
-    <string name="willBeHelp">Здесь будет справка</string>
     <string name="aboutAppMessage">Приложение предназначено для получения текущей погоды,
         а также пятидневного прогноза погоды для любого города мира</string>
     <string name="saint_petersburg">Saint Petersburg</string>
     <string name="addision">Дополнительно</string>
     <string name="share">Поделиться</string>
     <string name="send">Оценить</string>
-    <string name="willBeLink">Здесь будет ссылка на приложение в PlayMarket</string>
-    <string name="willBeEstimate">Здесь будет ссылка на страницу приложения в PlayMarket</string>
     <string name="weather_application">Погодное приложение</string>
     <string name="geekbrains">GeekBrains Андроид-продвинутый уровень</string>
     <string name="addParamTempHumid">Данные с сенсоров</string>

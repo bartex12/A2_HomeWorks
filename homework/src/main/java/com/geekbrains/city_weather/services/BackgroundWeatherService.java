@@ -62,25 +62,36 @@ public class BackgroundWeatherService extends IntentService {
                 if (responseForecast.body() != null && responseForecast.isSuccessful()) {
                     Log.d(TAG, "BackgroundWeatherService loadForecastEng OK" );
                     broadcastIntent.putExtra(JAVA_OBJECT_FORECAST, responseForecast.body());
+                    broadcastIntent.putExtra(JAVA_OBJECT, response.body());
+                    broadcastIntent.putExtra(IS_JSON_NULL, false);
+                    broadcastIntent.putExtra(IS_RESPONS_NULL, false);
+                    sendBroadcast(broadcastIntent);
+                    Log.d(TAG, "///////1");
+                    //а если не удалось получить ответ для прогноза- посылаем интент для
+                    // обработки ошибки ловим его в WeatherFragment
+                } else {
+                    Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO");
+                    broadcastIntent.putExtra(IS_JSON_NULL, true);
+                    broadcastIntent.putExtra(IS_RESPONS_NULL, false);
+                    sendBroadcast(broadcastIntent);
+                    Log.d(TAG, "///////2");
                 }
-                broadcastIntent.putExtra(JAVA_OBJECT, response.body());
-                broadcastIntent.putExtra(IS_JSON_NULL, false);
-                broadcastIntent.putExtra(IS_RESPONS_NULL, false);
-                sendBroadcast(broadcastIntent);
-
-                //а если не удалось получить ответ- посылаем интент для обработки ошибки
+                //а если не удалось получить ответ для погоды- город не существует, обычно
+                // посылаем интент для обработки ошибки  ловим его в WeatherFragment
             } else {
                 Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO" );
                 broadcastIntent.putExtra(IS_JSON_NULL, true);
                 broadcastIntent.putExtra(IS_RESPONS_NULL, false);
                 sendBroadcast(broadcastIntent);
+                Log.d(TAG, "///////3");
             }
+            //если телефон не может посылать запросы, response=null
         }else {
             Log.d(TAG, "BackgroundWeatherService response = null" );
             broadcastIntent.putExtra(IS_RESPONS_NULL, true);
             sendBroadcast(broadcastIntent);
+            Log.d(TAG, "///////4");
         }
-
     }
 
     private Response<ForecastRequestRestModel> getForecastResponse(String currentCity) {

@@ -77,7 +77,12 @@ import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_TEMP;
  *
  * 4) на уроке A2L6 погодные данные пишем в базу данных и читаем их из базы,
  * если с момента повторного обращения за погодными данными того же города прошло менее часа
+ *
+ * 5) на уроке A2L8 погодные данные при старте приложения берём для местоположения устройства
+ * если даны разрешения на определение местоположения.  А если не даны- то берутся данные
+ * для последнего города при предыдущем обращении
  */
+
 public class WeatherFragment extends Fragment {
     private static final String TAG = "33333";
 
@@ -658,7 +663,7 @@ public class WeatherFragment extends Fragment {
                         Toast.makeText(getActivity(), getActivity().getResources()
                                         .getString(R.string.tlf_problems),Toast.LENGTH_LONG).show();
                         Log.e(TAG, "ServiceFinishedReceiver: Возникли проблемы " +
-                                "с отправкой запроса. Возможно требуется перезагрузка телефона");
+                                "с отправкой запроса. Возможно нет интернета");
                     }else {
                         //если не удалось, то is_JSON_null = true
                         if (is_JSON_null){
