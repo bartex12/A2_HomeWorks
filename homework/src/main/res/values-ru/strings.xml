@@ -25,7 +25,8 @@
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="help">Справка</string>
     <string name="willBeHelp">Здесь будет справка</string>
-    <string name="aboutAppMessage">Погодное приложение GeekBrains Андроид продвинутый уровень</string>
+    <string name="aboutAppMessage">Приложение предназначено для получения текущей погоды,
+        а также пятидневного прогноза погоды для любого города мира</string>
     <string name="saint_petersburg">Saint Petersburg</string>
     <string name="addision">Дополнительно</string>
     <string name="share">Поделиться</string>
@@ -40,8 +41,8 @@
     <string name="will_be_fine">ВСЁ БУДЕТ ХОРОШО</string>
     <string name="No_temperature_sensor">Датчик температуры отсутствует</string>
     <string name="No_humidity_sensor">Датчик влажности отсутствует</string>
-    <string name="temperature">+ 24 </string>
-    <string name="Relative_humidity">Отн. влажность</string>
+    <string name="temperature">Температура: </string>
+    <string name="Relative_humidity">Отн. влажность: </string>
     <string name="forExit">Для выхода нажмите  НАЗАД  ещё раз</string>
     <string name="app_name">Погода</string>
     <string name="txt">текст</string>
@@ -54,5 +55,8 @@
     <string name="icon_descr">Иконка</string>
     <string name="permission">Разрешение получено</string>
     <string name="notPermission">Приложение не имеет разрешения на определение местонахождения</string>
+    <string name="weather_forecast">Погода - прогноз погоды</string>
+    <string name="Help">Справка</string>
+    <string name="help2">СПРАВКА</string>
 
 </resources>

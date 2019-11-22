@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -296,31 +297,53 @@ public class MainActivity extends AppCompatActivity implements
 
         int id = menuItem.getItemId();
 
-        if (id == R.id.nav_camera) {
-            Log.d(TAG, "MainActivity onNavigationItemSelected nav_camera");
+        if (id == R.id.nav_show_city) {
+            Log.d(TAG, "MainActivity onNavigationItemSelected nav_show_city");
             setChooseCityFrag();
             showChangecityDialogFragment();
-        } else if (id == R.id.nav_gallery) {
-            Log.d(TAG, "MainActivity onNavigationItemSelected nav_gallery");
+        } else if (id == R.id.nav_add_city) {
+            Log.d(TAG, "MainActivity onNavigationItemSelected nav_add_city");
             setChooseCityFrag();
             showAddcityDialogFragment();
         } else if (id == R.id.nav_help) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_help");
-            showMessageDialogFfagment(getResources().getString(R.string.willBeHelp));
-        } else if (id == R.id.nav_manage) {
-            Log.d(TAG, "MainActivity onNavigationItemSelected nav_tools");
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_setting) {
+            Log.d(TAG, "MainActivity onNavigationItemSelected nav_setting");
             showSettingsActivity();
         } else if (id == R.id.nav_share) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_share");
-            showMessageDialogFfagment(getResources().getString(R.string.willBeLink));
+            //поделиться - передаём ссылку на приложение в маркете
+            shareApp();
         } else if (id == R.id.nav_send) {
             Log.d(TAG, "MainActivity onNavigationItemSelected nav_send");
-            showMessageDialogFfagment(getResources().getString(R.string.willBeEstimate));
+            //оценить приложение - попадаем на страницу приложения в маркете
+            rateApp();
         }
         // Выделяем выбранный пункт меню в шторке
         menuItem.setChecked(true);
         drawer.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    private void rateApp() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(
+                "http://play.google.com/store/apps/details?id=" +
+                        getPackageName()));
+        startActivity(intent);
+    }
+
+    private void shareApp() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                getString(R.string.weather_forecast) + "\n" +
+                        "https://play.google.com/store/apps/details?id=" +
+                        getPackageName());
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     @Override
