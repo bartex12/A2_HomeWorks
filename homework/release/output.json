@@ -1,0 +1,19 @@
+[
+  {
+    "outputType": {
+      "type": "APK"
+    },
+    "apkData": {
+      "type": "MAIN",
+      "splits": [],
+      "versionCode": 5,
+      "versionName": "1.5",
+      "enabled": true,
+      "outputFile": "homework-release.apk",
+      "fullName": "release",
+      "baseName": "release"
+    },
+    "path": "homework-release.apk",
+    "properties": {}
+  }
+]
