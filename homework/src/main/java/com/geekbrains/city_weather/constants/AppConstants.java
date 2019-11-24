@@ -7,6 +7,7 @@ package com.geekbrains.city_weather.constants;
 public class AppConstants {
     public static final String CURRENT_CITY = "CURRENT_CITY";
     public static final String DEFAULT_CITY = "Saint Petersburg";
+    //public static final String DEFAULT_CITY = "Moscow";
 
     public static final String WEATHER_FRAFMENT_TAG = "WEATHER_FRAFMENT_TAG";
     public static final String MESSAGE = "MESSAGE";
