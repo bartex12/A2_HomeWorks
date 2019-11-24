@@ -54,5 +54,6 @@
     <string name="weather_forecast">Погода - прогноз погоды</string>
     <string name="Help">Справка</string>
     <string name="help2">СПРАВКА</string>
+    <string name="let_be_sun">Только погода, ничего лишнего.</string>
 
 </resources>

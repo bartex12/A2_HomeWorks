@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean doubleBackToExitPressedOnce;
     SQLiteDatabase database;
     LocationManager mLocManager = null;
-    boolean permissionsGranted;
+    boolean isGeo = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,14 +78,15 @@ public class MainActivity extends AppCompatActivity implements
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            Log.d(TAG, "MainActivity onCreate No Permitions");
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
         } else {
-            //работаем с местоположением устройства
-            getMyLocationCity();
+            Log.d(TAG, "MainActivity onCreate Yes Permitions");
+            isGeo = true;
         }
-
+        Log.d(TAG, "MainActivity onCreate после блока разрешений");
         initDB();
         initFab();
         initPrefs();
@@ -97,8 +98,16 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         Log.d(TAG, "MainActivity onResume");
 
-        initSingletons();
-        doOrientationBasedActions();
+        if (isGeo) {
+            Log.d(TAG, "MainActivity onResume isGeo = true");
+            getMyLocationCity();
+            initSingletons();
+            doOrientationBasedActions();
+        } else {
+            Log.d(TAG, "MainActivity onResume isGeo = false");
+            initSingletons();
+            doOrientationBasedActions();
+        }
     }
 
     @Override
@@ -165,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void getMyLocationCity() {
+        Log.d(TAG, "MainActivity getMyLocationCity");
         // получаем экземпляр LocationManager
         mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -215,8 +225,11 @@ public class MainActivity extends AppCompatActivity implements
         //это последний запомненный город из Preferences
         String cityCurrent = prefSetting.getString(LAST_CITY,
                 getResources().getString(R.string.saint_petersburg));
+        Log.d(TAG, "MainActivity initSingletons cityCurrent =" + cityCurrent);
         //инициализируем значение  синглтона CityLab последним городом из Preferences
-        CityLab.getInstance(cityCurrent);
+        //*****!!!!это была ошибка1- вместо setCurrentCity было getInstance
+        CityLab.setCurrentCity(cityCurrent);
+        Log.d(TAG, "MainActivity initSingletons CityLab.setCurrentCity =" + CityLab.getCity());
     }
 
     //действия с фрагментами в зависимости от ориентации телефона
@@ -423,16 +436,19 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == 100) {
-            permissionsGranted = (grantResults.length > 1
+            boolean permissionsGranted = (grantResults.length > 1
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                     && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
             if (permissionsGranted) {
                 Toast.makeText(this, getResources().getString(R.string.permission),
                         Toast.LENGTH_SHORT).show();
+                //ставим флаг, который работает пока жива активити, дублируем его поэтому
+                // в onCreate - в ветке "если есть разрешения"
+                isGeo = true;
+                //разрешение получено- перегружаем активити - вроде начинает с onResume
                 recreate();
             } else {
-                Toast.makeText(this,
-                        getResources().getString(R.string.notPermission),
+                Toast.makeText(this, getResources().getString(R.string.notPermission),
                         Toast.LENGTH_SHORT).show();
             }
         }

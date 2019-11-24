@@ -123,6 +123,7 @@ public class WeatherFragment extends Fragment {
     @SuppressLint("Recycle")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "WeatherFragment onCreateView");
         return inflater.inflate(R.layout.fragment_whether, container, false);
     }
 
@@ -216,6 +217,7 @@ public class WeatherFragment extends Fragment {
 
         //получаем текущий город из синглтона - куда город попал из Preferences
         String currentCity = CityLab.getCity();
+        Log.d(TAG, "WeatherFragment getActualDataOfCityWeather currentCity = " + currentCity);
         //получаем список городов из базы
         ArrayList<String> ara = WeatherTable.getAllCitys(database);
         Log.d(TAG, "WeatherFragment getActualDataOfCityWeather ara = " + ara.toString());

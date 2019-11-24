@@ -54,5 +54,6 @@
     <string name="weather_forecast">Weather - forecast</string>
     <string name="Help">Help</string>
     <string name="help2">HELP</string>
+    <string name="let_be_sun">Only the weather, nothing more.</string>
 
 </resources>

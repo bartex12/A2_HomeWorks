@@ -30,6 +30,6 @@
         android:id="@+id/textViewDescrNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/geekbrains" />
+        android:text="@string/let_be_sun" />
 
 </LinearLayout>
