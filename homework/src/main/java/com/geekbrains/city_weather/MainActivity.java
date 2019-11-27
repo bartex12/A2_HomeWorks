@@ -84,7 +84,10 @@ public class MainActivity extends AppCompatActivity implements
                             Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
         } else {
             Log.d(TAG, "MainActivity onCreate Yes Permitions");
-            isGeo = true;
+            if (savedInstanceState == null) {
+                Log.d(TAG, "MainActivity onCreate savedInstanceState = null");
+                getMyLocationCity();
+            }
         }
         Log.d(TAG, "MainActivity onCreate после блока разрешений");
         initDB();
