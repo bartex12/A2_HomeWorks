@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         Log.d(TAG, "MainActivity onCreate после блока разрешений");
+
         initDB();
         initFab();
         initPrefs();
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         Log.d(TAG, "MainActivity onResume");
 
+        // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
         if (isGeo) {
             Log.d(TAG, "MainActivity onResume isGeo = true");
             getMyLocationCity();

@@ -79,8 +79,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="89" column="94" selection-start-line="89" selection-start-column="94" selection-end-line="89" selection-end-column="94" />
+            <state relative-caret-position="-560">
+              <caret line="106" column="40" selection-start-line="106" selection-start-column="40" selection-end-line="106" selection-end-column="40" />
               <folding>
                 <element signature="e#8501#8502#0" expanded="true" />
                 <element signature="e#8581#8582#0" expanded="true" />
@@ -684,7 +684,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574889236368</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="изменил логику - определение местоположения только при первой загрузке - при повороте устройства место не определяется. Это сделано проверкой условия saveinstancestate ==null&#10;если да, то первая загрузка">
+      <created>1574889395736</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1574889395736</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1073,8 +1080,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="89" column="94" selection-start-line="89" selection-start-column="94" selection-end-line="89" selection-end-column="94" />
+        <state relative-caret-position="-560">
+          <caret line="106" column="40" selection-start-line="106" selection-start-column="40" selection-end-line="106" selection-end-column="40" />
           <folding>
             <element signature="e#8501#8502#0" expanded="true" />
             <element signature="e#8581#8582#0" expanded="true" />
