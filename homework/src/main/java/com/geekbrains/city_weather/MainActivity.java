@@ -84,8 +84,10 @@ public class MainActivity extends AppCompatActivity implements
                             Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
         } else {
             Log.d(TAG, "MainActivity onCreate Yes Permitions");
+            //проверяем - первая ли это загрузка когда есть разрешения
             if (savedInstanceState == null) {
                 Log.d(TAG, "MainActivity onCreate savedInstanceState = null");
+                //если это запуск приложения, а не поворот экрана то определяем местоположение
                 getMyLocationCity();
             }
         }

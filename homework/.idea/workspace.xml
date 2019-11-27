@@ -17,10 +17,8 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/res/layout/content_main.xml" description="&lt;/androidx.constraintlayout.widget.ConstraintLayou..." line="19" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="542f984b-6456-4317-8c20-ccec589a7b16" name="Default Changelist" comment="исправил ошибку- загрузка города по умолчанию вместо города из местоположения при &#10;самой первой загрузке приложения - вместо записи города в синглтон ошибочно &#10;вызывался другой метод&#10;изменил справку - так как города России можно вводить на русском">
+    <list default="true" id="542f984b-6456-4317-8c20-ccec589a7b16" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/release/homework-release.apk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/release/output.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -81,8 +79,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6772">
-              <caret line="89" column="13" selection-start-line="89" selection-start-column="13" selection-end-line="89" selection-end-column="13" />
+            <state relative-caret-position="300">
+              <caret line="89" column="94" selection-start-line="89" selection-start-column="94" selection-end-line="89" selection-end-column="94" />
               <folding>
                 <element signature="e#8501#8502#0" expanded="true" />
                 <element signature="e#8581#8582#0" expanded="true" />
@@ -679,7 +677,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574627238282</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="изменил логику - определение местоположения только при первой загрузке - при повороте устройства место не определяется. Это сделано проверкой условия saveinstancestate ==null&#10;если да, то первая загрузка">
+      <created>1574889236368</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1574889236368</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView">
@@ -728,7 +733,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="перннёс иконку назад в деталях на правую сторону под большой палец&#10;добавил в настройки О приложении на главный экран" />
     <MESSAGE value="сделал Добавить город в toolBar и на плавающую кнопку" />
     <MESSAGE value="перенёс в свой проект все виджеты для navigationDrawer &#10;для androidX - гемор ещё тот" />
     <MESSAGE value="сделал  боковое меню на свои макеты &#10;1 поменял линеа лейауты на констрейн, иначе тулбар закрывал содержимое&#10;2 в манифесте выставил режимы SingleTask для обоих активити, чтобы не &#10;выло возвратов по кнопке назад&#10;3 все элементы перевёл на библиотеку androidx&#10;4" />
@@ -753,7 +757,8 @@
     <MESSAGE value="+" />
     <MESSAGE value="исправил ошибку- загрузка города по умолчанию вместо города из местоположения при &#10;самой первой загрузке приложения - вместо записи города в синглтон ошибочно &#10;вызывался другой метод" />
     <MESSAGE value="исправил ошибку- загрузка города по умолчанию вместо города из местоположения при &#10;самой первой загрузке приложения - вместо записи города в синглтон ошибочно &#10;вызывался другой метод&#10;изменил справку - так как города России можно вводить на русском" />
-    <option name="LAST_COMMIT_MESSAGE" value="исправил ошибку- загрузка города по умолчанию вместо города из местоположения при &#10;самой первой загрузке приложения - вместо записи города в синглтон ошибочно &#10;вызывался другой метод&#10;изменил справку - так как города России можно вводить на русском" />
+    <MESSAGE value="изменил логику - определение местоположения только при первой загрузке - при повороте устройства место не определяется. Это сделано проверкой условия saveinstancestate ==null&#10;если да, то первая загрузка" />
+    <option name="LAST_COMMIT_MESSAGE" value="изменил логику - определение местоположения только при первой загрузке - при повороте устройства место не определяется. Это сделано проверкой условия saveinstancestate ==null&#10;если да, то первая загрузка" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1068,8 +1073,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6772">
-          <caret line="89" column="13" selection-start-line="89" selection-start-column="13" selection-end-line="89" selection-end-column="13" />
+        <state relative-caret-position="300">
+          <caret line="89" column="94" selection-start-line="89" selection-start-column="94" selection-end-line="89" selection-end-column="94" />
           <folding>
             <element signature="e#8501#8502#0" expanded="true" />
             <element signature="e#8581#8582#0" expanded="true" />
