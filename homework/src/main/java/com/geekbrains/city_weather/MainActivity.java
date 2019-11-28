@@ -180,6 +180,9 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    //*******************  начало    getMyLocationCity()  **********************
+
+    //получаем  местоположение и  город с кодом страны
     private void getMyLocationCity() {
         Log.d(TAG, "MainActivity getMyLocationCity");
         // получаем экземпляр LocationManager
@@ -193,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements
             String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
             //пишем найденный город с кодом страны  в preferences,
             // чтобы прочитать в initSingletons() и сделать текущим
-            saveMyLocation(cityWithCountryCod);
+            saveMyLocationCity(cityWithCountryCod);
             Log.d(TAG, "MainActivity getMyLocationCity  город =" + cityWithCountryCod +
                     " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude());
         } else {
@@ -220,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements
         }
         return cityWithCountryCod;
     }
+
+    //*******************  конец    getMyLocationCity()  **********************
+
 
     public void initDB() {
         database = new WeatherDataBaseHelper(this).getWritableDatabase();
@@ -461,7 +467,8 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void saveMyLocation(String cityWithCountryCod) {
+    //сохраняем город с кодом страны
+    private void saveMyLocationCity(String cityWithCountryCod) {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
         SharedPreferences.Editor editor = preferences.edit();
