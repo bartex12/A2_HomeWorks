@@ -2,7 +2,10 @@ package com.geekbrains.city_weather;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -27,6 +30,7 @@ import com.geekbrains.city_weather.dialogs.MessageDialog;
 import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
+import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -47,9 +51,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
+import rest.weather_model.WeatherRequestRestModel;
 
+import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
+import static com.geekbrains.city_weather.constants.AppConstants.GEO;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
+import static com.geekbrains.city_weather.constants.AppConstants.LATITUDE;
+import static com.geekbrains.city_weather.constants.AppConstants.LONGITUDE;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 
@@ -62,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements
     SQLiteDatabase database;
     LocationManager mLocManager = null;
     boolean isGeo = false;
+
+    ServiceCityReceiver receiver = new ServiceCityReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
             if (savedInstanceState == null) {
                 Log.d(TAG, "MainActivity onCreate savedInstanceState = null");
                 //если это запуск приложения, а не поворот экрана то определяем местоположение
-                getMyLocationCity();
+                getMyLocationLatLon();
             }
         }
         Log.d(TAG, "MainActivity onCreate после блока разрешений");
@@ -107,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements
         // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
         if (isGeo) {
             Log.d(TAG, "MainActivity onResume isGeo = true");
-            getMyLocationCity();
+            getMyLocationLatLon();
             initSingletons();
             doOrientationBasedActions();
         } else {
@@ -118,9 +132,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onStart() {
+        Log.d(TAG, "MainActivity onStart");
+        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION
+        registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
         Log.d(TAG, "MainActivity onStop");
+        unregisterReceiver(receiver);
+        super.onStop();
     }
 
     @Override
@@ -181,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     //*******************  начало    getMyLocationCity()  **********************
-
     //получаем  местоположение и  город с кодом страны
     private void getMyLocationCity() {
         Log.d(TAG, "MainActivity getMyLocationCity");
@@ -223,14 +245,43 @@ public class MainActivity extends AppCompatActivity implements
         }
         return cityWithCountryCod;
     }
-
     //*******************  конец    getMyLocationCity()  **********************
 
+    //получаем  местоположение и  широту и долготу
+    private void getMyLocationLatLon() {
+        Log.d(TAG, "MainActivity getMyLocationLatLon");
+        // получаем экземпляр LocationManager
+        mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        //получаем местонахождение
+        @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
+                .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        if (loc != null) {
+            //получаем широту и долготу
+            double latitude = loc.getLatitude();
+            double longitude = loc.getLongitude();
+            //пишем широту и долготу  в preferences,
+            // saveMyLocationLatLon(latitude, longitude);
+            Log.d(TAG, "MainActivity getMyLocationCity " +
+                    " Широта = " + latitude + "  Долгота = " + longitude);
+
+            Intent intent = new Intent(MainActivity.this, BackgroundWeatherService.class);
+            intent.putExtra(LATITUDE, latitude);
+            intent.putExtra(LONGITUDE, longitude);
+            this.startService(intent);
+
+        } else {
+            Log.d(TAG, "MainActivity getMyLocationCity  Location loc = null");
+        }
+    }
+
+    //получаем экземпляр базы данных
     public void initDB() {
+        //
         database = new WeatherDataBaseHelper(this).getWritableDatabase();
     }
 
+    //инициализируем синглтон из Preferences
     private void initSingletons() {
         Log.d(TAG, "MainActivity initSingletons");
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
@@ -474,5 +525,67 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(LAST_CITY, cityWithCountryCod);
         editor.apply();
+    }
+
+    //сохраняем широту и долготу
+    private void saveMyLocationLatLon(float latitude, float longitude) {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(LATITUDE, latitude);
+        editor.putFloat(LONGITUDE, longitude);
+        editor.putBoolean(GEO, true);
+        editor.apply();
+    }
+
+    private class ServiceCityReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            Log.d(TAG, "MainActivity ServiceCityReceiver onReceive");
+            //переходим в поток GUI
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //сначала смотрим, а удалось ли сервису получить JAVA объект
+                    boolean is_JSON_null = intent.getBooleanExtra(IS_JSON_NULL, true);
+                    boolean isResponceNull = intent.getBooleanExtra(IS_RESPONS_NULL, false);
+                    //сначала смотрим, ответ от сервера равен null или нет
+                    if (isResponceNull) {
+                        Toast.makeText(MainActivity.this, R.string.tlf_problems,
+                                Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "ServiceCityReceiver: Возникли проблемы " +
+                                "с отправкой запроса. Возможно нет интернета");
+                    } else {
+                        //если не удалось, то is_JSON_null = true
+                        if (is_JSON_null) {
+                            Toast.makeText(MainActivity.this, R.string.place_not_found,
+                                    Toast.LENGTH_LONG).show();
+
+                            CityLab.setCityDefault();  //делаем текущим город Saint Petersburg
+
+                            //действия в зависимости от ориентации телефона
+                            doOrientationBasedActions();
+
+                            //если JAVA объект получен, то получаем данные
+                        } else {
+                            //десериализуем объект WeatherRequestRestModel
+                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
+                                    Objects.requireNonNull(intent.getExtras())
+                                            .getSerializable(JAVA_OBJECT);
+                            String name = Objects.requireNonNull(modelWeather).name;
+                            String country = Objects.requireNonNull(modelWeather).sys.country;
+                            //получаем город
+                            String currentCity = String.format(Locale.getDefault(),
+                                    "%s, %s", name, country);
+                            Log.d(TAG, "MainActivity ServiceCityReceiver currentCity =" +
+                                    currentCity);
+
+                            CityLab.setCurrentCity(currentCity);
+                        }
+                    }
+                }
+            });
+        }
     }
 }

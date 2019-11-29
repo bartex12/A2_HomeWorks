@@ -17,19 +17,29 @@ public interface IOpenWeather {
                                                 @Query("appid") String keyApi,
                                                 @Query("units") String units,
                                                 @Query("lang") String lang);
+
+    @GET("data/2.5/forecast")
+    Call<ForecastRequestRestModel> loadForecastEng(@Query("q") String city,
+                                                   @Query("appid") String keyApi,
+                                                   @Query("units") String units);
+
     @GET("data/2.5/forecast")
     Call<ForecastRequestRestModel> loadForecastRu(@Query("q") String city,
                                                   @Query("appid") String keyApi,
                                                   @Query("units") String units,
                                                   @Query("lang") String lang);
-    @GET("data/2.5/forecast")
-    Call<ForecastRequestRestModel> loadForecastEng(@Query("q") String city,
-                                                  @Query("appid") String keyApi,
-                                                  @Query("units") String units);
+
 
     @GET("data/2.5/weather")
-    Call<WeatherRequestRestModel> loadWeatherEngLatLon(@Query("lat") String latitude,
-                                                       @Query("lon") String longitude,
-                                                       @Query("appid") String keyApi,
-                                                       @Query("units") String units);
+    Call<WeatherRequestRestModel> loadCityLatLonEng(@Query("lat") String latitude,
+                                                    @Query("lon") String longitude,
+                                                    @Query("appid") String keyApi,
+                                                    @Query("units") String units);
+
+    @GET("data/2.5/weather")
+    Call<WeatherRequestRestModel> loadCityLatLonRu(@Query("lat") String latitude,
+                                                   @Query("lon") String longitude,
+                                                   @Query("appid") String keyApi,
+                                                   @Query("units") String units,
+                                                   @Query("lang") String lang);
 }

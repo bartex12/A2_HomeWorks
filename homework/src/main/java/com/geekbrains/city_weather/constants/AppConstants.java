@@ -14,6 +14,8 @@ public class AppConstants {
 
     public static final String BROADCAST_WEATHER_ACTION =
             "com.geekbrains.city_weather.BROADCAST_WEATHER_ACTION";
+    public static final String BROADCAST_CITY_ACTION =
+            "com.geekbrains.city_weather.BROADCAST_CITY_ACTION";
 
     public static final String IS_JSON_NULL = "IS_JSON_NULL";
     public static final String IS_RESPONS_NULL = "IS_RESPONS_NULL";
@@ -23,5 +25,6 @@ public class AppConstants {
     public static final String JAVA_OBJECT = "JAVA_OBJECT";
     public static final String JAVA_OBJECT_FORECAST = "JAVA_OBJECT_FORECAST";
     public static final String GEO = "GEO";
-
+    public static final String LATITUDE = "LATITUDE";
+    public static final String LONGITUDE = "LONGITUDE";
 }
