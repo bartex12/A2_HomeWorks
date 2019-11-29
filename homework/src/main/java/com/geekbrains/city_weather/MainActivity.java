@@ -30,7 +30,7 @@ import com.geekbrains.city_weather.dialogs.MessageDialog;
 import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
-import com.geekbrains.city_weather.services.BackgroundWeatherService;
+import com.geekbrains.city_weather.services.BackgroundCityService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -53,7 +53,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import rest.weather_model.WeatherRequestRestModel;
 
-import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
+import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_CITY_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.GEO;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
@@ -134,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onStart() {
         Log.d(TAG, "MainActivity onStart");
-        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION
-        registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
+        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_CITY_ACTION
+        registerReceiver(receiver, new IntentFilter(BROADCAST_CITY_ACTION));
         super.onStart();
     }
 
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "MainActivity getMyLocationCity " +
                     " Широта = " + latitude + "  Долгота = " + longitude);
 
-            Intent intent = new Intent(MainActivity.this, BackgroundWeatherService.class);
+            Intent intent = new Intent(MainActivity.this, BackgroundCityService.class);
             intent.putExtra(LATITUDE, latitude);
             intent.putExtra(LONGITUDE, longitude);
             this.startService(intent);
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements
         //это последний запомненный город из Preferences
         String cityCurrent = prefSetting.getString(LAST_CITY,
                 getResources().getString(R.string.saint_petersburg));
-        Log.d(TAG, "MainActivity initSingletons cityCurrent =" + cityCurrent);
+        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + cityCurrent);
         //инициализируем значение  синглтона CityLab последним городом из Preferences
         //*****!!!!это была ошибка1- вместо setCurrentCity было getInstance
         CityLab.setCurrentCity(cityCurrent);
@@ -582,6 +582,8 @@ public class MainActivity extends AppCompatActivity implements
                                     currentCity);
 
                             CityLab.setCurrentCity(currentCity);
+
+                            doOrientationBasedActions();
                         }
                     }
                 }
