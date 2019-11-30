@@ -19,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
-import com.geekbrains.city_weather.adapter.DataForecast;
 import com.geekbrains.city_weather.adapter.WeatherCardAdapterNew;
+import com.geekbrains.city_weather.database.DataForecast;
 import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
@@ -329,8 +329,6 @@ public class WeatherFragment extends Fragment {
     private void renderWeather(WeatherRequestRestModel modelWeather) {
         try {
             setPlaceName(modelWeather.name, modelWeather.sys.country);
-            String latitude = String.valueOf(modelWeather.coordinates.lat);
-            String longitudee = String.valueOf(modelWeather.coordinates.lon);
             String lastUpdate = setUpdatedText(modelWeather.dt);
             Log.e(TAG, "**--** setUpdated lastUpdate= " + lastUpdate);
             setDescription(modelWeather.weather[0].description);

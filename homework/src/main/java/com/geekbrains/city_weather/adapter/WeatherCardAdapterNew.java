@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.geekbrains.city_weather.R;
+import com.geekbrains.city_weather.database.DataForecast;
 
 import java.util.ArrayList;
 

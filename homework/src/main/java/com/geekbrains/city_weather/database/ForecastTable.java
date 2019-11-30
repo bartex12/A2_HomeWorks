@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.geekbrains.city_weather.adapter.DataForecast;
-
 import java.util.ArrayList;
 import java.util.Objects;
 

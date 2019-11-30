@@ -1,4 +1,4 @@
-package com.geekbrains.city_weather.adapter;
+package com.geekbrains.city_weather.database;
 
 import android.graphics.drawable.Drawable;
 
