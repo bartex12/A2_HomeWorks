@@ -23,7 +23,8 @@
             android:value="@string/google_maps_key" />
 
         <service android:name=".services.BackgroundWeatherService" />
-        <service android:name=".services.BackgroundCityService" />
+        <service android:name=".services.BackgroundCityByCoordService" />
+        <service android:name=".services.BackgroundCoordByCityService" />
 
         <activity
             android:name=".MainActivity"

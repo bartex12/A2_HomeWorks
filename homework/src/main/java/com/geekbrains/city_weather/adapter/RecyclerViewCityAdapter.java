@@ -13,7 +13,7 @@ import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherTable;
-import com.geekbrains.city_weather.singltones.CityLab;
+import com.geekbrains.city_weather.singltones.CityCoordLab;
 
 import java.util.ArrayList;
 
@@ -68,8 +68,8 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         Log.d(TAG, "RecyclerViewCityAdapter removeElement");
         if (data.size() > 0) {
             //если удаляемый город является текущим, делаем текущим город но умолчанию
-            if (data.get(posItem).equals(CityLab.getCity())){
-                CityLab.setCityDefault();
+            if (data.get(posItem).equals(CityCoordLab.getCity())) {
+                CityCoordLab.setCityDefault();
             }
             Log.d(TAG, "RecyclerViewCityAdapter removeElement city = " + data.get(posItem));
             //удаляем погоду для строки с городом с именем data.get(posItem)
@@ -96,7 +96,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
         //чтобы в списке всегда оставался один город - город по умолчанию
         data.add(DEFAULT_CITY);
         //делаем текущим городом
-        CityLab.setCityDefault();
+        CityCoordLab.setCityDefault();
         //добавляем в базу пустые параметры - чтобы город не пропадал из списка при обновлении
         WeatherTable.addCityWeather(DataWeather.getDataWeatherDefault(), database);
         Toast.makeText(context,

@@ -30,7 +30,7 @@ import com.geekbrains.city_weather.dialogs.MessageDialog;
 import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
-import com.geekbrains.city_weather.services.BackgroundCityService;
+import com.geekbrains.city_weather.services.BackgroundCityByCoordService;
 import com.geekbrains.city_weather.singltones.CityCoordLab;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "MainActivity getMyLocationLatLon " +
                     " Широта = " + latitude + "  Долгота = " + longitude);
 
-            Intent intent = new Intent(MainActivity.this, BackgroundCityService.class);
+            Intent intent = new Intent(MainActivity.this, BackgroundCityByCoordService.class);
             intent.putExtra(LATITUDE, latitude);
             intent.putExtra(LONGITUDE, longitude);
             this.startService(intent);

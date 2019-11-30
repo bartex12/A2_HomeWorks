@@ -47,7 +47,7 @@ public class CityCoordLab {
 
     public static void setCityDefault() {
         CityCoordLab.currentCity = DEFAULT_CITY;
-        CityCoordLab.latitude = 60.0099566;
-        CityCoordLab.longitude = 30.3238369;
+        CityCoordLab.latitude = 60.0099509;
+        CityCoordLab.longitude = 30.323831;
     }
 }

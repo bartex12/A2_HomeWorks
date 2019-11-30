@@ -20,39 +20,39 @@ import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.LATITUDE;
 import static com.geekbrains.city_weather.constants.AppConstants.LONGITUDE;
 
-public class BackgroundCityService extends IntentService {
+public class BackgroundCityByCoordService extends IntentService {
 
     private static final String TAG = "33333";
 
-    //если создавать через Alt+Enter, будет BackgroundCityService(String name), его надо удалить
-    public BackgroundCityService() {
-        super("background_service_for_city");
+    //если создавать через Alt+Enter, будет BackgroundCityByCoordService(String name), его надо удалить
+    public BackgroundCityByCoordService() {
+        super("background_city_by_coord_service");
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        Log.d(TAG, "BackgroundCityService Язык системы= " + Locale.getDefault().getLanguage());
+        Log.d(TAG, "BackgroundCityByCoordService Язык системы= " + Locale.getDefault().getLanguage());
 
-        double latitude = Objects.requireNonNull(intent).getExtras().getDouble(LATITUDE);
+        double latitude = Objects.requireNonNull(Objects.requireNonNull(intent).getExtras()).getDouble(LATITUDE);
         double longitude = Objects.requireNonNull(intent.getExtras()).getDouble(LONGITUDE);
 
         String lat = String.valueOf(latitude);
         String lon = String.valueOf(longitude);
 
-        Log.d(TAG, "BackgroundCityService onHandleIntent " +
+        Log.d(TAG, "BackgroundCityByCoordService onHandleIntent " +
                 " Широта = " + lat + "  Долгота = " + lon);
 
         // создаём интент широковещательного сообщения с фильтром и ловим его в MainActivity
         Intent broadcastIntentCity = new Intent(BROADCAST_CITY_ACTION);
 
         Response<WeatherRequestRestModel> response = getCityResponse(lat, lon);
-        Log.d(TAG, "BackgroundCityService response = " + response);
+        Log.d(TAG, "BackgroundCityByCoordService response = " + response);
 
         //если телефон не может посылать запросы, response=null, обрабатываем эту ситуацию
         if (response != null) {
             //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
             if (response.body() != null && response.isSuccessful()) {
-                Log.d(TAG, "BackgroundCityService loadWeather OK");
+                Log.d(TAG, "BackgroundCityByCoordService loadWeather OK");
                 broadcastIntentCity.putExtra(JAVA_OBJECT, response.body());
                 broadcastIntentCity.putExtra(IS_JSON_NULL, false);
                 broadcastIntentCity.putExtra(IS_RESPONS_NULL, false);
@@ -61,7 +61,7 @@ public class BackgroundCityService extends IntentService {
                 //а если не удалось получить ответ для погоды по координатам, обычно
                 // посылаем интент для обработки ошибки  ловим его в MainActivity
             } else {
-                Log.d(TAG, "BackgroundCityService loadWeather NO");
+                Log.d(TAG, "BackgroundCityByCoordService loadWeather NO");
                 broadcastIntentCity.putExtra(IS_JSON_NULL, true);
                 broadcastIntentCity.putExtra(IS_RESPONS_NULL, false);
                 sendBroadcast(broadcastIntentCity);
@@ -69,7 +69,7 @@ public class BackgroundCityService extends IntentService {
             }
             //если телефон не может посылать запросы, response=null
         } else {
-            Log.d(TAG, "BackgroundCityService response = null");
+            Log.d(TAG, "BackgroundCityByCoordService response = null");
             broadcastIntentCity.putExtra(IS_RESPONS_NULL, true);
             sendBroadcast(broadcastIntentCity);
             Log.d(TAG, "####### 4");
