@@ -83,12 +83,12 @@ public class BackgroundCityService extends IntentService {
         try {
             if (Locale.getDefault().getLanguage().equals("ru")) {
                 response = OpenWeatherRepo.getSingleton()
-                        .getAPI().loadCityLatLonRu(latitude, longitude,
+                        .getAPI().loadWeatherLatLonRu(latitude, longitude,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
                         .execute();
             } else {
                 response = OpenWeatherRepo.getSingleton()
-                        .getAPI().loadCityLatLonEng(latitude, longitude,
+                        .getAPI().loadWeatherLatLonEng(latitude, longitude,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric")
                         .execute();
             }

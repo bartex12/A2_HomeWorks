@@ -31,15 +31,29 @@ public interface IOpenWeather {
 
 
     @GET("data/2.5/weather")
-    Call<WeatherRequestRestModel> loadCityLatLonEng(@Query("lat") String latitude,
-                                                    @Query("lon") String longitude,
-                                                    @Query("appid") String keyApi,
-                                                    @Query("units") String units);
+    Call<WeatherRequestRestModel> loadWeatherLatLonEng(@Query("lat") String latitude,
+                                                       @Query("lon") String longitude,
+                                                       @Query("appid") String keyApi,
+                                                       @Query("units") String units);
 
     @GET("data/2.5/weather")
-    Call<WeatherRequestRestModel> loadCityLatLonRu(@Query("lat") String latitude,
-                                                   @Query("lon") String longitude,
-                                                   @Query("appid") String keyApi,
-                                                   @Query("units") String units,
-                                                   @Query("lang") String lang);
+    Call<WeatherRequestRestModel> loadWeatherLatLonRu(@Query("lat") String latitude,
+                                                      @Query("lon") String longitude,
+                                                      @Query("appid") String keyApi,
+                                                      @Query("units") String units,
+                                                      @Query("lang") String lang);
+
+    @GET("data/2.5/forecast")
+    Call<ForecastRequestRestModel> loadForecastLatLonEng(@Query("lat") String latitude,
+                                                         @Query("lon") String longitude,
+                                                         @Query("appid") String keyApi,
+                                                         @Query("units") String units);
+
+    @GET("data/2.5/forecast")
+    Call<ForecastRequestRestModel> loadForecastLatLonRu(@Query("lat") String latitude,
+                                                        @Query("lon") String longitude,
+                                                        @Query("appid") String keyApi,
+                                                        @Query("units") String units,
+                                                        @Query("lang") String lang);
+
 }

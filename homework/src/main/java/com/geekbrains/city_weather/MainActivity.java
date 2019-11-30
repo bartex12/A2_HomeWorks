@@ -31,6 +31,7 @@ import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
 import com.geekbrains.city_weather.services.BackgroundCityService;
+import com.geekbrains.city_weather.singltones.CityCoordLab;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -103,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements
             if (savedInstanceState == null) {
                 Log.d(TAG, "MainActivity onCreate savedInstanceState = null");
                 //если это запуск приложения, а не поворот экрана то определяем местоположение
-                //getMyLocationLatLon();
-                getMyLocation();
+                getMyLocationLatLon();
+                //getMyLocation();
             }
         }
         Log.d(TAG, "MainActivity onCreate после блока разрешений");
@@ -131,25 +132,13 @@ public class MainActivity extends AppCompatActivity implements
         // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
         if (isGeo) {
             Log.d(TAG, "MainActivity onResume isGeo = true");
-            //getMyLocationLatLon();
-            getMyLocation();
+            getMyLocationLatLon();
+            //getMyLocation();
             initSingletons();
             doOrientationBasedActions();
         } else {
-            Log.d(TAG, "MainActivity onResume isGeo = false");
-            boolean isLatLonTemp = getDefaultSharedPreferences(this)
-                    .getBoolean("chooseLocationType", true);
-            Log.d(TAG, "MainActivity onResume isLatLonTemp =" + isLatLonTemp);
-            //если в настройках поменяли способ определения местоположения
-            if (isLatLonTemp != isLatLon) {
-                getMyLocation();
-                initSingletons();
-                doOrientationBasedActions();
-                isLatLon = isLatLonTemp;
-            } else {
-                initSingletons();
-                doOrientationBasedActions();
-            }
+            initSingletons();
+            doOrientationBasedActions();
         }
     }
 
@@ -293,8 +282,6 @@ public class MainActivity extends AppCompatActivity implements
             //получаем широту и долготу
             double latitude = loc.getLatitude();
             double longitude = loc.getLongitude();
-            //пишем широту и долготу  в preferences,
-            // saveMyLocationLatLon(latitude, longitude);
             Log.d(TAG, "MainActivity getMyLocationLatLon " +
                     " Широта = " + latitude + "  Долгота = " + longitude);
 
@@ -589,8 +576,9 @@ public class MainActivity extends AppCompatActivity implements
                             Toast.makeText(MainActivity.this, R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
 
-                            CityLab.setCityDefault();  //делаем текущим город Saint Petersburg
+                            //CityLab.setCityDefault();  //делаем текущим город Saint Petersburg
 
+                            CityCoordLab.setCityDefault();
                             //действия в зависимости от ориентации телефона
                             doOrientationBasedActions();
 
@@ -602,13 +590,15 @@ public class MainActivity extends AppCompatActivity implements
                                             .getSerializable(JAVA_OBJECT);
                             String name = Objects.requireNonNull(modelWeather).name;
                             String country = Objects.requireNonNull(modelWeather).sys.country;
+                            double latitude = modelWeather.coordinates.lat;
+                            double longitude = modelWeather.coordinates.lon;
                             //получаем город
                             String currentCity = String.format(Locale.getDefault(),
                                     "%s, %s", name, country);
                             Log.d(TAG, "MainActivity ServiceCityReceiver currentCity =" +
                                     currentCity);
 
-                            CityLab.setCurrentCity(currentCity);
+                            CityCoordLab.setCurrentCity(currentCity, latitude, longitude);
 
                             doOrientationBasedActions();
                         }

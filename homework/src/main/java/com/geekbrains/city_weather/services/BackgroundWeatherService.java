@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import rest.OpenWeatherRepo;
@@ -15,11 +14,12 @@ import rest.weather_model.WeatherRequestRestModel;
 import retrofit2.Response;
 
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
-import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT_FORECAST;
+import static com.geekbrains.city_weather.constants.AppConstants.LATITUDE;
+import static com.geekbrains.city_weather.constants.AppConstants.LONGITUDE;
 
 /*
 * отправляем уведомление о завершении сервиса во фрагмент WeatherFragment
@@ -41,13 +41,20 @@ public class BackgroundWeatherService extends IntentService {
         Log.d(TAG, "BackgroundWeatherService Язык системы= " + Locale.getDefault().getLanguage());
 
         //получаем текущий город из интента
-        final String currentCity = Objects.requireNonNull(intent).getStringExtra(CURRENT_CITY);
-        Log.d(TAG, "BackgroundWeatherService currentCity = " + currentCity);
+        //final String currentCity = Objects.requireNonNull(intent).getStringExtra(CURRENT_CITY);
+
+        //получаем координаты из интента
+        double latitude = intent.getExtras().getDouble(LATITUDE);
+        double longitude = intent.getExtras().getDouble(LONGITUDE);
+        String lat = String.valueOf(latitude);
+        String lon = String.valueOf(longitude);
+
+        Log.d(TAG, "BackgroundWeatherService lat = " + lat + " lon = " + lon);
         // создаём интент широковещательного сообщения с фильтром и ловим его в WeatherFragment
         Intent broadcastIntent = new Intent(BROADCAST_WEATHER_ACTION);
         //делаем запрос о погоде и получаем ответ от сервера
         //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
-        Response<WeatherRequestRestModel> response = getWeatherResponse(currentCity);
+        Response<WeatherRequestRestModel> response = getWeatherLatLonResponse(lat, lon);
         Log.d(TAG, "BackgroundWeatherService response = " + response);
 
         //если телефон не может посылать запросы, response=null, обрабатываем эту ситуацию
@@ -57,12 +64,18 @@ public class BackgroundWeatherService extends IntentService {
                 Log.d(TAG, "BackgroundWeatherService loadWeather OK");
                 Log.d(TAG, "BackgroundWeatherService loadWeather response.body().coordinates = " +
                         " lat = " + response.body().coordinates.lat +
-                        " lon = " + response.body().coordinates.lon + " name" + response.body().name);
+                        " lon = " + response.body().coordinates.lon +
+                        " name = " + response.body().name);
                 //делаем запрос о прогнозе погоды и получаем ответ от сервера
-                Response<ForecastRequestRestModel> responseForecast = getForecastResponse(currentCity);
+                Response<ForecastRequestRestModel> responseForecast =
+                        getForecastLatLonResponse(lat, lon);
 
                 if (responseForecast.body() != null && responseForecast.isSuccessful()) {
                     Log.d(TAG, "BackgroundWeatherService loadForecast OK");
+                    Log.d(TAG, "BackgroundWeatherService loadForecast response.body().coordinates = " +
+                            " lat = " + responseForecast.body().city.coord.lat +
+                            " lon = " + responseForecast.body().city.coord.lon +
+                            " name = " + responseForecast.body().city.name);
                     broadcastIntent.putExtra(JAVA_OBJECT_FORECAST, responseForecast.body());
                     broadcastIntent.putExtra(JAVA_OBJECT, response.body());
                     broadcastIntent.putExtra(IS_JSON_NULL, false);
@@ -96,40 +109,63 @@ public class BackgroundWeatherService extends IntentService {
         }
     }
 
-    private Response<ForecastRequestRestModel> getForecastResponse(String currentCity) {
-        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
-        Response<ForecastRequestRestModel> responseForecast = null;
-        try {
-            if (Locale.getDefault().getLanguage().equals("ru")) {
-                responseForecast = OpenWeatherRepo.getSingleton()
-                        .getAPI().loadForecastRu(currentCity,
-                                "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
-                        .execute();
-            } else {
-                responseForecast = OpenWeatherRepo.getSingleton()
-                        .getAPI().loadForecastEng(currentCity,
-                                "80bb32e4a0db84762bb04ab2bd724646", "metric")
-                        .execute();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return responseForecast;
-    }
+//    private Response<ForecastRequestRestModel> getForecastResponse(String currentCity) {
+//        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
+//        Response<ForecastRequestRestModel> responseForecast = null;
+//        try {
+//            if (Locale.getDefault().getLanguage().equals("ru")) {
+//                responseForecast = OpenWeatherRepo.getSingleton()
+//                        .getAPI().loadForecastRu(currentCity,
+//                                "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
+//                        .execute();
+//            } else {
+//                responseForecast = OpenWeatherRepo.getSingleton()
+//                        .getAPI().loadForecastEng(currentCity,
+//                                "80bb32e4a0db84762bb04ab2bd724646", "metric")
+//                        .execute();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return responseForecast;
+//    }
 
-    private Response<WeatherRequestRestModel> getWeatherResponse(String currentCity) {
+//    private Response<WeatherRequestRestModel> getWeatherResponse(String currentCity) {
+//        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
+//        Response<WeatherRequestRestModel> response = null;
+//
+//        try {
+//            if (Locale.getDefault().getLanguage().equals("ru")) {
+//                response = OpenWeatherRepo.getSingleton()
+//                        .getAPI().loadWeatherRu(currentCity,
+//                                "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
+//                        .execute();
+//            } else {
+//                response = OpenWeatherRepo.getSingleton()
+//                        .getAPI().loadWeatherEng(currentCity,
+//                                "80bb32e4a0db84762bb04ab2bd724646", "metric")
+//                        .execute();
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return response;
+//    }
+
+    private Response<WeatherRequestRestModel> getWeatherLatLonResponse(String latitude, String longitude) {
         //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
         Response<WeatherRequestRestModel> response = null;
 
         try {
             if (Locale.getDefault().getLanguage().equals("ru")) {
                 response = OpenWeatherRepo.getSingleton()
-                        .getAPI().loadWeatherRu(currentCity,
+                        .getAPI().loadWeatherLatLonRu(latitude, longitude,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
                         .execute();
             } else {
                 response = OpenWeatherRepo.getSingleton()
-                        .getAPI().loadWeatherEng(currentCity,
+                        .getAPI().loadWeatherLatLonEng(latitude, longitude,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric")
                         .execute();
             }
@@ -139,6 +175,28 @@ public class BackgroundWeatherService extends IntentService {
         }
         return response;
     }
+
+    private Response<ForecastRequestRestModel> getForecastLatLonResponse(String latitude, String longitude) {
+        //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
+        Response<ForecastRequestRestModel> responseForecast = null;
+        try {
+            if (Locale.getDefault().getLanguage().equals("ru")) {
+                responseForecast = OpenWeatherRepo.getSingleton()
+                        .getAPI().loadForecastLatLonRu(latitude, longitude,
+                                "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
+                        .execute();
+            } else {
+                responseForecast = OpenWeatherRepo.getSingleton()
+                        .getAPI().loadForecastLatLonEng(latitude, longitude,
+                                "80bb32e4a0db84762bb04ab2bd724646", "metric")
+                        .execute();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return responseForecast;
+    }
+
 }
 
 

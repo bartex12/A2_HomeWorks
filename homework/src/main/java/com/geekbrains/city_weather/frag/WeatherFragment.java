@@ -26,6 +26,7 @@ import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
+import com.geekbrains.city_weather.singltones.CityCoordLab;
 import com.geekbrains.city_weather.singltones.CityLab;
 
 import java.text.DateFormat;
@@ -49,12 +50,13 @@ import rest.weather_model.WeatherRequestRestModel;
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
-import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT_FORECAST;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
+import static com.geekbrains.city_weather.constants.AppConstants.LATITUDE;
+import static com.geekbrains.city_weather.constants.AppConstants.LONGITUDE;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_DATA_UPDATE;
 import static com.geekbrains.city_weather.database.ForecastTable.COLUMN_DESCRIPTION;
@@ -216,7 +218,7 @@ public class WeatherFragment extends Fragment {
     private void getActualDataOfCityWeather(){
 
         //получаем текущий город из синглтона - куда город попал из Preferences
-        String currentCity = CityLab.getCity();
+        String currentCity = CityCoordLab.getCity();
         Log.d(TAG, "WeatherFragment getActualDataOfCityWeather currentCity = " + currentCity);
         //получаем список городов из базы
         ArrayList<String> ara = WeatherTable.getAllCitys(database);
@@ -241,7 +243,8 @@ public class WeatherFragment extends Fragment {
                 //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
                 //для получения погодных данных
                 Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-                intent.putExtra(CURRENT_CITY, currentCity);
+                intent.putExtra(LATITUDE, CityCoordLab.getLatitude());
+                intent.putExtra(LONGITUDE, CityCoordLab.getLongitude());
                 Objects.requireNonNull(getActivity()).startService(intent);
                 //иначе  берём данные из базы
             }else{
@@ -254,7 +257,8 @@ public class WeatherFragment extends Fragment {
             //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
             //для получения погодных данных
             Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-            intent.putExtra(CURRENT_CITY, currentCity);
+            intent.putExtra(LATITUDE, CityCoordLab.getLatitude());
+            intent.putExtra(LONGITUDE, CityCoordLab.getLongitude());
             Objects.requireNonNull(getActivity()).startService(intent);
         }
     }
@@ -672,7 +676,7 @@ public class WeatherFragment extends Fragment {
                             Toast.makeText(getActivity(), R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
 
-                            CityLab.setCityDefault();  //делаем текущим город Saint Petersburg
+                            CityCoordLab.setCityDefault();  //делаем текущим город Saint Petersburg
 
                             if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
                                     .orientation  == Configuration.ORIENTATION_LANDSCAPE){
