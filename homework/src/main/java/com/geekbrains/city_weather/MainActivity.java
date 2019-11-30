@@ -10,8 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -37,8 +35,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -205,70 +201,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-    //выбираем способ определения месторасположения - по адресу или координатам
-    private void getMyLocation() {
-        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
-        SharedPreferences prefSetting = getDefaultSharedPreferences(this);
-        //получаем из файла настроек состояние чекбоксов (Ключ не менять!)
-        boolean isLocotionFromCoord = prefSetting.getBoolean("chooseLocationType", true);
-        Log.d(TAG, "MainActivity getMyLocation isLocotionFromCoord = " + isLocotionFromCoord);
-        //определяем  погоду в местерасположении по координатам
-        if (isLocotionFromCoord) {
-            getMyLocationLatLon();
-            //определяем  погоду в местерасположении по адресу
-        } else {
-            getMyLocationCity();
-        }
-    }
-
-    //*******************  начало    getMyLocationCity()  **********************
-    //получаем  местоположение и  город с кодом страны
-    private void getMyLocationCity() {
-        Log.d(TAG, "MainActivity getMyLocationCity");
-        // получаем экземпляр LocationManager
-        mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //получаем местонахождение
-        @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
-                .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        if (loc != null) {
-            //получаем из местоположения город с кодом страны
-            String cityWithCountryCod = getCityWithCountryCod(Objects.requireNonNull(loc));
-            //пишем найденный город с кодом страны  в preferences,
-            // чтобы прочитать в initSingletons() и сделать текущим
-            saveMyLocationCity(cityWithCountryCod);
-            Log.d(TAG, "MainActivity getMyLocationCity  город =" + cityWithCountryCod +
-                    " Широта = " + loc.getLatitude() + "  Долгота = " + loc.getLongitude());
-        } else {
-            Log.d(TAG, "MainActivity getMyLocationCity  Location loc = null");
-        }
-    }
-
-    //получаем из местоположения город с кодом страны
-    private String getCityWithCountryCod(Location loc) {
-        String cityWithCountryCod = null;
-        Geocoder geo = new Geocoder(getBaseContext(), Locale.getDefault());
-        List<Address> addresses;
-        try {
-            addresses = geo.getFromLocation(loc.getLatitude(),
-                    loc.getLongitude(), 1);
-            Log.d(TAG, "MainActivity getCityWithCountryCod  addresses " + addresses +
-                    " size = " + addresses.size());
-            if (addresses.size() > 0) {
-                String cityName = addresses.get(0).getLocality();
-                String countryCod = addresses.get(0).getCountryCode();
-                //получаем город с кодом страны
-                cityWithCountryCod = cityName + ", " + countryCod;
-                Log.d(TAG, "MainActivity getCityWithCountryCod  cityWithCountryCod "
-                        + cityWithCountryCod);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return cityWithCountryCod;
-    }
-    //*******************  конец    getMyLocationCity()  **********************
 
     //получаем  местоположение и  широту и долготу
     private void getMyLocationLatLon() {
@@ -540,15 +472,6 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    //сохраняем город с кодом страны
-    private void saveMyLocationCity(String cityWithCountryCod) {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(LAST_CITY, cityWithCountryCod);
-        editor.apply();
     }
 
     //приёмник широковещательного сообщения с фильтром BROADCAST_CITY_ACTION (см onStart)

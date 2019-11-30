@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import rest.OpenWeatherRepo;
@@ -44,7 +45,7 @@ public class BackgroundWeatherService extends IntentService {
         //final String currentCity = Objects.requireNonNull(intent).getStringExtra(CURRENT_CITY);
 
         //получаем координаты из интента
-        double latitude = intent.getExtras().getDouble(LATITUDE);
+        double latitude = Objects.requireNonNull(intent.getExtras()).getDouble(LATITUDE);
         double longitude = intent.getExtras().getDouble(LONGITUDE);
         String lat = String.valueOf(latitude);
         String lon = String.valueOf(longitude);
