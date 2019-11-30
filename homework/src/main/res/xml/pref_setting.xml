@@ -4,6 +4,14 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
+        android:icon="@drawable/ic_my_location_red_24dp"
+        android:key="chooseLocationType"
+        android:summaryOff="@string/byAdress"
+        android:summaryOn="@string/byCoord"
+        android:title="@string/weatherInLocation" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
         android:icon="@drawable/ic_toys_red_24dp"
         android:key="showCheckBoxes"
         android:summaryOff="@string/NotShow"
@@ -12,7 +20,7 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:icon="@drawable/termometr50"
+        android:icon="@drawable/termo50x100"
         android:key="showSensors"
         android:summaryOff="@string/NotShowTempHumid"
         android:summaryOn="@string/showTempHumid"

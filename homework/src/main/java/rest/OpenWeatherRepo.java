@@ -15,7 +15,6 @@ public class OpenWeatherRepo {
         if(singleton == null) {
             singleton = new OpenWeatherRepo();
         }
-
         return singleton;
     }
 

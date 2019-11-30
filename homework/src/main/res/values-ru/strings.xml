@@ -55,5 +55,8 @@
     <string name="Help">Справка</string>
     <string name="help2">СПРАВКА</string>
     <string name="let_be_sun">Только погода, ничего лишнего.</string>
+    <string name="byAdress">Погодный запрос по адресу</string>
+    <string name="byCoord">Погодный запрос по координатам</string>
+    <string name="weatherInLocation">Погода в местоположении</string>
 
 </resources>

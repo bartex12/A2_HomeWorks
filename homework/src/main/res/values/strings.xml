@@ -55,5 +55,8 @@
     <string name="Help">Help</string>
     <string name="help2">HELP</string>
     <string name="let_be_sun">Only the weather, nothing more.</string>
+    <string name="byAdress">Weather request by address</string>
+    <string name="byCoord">Weather request by coordinates</string>
+    <string name="weatherInLocation">Weather at location</string>
 
 </resources>

@@ -53,9 +53,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import rest.weather_model.WeatherRequestRestModel;
 
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_CITY_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
-import static com.geekbrains.city_weather.constants.AppConstants.GEO;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
 import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
     SQLiteDatabase database;
     LocationManager mLocManager = null;
     boolean isGeo = false;
+    boolean isLatLon = true;
 
     ServiceCityReceiver receiver = new ServiceCityReceiver();
 
@@ -102,7 +103,8 @@ public class MainActivity extends AppCompatActivity implements
             if (savedInstanceState == null) {
                 Log.d(TAG, "MainActivity onCreate savedInstanceState = null");
                 //если это запуск приложения, а не поворот экрана то определяем местоположение
-                getMyLocationLatLon();
+                //getMyLocationLatLon();
+                getMyLocation();
             }
         }
         Log.d(TAG, "MainActivity onCreate после блока разрешений");
@@ -114,6 +116,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onStart() {
+        Log.d(TAG, "MainActivity onStart");
+        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_CITY_ACTION
+        registerReceiver(receiver, new IntentFilter(BROADCAST_CITY_ACTION));
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "MainActivity onResume");
@@ -121,22 +131,26 @@ public class MainActivity extends AppCompatActivity implements
         // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
         if (isGeo) {
             Log.d(TAG, "MainActivity onResume isGeo = true");
-            getMyLocationLatLon();
+            //getMyLocationLatLon();
+            getMyLocation();
             initSingletons();
             doOrientationBasedActions();
         } else {
             Log.d(TAG, "MainActivity onResume isGeo = false");
-            initSingletons();
-            doOrientationBasedActions();
+            boolean isLatLonTemp = getDefaultSharedPreferences(this)
+                    .getBoolean("chooseLocationType", true);
+            Log.d(TAG, "MainActivity onResume isLatLonTemp =" + isLatLonTemp);
+            //если в настройках поменяли способ определения местоположения
+            if (isLatLonTemp != isLatLon) {
+                getMyLocation();
+                initSingletons();
+                doOrientationBasedActions();
+                isLatLon = isLatLonTemp;
+            } else {
+                initSingletons();
+                doOrientationBasedActions();
+            }
         }
-    }
-
-    @Override
-    public void onStart() {
-        Log.d(TAG, "MainActivity onStart");
-        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_CITY_ACTION
-        registerReceiver(receiver, new IntentFilter(BROADCAST_CITY_ACTION));
-        super.onStart();
     }
 
     @Override
@@ -203,6 +217,22 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    //выбираем способ определения месторасположения - по адресу или координатам
+    private void getMyLocation() {
+        //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
+        SharedPreferences prefSetting = getDefaultSharedPreferences(this);
+        //получаем из файла настроек состояние чекбоксов (Ключ не менять!)
+        boolean isLocotionFromCoord = prefSetting.getBoolean("chooseLocationType", true);
+        Log.d(TAG, "MainActivity getMyLocation isLocotionFromCoord = " + isLocotionFromCoord);
+        //определяем  погоду в местерасположении по координатам
+        if (isLocotionFromCoord) {
+            getMyLocationLatLon();
+            //определяем  погоду в местерасположении по адресу
+        } else {
+            getMyLocationCity();
+        }
+    }
+
     //*******************  начало    getMyLocationCity()  **********************
     //получаем  местоположение и  город с кодом страны
     private void getMyLocationCity() {
@@ -234,11 +264,15 @@ public class MainActivity extends AppCompatActivity implements
         try {
             addresses = geo.getFromLocation(loc.getLatitude(),
                     loc.getLongitude(), 1);
+            Log.d(TAG, "MainActivity getCityWithCountryCod  addresses " + addresses +
+                    " size = " + addresses.size());
             if (addresses.size() > 0) {
                 String cityName = addresses.get(0).getLocality();
                 String countryCod = addresses.get(0).getCountryCode();
                 //получаем город с кодом страны
                 cityWithCountryCod = cityName + ", " + countryCod;
+                Log.d(TAG, "MainActivity getCityWithCountryCod  cityWithCountryCod "
+                        + cityWithCountryCod);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -252,7 +286,6 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "MainActivity getMyLocationLatLon");
         // получаем экземпляр LocationManager
         mLocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         //получаем местонахождение
         @SuppressLint("MissingPermission") final Location loc = Objects.requireNonNull(mLocManager)
                 .getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
@@ -262,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements
             double longitude = loc.getLongitude();
             //пишем широту и долготу  в preferences,
             // saveMyLocationLatLon(latitude, longitude);
-            Log.d(TAG, "MainActivity getMyLocationCity " +
+            Log.d(TAG, "MainActivity getMyLocationLatLon " +
                     " Широта = " + latitude + "  Долгота = " + longitude);
 
             Intent intent = new Intent(MainActivity.this, BackgroundCityService.class);
@@ -271,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements
             this.startService(intent);
 
         } else {
-            Log.d(TAG, "MainActivity getMyLocationCity  Location loc = null");
+            Log.d(TAG, "MainActivity getMyLocationLatLon  Location loc = null");
         }
     }
 
@@ -335,6 +368,9 @@ public class MainActivity extends AppCompatActivity implements
         //устанавливаем из настроек значения по умолчанию для первой загрузки
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
+        SharedPreferences prefSetting = getDefaultSharedPreferences(this);
+        //получаем из файла настроек состояние чекбоксов (Ключ не менять!)
+        isLatLon = prefSetting.getBoolean("chooseLocationType", true);
     }
 
     private void showMessageDialogFfagment(String message) {
@@ -461,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // создаем новый фрагмент со списком ранее выбранных городов
-    //TODO возможно сделать его статическим если использовать во фрагменте
+    //его нельзя сделать  статическим чтобы использовать во фрагменте - getSupportFragmentManager не даёт
     private void setChooseCityFrag() {
         Log.d(TAG, "MainActivity setChooseCityFrag");
         ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
@@ -472,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // создаем новый фрагмент с текущей позицией города  для вывода погоды
-    //TODO возможно сделать его статическим если использовать во фрагменте
+    //его нельзя сделать  статическим чтобы использовать во фрагменте - getSupportFragmentManager не даёт
     private void setWeatherFragment(int container_id) {
         Log.d(TAG, "MainActivity setWeatherFragment");
         WeatherFragment weatherFrag = WeatherFragment.newInstance();
@@ -496,6 +532,7 @@ public class MainActivity extends AppCompatActivity implements
         return builder.toString();
     }
 
+    //ответ на запрос разрешения на определение местоположения
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -527,17 +564,7 @@ public class MainActivity extends AppCompatActivity implements
         editor.apply();
     }
 
-    //сохраняем широту и долготу
-    private void saveMyLocationLatLon(float latitude, float longitude) {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(this));
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putFloat(LATITUDE, latitude);
-        editor.putFloat(LONGITUDE, longitude);
-        editor.putBoolean(GEO, true);
-        editor.apply();
-    }
-
+    //приёмник широковещательного сообщения с фильтром BROADCAST_CITY_ACTION (см onStart)
     private class ServiceCityReceiver extends BroadcastReceiver {
 
         @Override
