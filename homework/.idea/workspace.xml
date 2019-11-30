@@ -17,15 +17,10 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/res/layout/content_main.xml" description="&lt;/androidx.constraintlayout.widget.ConstraintLayou..." line="19" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="542f984b-6456-4317-8c20-ccec589a7b16" name="Default Changelist" comment="сделал местоположение через координаты - без проверки пока">
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/termo24x48.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/termo50x100.png" afterDir="false" />
+    <list default="true" id="542f984b-6456-4317-8c20-ccec589a7b16" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/rest/OpenWeatherRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/rest/OpenWeatherRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values-ru/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +45,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundCityService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="80">
+              <caret line="47" column="61" lean-forward="true" selection-start-line="47" selection-start-column="61" selection-end-line="47" selection-end-column="61" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="140">
+              <caret line="59" column="102" lean-forward="true" selection-start-line="57" selection-start-column="15" selection-end-line="59" selection-end-column="102" />
+              <folding>
+                <element signature="e#1449#1450#0" expanded="true" />
+                <element signature="e#1509#1510#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1560">
@@ -58,11 +75,26 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/rest/IOpenWeather.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="542">
+              <caret line="33" column="51" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="51" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3020">
-              <caret line="267" column="29" selection-start-line="267" selection-start-column="29" selection-end-line="267" selection-end-column="29" />
+            <state relative-caret-position="-7142">
+              <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
+              <folding>
+                <element signature="e#8471#8521#0" expanded="true" />
+                <element signature="e#13796#13847#0" expanded="true" />
+                <element signature="e#15260#15291#0" expanded="true" />
+                <element signature="e#15293#15325#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -99,6 +131,19 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="22">
+              <caret line="696" column="92" lean-forward="true" selection-start-line="696" selection-start-column="92" selection-end-line="696" selection-end-column="92" />
+              <folding>
+                <element signature="e#5457#5458#0" expanded="true" />
+                <element signature="e#5501#5502#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -118,6 +163,7 @@
       <find>getI</find>
       <find>ORIENTATION_LANDSCAPE</find>
       <find>442</find>
+      <find>onAc</find>
     </findStrings>
   </component>
   <component name="GenerateSignedApkSettings">
@@ -130,7 +176,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="A2L8_Database_end" />
+        <entry key="$PROJECT_DIR$/.." value="A2L8_Database_end_lat_lon" />
       </map>
     </option>
   </component>
@@ -177,17 +223,17 @@
         <option value="$PROJECT_DIR$/src/main/res/layout/nav_header_main.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/app_bar_main.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values-ru/strings.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/raw/weather_help.txt" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/rest/IOpenWeather.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/constants/AppConstants.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundCityService.java" />
         <option value="$PROJECT_DIR$/src/main/java/rest/OpenWeatherRepo.java" />
         <option value="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" />
       </list>
     </option>
   </component>
@@ -271,7 +317,6 @@
     <property name="ExportApk.ApkPath" value="D:\AndroidStudioProjects\Android_2\A2_HomeWorks\homework" />
     <property name="ExportApk.BuildVariants" value="release" />
     <property name="ExportApk.SignV1" value="true" />
-    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
@@ -729,7 +774,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575067409824</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="сделал определение местоположения через настройки - или через адрес или через координаты&#10;теперь нужно добиться того, чтобы до получения разрешений приложение ничего не делало">
+      <created>1575115058294</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1575115058294</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TodoView">
@@ -745,8 +797,8 @@
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.46536413" visible="true" weight="0.18623482" />
-      <window_info id="Structure" order="2" sideWeight="0.5346359" side_tool="true" weight="0.18623482" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.46341464" visible="true" weight="0.18623482" />
+      <window_info id="Structure" order="2" sideWeight="0.5365854" side_tool="true" weight="0.18623482" />
       <window_info id="Favorites" order="3" sideWeight="0.5301205" side_tool="true" weight="0.20809716" />
       <window_info id="Build Variants" order="4" side_tool="true" />
       <window_info id="Image Layers" order="5" />
@@ -762,8 +814,8 @@
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.3285968" />
       <window_info anchor="bottom" id="Build" order="7" weight="0.59857905" />
       <window_info anchor="bottom" id="Android Profiler" order="8" />
-      <window_info active="true" anchor="bottom" id="Messages" order="9" visible="true" weight="0.3285968" />
-      <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.49959514" weight="0.48134992" />
+      <window_info anchor="bottom" id="Messages" order="9" weight="0.3285968" />
+      <window_info active="true" anchor="bottom" id="Logcat" order="10" sideWeight="0.49959514" visible="true" weight="0.8099467" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.36056837" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
       <window_info anchor="right" id="Gradle" order="1" />
@@ -777,7 +829,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="сделал  боковое меню на свои макеты &#10;1 поменял линеа лейауты на констрейн, иначе тулбар закрывал содержимое&#10;2 в манифесте выставил режимы SingleTask для обоих активити, чтобы не &#10;выло возвратов по кнопке назад&#10;3 все элементы перевёл на библиотеку androidx&#10;4" />
     <MESSAGE value="сделал  боковое меню на свои макеты &#10;1 поменял линеа лейауты на констрейн, иначе тулбар закрывал содержимое&#10;2 в манифесте выставил режимы SingleTask для обоих активити, чтобы не &#10;выло возвратов по кнопке назад&#10;3 все элементы перевёл на библиотеку androidx&#10;4 в main активити нашел и инициализировал все action элементы" />
     <MESSAGE value="разложил по пакетам" />
     <MESSAGE value="переименовал макеты как в шаблоне" />
@@ -802,7 +853,8 @@
     <MESSAGE value="изменил логику - определение местоположения только при первой загрузке - при повороте устройства место не определяется. Это сделано проверкой условия saveinstancestate ==null&#10;если да, то первая загрузка" />
     <MESSAGE value="=" />
     <MESSAGE value="сделал местоположение через координаты - без проверки пока" />
-    <option name="LAST_COMMIT_MESSAGE" value="сделал местоположение через координаты - без проверки пока" />
+    <MESSAGE value="сделал определение местоположения через настройки - или через адрес или через координаты&#10;теперь нужно добиться того, чтобы до получения разрешений приложение ничего не делало" />
+    <option name="LAST_COMMIT_MESSAGE" value="сделал определение местоположения через настройки - или через адрес или через координаты&#10;теперь нужно добиться того, чтобы до получения разрешений приложение ничего не делало" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1007,46 +1059,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundCityService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-540">
-          <caret line="47" column="61" lean-forward="true" selection-start-line="47" selection-start-column="61" selection-end-line="47" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-250">
-          <caret line="215" column="17" selection-start-line="215" selection-start-column="17" selection-end-line="215" selection-end-column="17" />
-          <folding>
-            <element signature="e#5457#5458#0" expanded="true" />
-            <element signature="e#5501#5502#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/rest/IOpenWeather.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="580">
-          <caret line="33" column="51" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/rest/OpenWeatherRepo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1980">
-          <caret line="118" column="46" selection-start-line="118" selection-start-column="46" selection-end-line="118" selection-end-column="46" />
-          <folding>
-            <element signature="e#1449#1450#0" expanded="true" />
-            <element signature="e#1509#1510#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1142,10 +1158,52 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundCityService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="47" column="61" lean-forward="true" selection-start-line="47" selection-start-column="61" selection-end-line="47" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/rest/IOpenWeather.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="542">
+          <caret line="33" column="51" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3020">
-          <caret line="267" column="29" selection-start-line="267" selection-start-column="29" selection-end-line="267" selection-end-column="29" />
+        <state relative-caret-position="-7142">
+          <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
+          <folding>
+            <element signature="e#8471#8521#0" expanded="true" />
+            <element signature="e#13796#13847#0" expanded="true" />
+            <element signature="e#15260#15291#0" expanded="true" />
+            <element signature="e#15293#15325#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="59" column="102" lean-forward="true" selection-start-line="57" selection-start-column="15" selection-end-line="59" selection-end-column="102" />
+          <folding>
+            <element signature="e#1449#1450#0" expanded="true" />
+            <element signature="e#1509#1510#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="696" column="92" lean-forward="true" selection-start-line="696" selection-start-column="92" selection-end-line="696" selection-end-column="92" />
+          <folding>
+            <element signature="e#5457#5458#0" expanded="true" />
+            <element signature="e#5501#5502#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

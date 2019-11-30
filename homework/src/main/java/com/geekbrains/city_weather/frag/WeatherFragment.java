@@ -691,8 +691,10 @@ public class WeatherFragment extends Fragment {
                             WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT);
-                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelWeather =" +
-                                    Objects.requireNonNull(modelWeather).dt);
+                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver " +
+                                    " lat = " + Objects.requireNonNull(modelWeather).coordinates.lat +
+                                    " lon = " + Objects.requireNonNull(modelWeather).coordinates.lon +
+                                    " name = " + Objects.requireNonNull(modelWeather).name);
 
                             //обрабатываем данные и выводим на экран если всё OK, заносим данные в базу
                             renderWeather(modelWeather);

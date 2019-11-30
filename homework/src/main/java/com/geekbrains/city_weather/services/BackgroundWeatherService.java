@@ -55,8 +55,9 @@ public class BackgroundWeatherService extends IntentService {
             //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
             if (response.body() != null && response.isSuccessful()) {
                 Log.d(TAG, "BackgroundWeatherService loadWeather OK");
-                Log.d(TAG, "BackgroundWeatherService loadWeather response.body().dt = " +
-                        response.body().dt);
+                Log.d(TAG, "BackgroundWeatherService loadWeather response.body().coordinates = " +
+                        " lat = " + response.body().coordinates.lat +
+                        " lon = " + response.body().coordinates.lon + " name" + response.body().name);
                 //делаем запрос о прогнозе погоды и получаем ответ от сервера
                 Response<ForecastRequestRestModel> responseForecast = getForecastResponse(currentCity);
 
