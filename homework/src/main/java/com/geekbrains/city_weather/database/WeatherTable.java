@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -15,6 +16,8 @@ public class WeatherTable {
     private final static String COLUMN_ID = "_id";
     private final static String COLUMN_CITY = "cityName";
     private final static String COLUMN_COUNTRY = "country";
+    private final static String COLUMN_LATITUDE = "latitude";
+    private final static String COLUMN_LONGITUDE = "longitude";
     private final static String COLUMN_LAST_UPDATE = "lastUpdate";
     private final static String COLUMN_DESCRIPTION = "description";
     private final static String COLUMN_WIND_SPEED = "windSpeed";
@@ -28,6 +31,8 @@ public class WeatherTable {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_CITY + " TEXT NOT NULL,"
                 + COLUMN_COUNTRY + " TEXT NOT NULL,"
+                + COLUMN_LATITUDE + " TEXT NOT NULL,"
+                + COLUMN_LONGITUDE + " TEXT NOT NULL,"
                 + COLUMN_LAST_UPDATE + " TEXT NOT NULL,"
                 + COLUMN_DESCRIPTION + " TEXT NOT NULL,"
                 + COLUMN_WIND_SPEED + " TEXT NOT NULL,"
@@ -47,6 +52,8 @@ public class WeatherTable {
 
         values.put(COLUMN_CITY, dataWeather.getCityName());
         values.put(COLUMN_COUNTRY, dataWeather.getCountry());
+        values.put(COLUMN_LATITUDE, dataWeather.getLatitude());
+        values.put(COLUMN_LONGITUDE, dataWeather.getLongitude());
         values.put(COLUMN_LAST_UPDATE, dataWeather.getLastUpdate());
         values.put(COLUMN_DESCRIPTION, dataWeather.getDescription());
         values.put(COLUMN_WIND_SPEED, dataWeather.getWindSpeed());
@@ -65,6 +72,8 @@ public class WeatherTable {
 
         values.put(COLUMN_CITY, newDataWeather.getCityName());
         values.put(COLUMN_COUNTRY, newDataWeather.getCountry());
+        values.put(COLUMN_LATITUDE, newDataWeather.getLatitude());
+        values.put(COLUMN_LONGITUDE, newDataWeather.getLongitude());
         values.put(COLUMN_LAST_UPDATE, newDataWeather.getLastUpdate());
         values.put(COLUMN_DESCRIPTION, newDataWeather.getDescription());
         values.put(COLUMN_WIND_SPEED, newDataWeather.getWindSpeed());
@@ -171,6 +180,8 @@ public class WeatherTable {
         // Узнаем индекс каждого столбца и Используем индекс для получения строки
         String cityName = cursor.getString(cursor.getColumnIndex(COLUMN_CITY));
         String country = cursor.getString(cursor.getColumnIndex(COLUMN_COUNTRY));
+        String latitude = cursor.getString(cursor.getColumnIndex(COLUMN_LATITUDE));
+        String longitude = cursor.getString(cursor.getColumnIndex(COLUMN_LONGITUDE));
         String lastUpdate = cursor.getString(cursor.getColumnIndex(COLUMN_LAST_UPDATE));
         String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
         String windSpeed = cursor.getString(cursor.getColumnIndex(COLUMN_WIND_SPEED));
@@ -180,7 +191,7 @@ public class WeatherTable {
         long updateSec = cursor.getLong(cursor.getColumnIndex(COLUMN_UPDATE_SEC));
 
         //создаём экземпляр класса DataWeather в конструкторе
-        return new DataWeather(cityName, country,
+        return new DataWeather(cityName, country, latitude, longitude,
                 lastUpdate, description, windSpeed,pressure,temperature,iconCod,updateSec);
     }
     //++++++++++++++++++++++++++++++++++ end getOneCityWeatherLine +++++++++++++++++++++++++++

@@ -4,6 +4,8 @@ public class DataWeather {
 
     private String cityName;
     private String country;
+    private String latitude;
+    private String longitude;
     private String lastUpdate;
     private String description;
     private String windSpeed;
@@ -13,11 +15,13 @@ public class DataWeather {
     private long updateSec;
 
     // конструктор без id
-    public DataWeather(String cityName, String country, String lastUpdate,
-                       String description, String windSpeed, String pressure,
+    public DataWeather(String cityName, String country, String latitude, String longitude,
+                       String lastUpdate, String description, String windSpeed, String pressure,
                        String temperature, String iconCod, long updateSec){
         this.cityName = cityName;
         this.country = country;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.lastUpdate = lastUpdate;
         this.description = description;
         this.windSpeed = windSpeed;
@@ -28,14 +32,26 @@ public class DataWeather {
     }
 
     public static DataWeather getDataWeatherDefault(){
-        return  new DataWeather("Saint Petersburg", "RU", "***",
+        return new DataWeather("Saint Petersburg", "RU",
+                "60.0099509", "30.323831", "***",
                 "***", "***","***", "***", "***", 0);
     }
 
     public String getCityName() {
         return cityName;
     }
-    public String getCountry() { return country; }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
     public String getLastUpdate() {
         return lastUpdate;
     }

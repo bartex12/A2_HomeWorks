@@ -329,6 +329,8 @@ public class WeatherFragment extends Fragment {
     private void renderWeather(WeatherRequestRestModel modelWeather) {
         try {
             setPlaceName(modelWeather.name, modelWeather.sys.country);
+            String latitude = String.valueOf(modelWeather.coordinates.lat);
+            String longitudee = String.valueOf(modelWeather.coordinates.lon);
             String lastUpdate = setUpdatedText(modelWeather.dt);
             Log.e(TAG, "**--** setUpdated lastUpdate= " + lastUpdate);
             setDescription(modelWeather.weather[0].description);
@@ -355,9 +357,10 @@ public class WeatherFragment extends Fragment {
                                          String windSpeed, String pressure, String temperature) {
         //получаем класс DataWeather
         DataWeather dataWeather = new DataWeather(modelWeather.name,
-                modelWeather.sys.country,lastUpdate, modelWeather.weather[0].description,
+                modelWeather.sys.country, String.valueOf(modelWeather.coordinates.lat),
+                String.valueOf(modelWeather.coordinates.lon),
+                lastUpdate, modelWeather.weather[0].description,
                 windSpeed, pressure, temperature, modelWeather.weather[0].icon, modelWeather.dt );
-        Log.e(TAG, "addOrReplaceCityWeather modelWeather.dt = " + modelWeather.dt);
 
         ArrayList<String> ara = WeatherTable.getAllCitys(database);
         boolean isCityInBase = ara.contains(modelWeather.name);

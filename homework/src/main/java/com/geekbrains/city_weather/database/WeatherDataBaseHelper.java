@@ -25,6 +25,7 @@ public class WeatherDataBaseHelper  extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if ((oldVersion==1) && (newVersion==2)){
             WeatherTable.onUpgrade(db);
+            ForecastTable.onUpgrade(db);
         }
     }
 

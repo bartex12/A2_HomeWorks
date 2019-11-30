@@ -14,10 +14,12 @@ import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.singltones.CityLab;
+
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
 
 public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCityAdapter.ViewHolder>{
@@ -81,7 +83,7 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
 
     public void clearList() {
         data.clear();
-        //удаляем всезаписи из таблицы для погоды
+        //удаляем все записи из таблицы для погоды
         WeatherTable.deleteAllDataFromCityWeather(database);
         //добавляем в список город по умолчанию -Санкт-Петербург -  и в базу - параметры по умолчанию
         addCityDefault();
