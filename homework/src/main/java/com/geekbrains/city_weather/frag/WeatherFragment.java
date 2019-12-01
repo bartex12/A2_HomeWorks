@@ -244,7 +244,7 @@ public class WeatherFragment extends Fragment {
             if (delta>3600){
                 Log.d(TAG, "WeatherFragment getActualDataOfCityWeather " +
                         "текущий город есть в базе  но delta>3600 - запускаем сервис");
-                //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+                //запускаем сервис, работающий в отдельном потоке, передаём туда координаты
                 //для получения погодных данных
                 Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
                 intent.putExtra(LATITUDE, CityCoordLab.getLatitude());
@@ -261,7 +261,7 @@ public class WeatherFragment extends Fragment {
         }else {
             Log.d(TAG, "WeatherFragment getActualDataOfCityWeather текущего города нет в базе" +
                     " - запускаем сервис,");
-            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+            //запускаем сервис, работающий в отдельном потоке, передаём туда координаты
             //для получения погодных данных
             Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
             intent.putExtra(LATITUDE, CityCoordLab.getLatitude());
@@ -661,8 +661,9 @@ public class WeatherFragment extends Fragment {
         return drawable;
     }
 
+    //приёмник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION - регистр в onStart
+    //приёмник работает, когда фрагмент активен, так как в onStop регистрация снимается
     private class ServiceFinishedReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, final Intent intent) {
             Log.d(TAG, "WeatherFragment ServiceFinishedReceiver onReceive" );
@@ -676,7 +677,7 @@ public class WeatherFragment extends Fragment {
                     //сначала смотрим, ответ от сервера равен null или нет
                     if (isResponceNull){
                         Toast.makeText(getActivity(), getActivity().getResources()
-                                        .getString(R.string.tlf_problems),Toast.LENGTH_LONG).show();
+                                .getString(R.string.tlf_problems),Toast.LENGTH_LONG).show();
                         Log.e(TAG, "ServiceFinishedReceiver: Возникли проблемы " +
                                 "с отправкой запроса. Возможно нет интернета");
                     }else {

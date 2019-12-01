@@ -1,8 +1,10 @@
 package com.geekbrains.city_weather.frag;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
@@ -26,6 +29,7 @@ import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
+import com.geekbrains.city_weather.singltones.CityCoordLab;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
 
@@ -38,10 +42,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import rest.weather_model.WeatherRequestRestModel;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
+import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_WEATHER_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
+import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 public class ChooseCityFrag extends Fragment implements SensorEventListener {
@@ -56,7 +64,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private TextView textTempHere;
     private TextView textHumidity;
     private SQLiteDatabase database;
-    //private ServiceCoordsReceiver receiver = new ServiceCoordsReceiver();
+    private ServiceCoordsReceiver receiver = new ServiceCoordsReceiver();
 
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
@@ -95,8 +103,8 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onStart() {
         super.onStart();
         EventBus.getBus().register(this);
-//        Objects.requireNonNull(getActivity())
-//                .registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
+        Objects.requireNonNull(getActivity())
+                .registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
     }
 
     @Override
@@ -114,7 +122,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Override
     public void onStop() {
         EventBus.getBus().unregister(this);
-//        Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
+        Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         super.onStop();
     }
 
@@ -240,30 +248,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
                         intent.putExtra(CURRENT_CITY, newCity);
                         Objects.requireNonNull(getActivity()).startService(intent);
-                        
-//                        //получаем список городов из базы
-//                        ArrayList<String> ara = WeatherTable.getAllCitys(database);
-//                        Log.d(TAG, "ChooseCityFrag getActualDataOfCityWeather ara = " + ara.toString());
-//                        boolean isCityInDatabase = ara.contains(newCity);
-//
-//                        //если текущий город есть в базе
-//                        if (isCityInDatabase) {
-//                            Log.d(TAG, "ChooseCityFrag initRecycledView берём из базы");
-//                            //получаем объект с погодными данными
-//                            DataWeather dataWeather = WeatherTable.getOneCityWeatherLine(database, newCity);
-//                            double latitude = Double.parseDouble(dataWeather.getLatitude());
-//                            double longitude = Double.parseDouble(dataWeather.getLongitude());
-//                            //делаем город текущим
-//                            CityCoordLab.setCurrentCity(newCity, latitude, longitude);
-//                            // показываем погоду в городе с учётом ориентации экрана
-//                            showCityWhetherWithOrientation();
-//                        } else {
-//                            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
-//                            //для получения погодных данных
-//                            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-//                            intent.putExtra(CURRENT_CITY, newCity);
-//                            Objects.requireNonNull(getActivity()).startService(intent);
-//                        }
                     }
                 };
 
@@ -328,17 +312,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         ft.commit();
     }
 
-    // создаем новый фрагмент со списком ранее выбранных городов
-    //его нельзя сделать  статическим чтобы использовать во фрагменте - getFragmentManager не даёт
-    private void setChooseCityFrag() {
-        Log.d(TAG, "MainActivity setChooseCityFrag");
-        ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
-        ft.commit();
-    }
-
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -372,31 +345,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
         intent.putExtra(CURRENT_CITY, event.city);
         Objects.requireNonNull(getActivity()).startService(intent);
-
-//        //получаем список городов из базы
-//        ArrayList<String> ara = WeatherTable.getAllCitys(database);
-//        Log.d(TAG, "ChooseCityFrag onChangeEvent ara = " + ara.toString());
-//        boolean isCityInDatabase = ara.contains(event.city);
-//        //если текущий город есть в базе
-//        if (isCityInDatabase) {
-//            Log.d(TAG, "ChooseCityFrag onChangeEvent текущий город есть в базе");
-//            //получаем объект с погодными данными
-//            DataWeather dataWeather = WeatherTable.getOneCityWeatherLine(database, event.city);
-//            double latitude = Double.parseDouble(dataWeather.getLatitude());
-//            double longitude = Double.parseDouble(dataWeather.getLongitude());
-//            //делаем город текущим
-//            CityCoordLab.setCurrentCity(event.city, latitude, longitude);
-//            // показываем погоду в городе с учётом ориентации экрана
-//            showCityWhetherWithOrientation();
-//
-//        } else {
-//            Log.d(TAG, "ChooseCityFrag onChangeEvent города нет в базе");
-//            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
-//            //для получения погодных данных
-//            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-//            intent.putExtra(CURRENT_CITY, event.city);
-//            Objects.requireNonNull(getActivity()).startService(intent);
-//        }
     }
 
     //реакция на событие AddItemEvent Событие создаётся в DialogCityAdd
@@ -408,55 +356,57 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         recyclerViewCityAdapter.addElement(event.city);
     }
 
-//    private class ServiceCoordsReceiver extends BroadcastReceiver {
-//
-//        @Override
-//        public void onReceive(Context context, final Intent intent) {
-//            Log.d(TAG, "ChooseCityFrag ServiceCoordsReceiver onReceive" );
-//            //переходим в поток GUI
-//            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //сначала смотрим, а удалось ли сервису получить JAVA объект
-//                    boolean is_JSON_null =  intent.getBooleanExtra(IS_JSON_NULL, true);
-//                    boolean isResponceNull =  intent.getBooleanExtra(IS_RESPONS_NULL, false);
-//                    //сначала смотрим, ответ от сервера равен null или нет
-//                    if (isResponceNull){
-//                        Toast.makeText(getActivity(), getActivity().getResources()
-//                                .getString(R.string.tlf_problems),Toast.LENGTH_LONG).show();
-//                        Log.e(TAG, "ServiceFinishedReceiver: Возникли проблемы " +
-//                                "с отправкой запроса. Возможно нет интернета");
-//                    }else {
-//                        //если не удалось, то is_JSON_null = true
-//                        if (is_JSON_null){
-//                            Toast.makeText(getActivity(), R.string.place_not_found,
-//                                    Toast.LENGTH_LONG).show();
-//                            //делаем текущим город Saint Petersburg
-//                            CityCoordLab.setCityDefault();
-//                            // показываем погоду в городе с учётом ориентации экрана
-//                            showCityWhetherWithOrientation();
-//                            //если JAVA объект получен, то получаем данные
-//                        }else {
-//                            //десериализуем объект WeatherRequestRestModel
-//                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
-//                                    Objects.requireNonNull(intent.getExtras())
-//                                            .getSerializable(JAVA_OBJECT);
-//
-//                            String curentCity = modelWeather.name;
-//                            double latitude = modelWeather.coordinates.lat;
-//                            double longitude = modelWeather.coordinates.lon;
-//                            CityCoordLab.setCurrentCity(modelWeather.name,
-//                                    modelWeather.coordinates.lat, modelWeather.coordinates.lon);
-//                            Log.d(TAG, "ChooseCityFrag ServiceCoordsReceiver " +
-//                                    " lat = " + latitude + " lon = " + longitude +
-//                                    " name = " + curentCity);
-//                            // показываем погоду в городе с учётом ориентации экрана
-//                            showCityWhetherWithOrientation();
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
+    //приёмник широковещательнфх сообщений с фильтром BROADCAST_WEATHER_ACTION - регистр в onStart
+    //приёмник работает, когда фрагмент активен, так как в onStop регистрация снимается
+    private class ServiceCoordsReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            Log.d(TAG, "ChooseCityFrag ServiceCoordsReceiver onReceive");
+            //переходим в поток GUI
+            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //сначала смотрим, а удалось ли сервису получить JAVA объект
+                    boolean is_JSON_null = intent.getBooleanExtra(IS_JSON_NULL, true);
+                    boolean isResponceNull = intent.getBooleanExtra(IS_RESPONS_NULL, false);
+                    //сначала смотрим, ответ от сервера равен null или нет
+                    if (isResponceNull) {
+                        Toast.makeText(getActivity(), getActivity().getResources()
+                                .getString(R.string.tlf_problems), Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "ServiceFinishedReceiver: Возникли проблемы " +
+                                "с отправкой запроса. Возможно нет интернета");
+                    } else {
+                        //если не удалось, то is_JSON_null = true
+                        if (is_JSON_null) {
+                            Toast.makeText(getActivity(), R.string.place_not_found,
+                                    Toast.LENGTH_LONG).show();
+                            //делаем текущим город Saint Petersburg
+                            CityCoordLab.setCityDefault();
+                            // показываем погоду в городе с учётом ориентации экрана
+                            showCityWhetherWithOrientation();
+                            //если JAVA объект получен, то получаем данные
+                        } else {
+                            //десериализуем объект WeatherRequestRestModel
+                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
+                                    Objects.requireNonNull(intent.getExtras())
+                                            .getSerializable(JAVA_OBJECT);
+
+                            String curentCity = modelWeather.name;
+                            double latitude = modelWeather.coordinates.lat;
+                            double longitude = modelWeather.coordinates.lon;
+
+                            CityCoordLab.setCurrentCity(modelWeather.name,
+                                    modelWeather.coordinates.lat, modelWeather.coordinates.lon);
+                            Log.d(TAG, "ChooseCityFrag ServiceCoordsReceiver " +
+                                    " lat = " + latitude + " lon = " + longitude +
+                                    " name = " + curentCity);
+                            // показываем погоду в городе с учётом ориентации экрана
+                            showCityWhetherWithOrientation();
+                        }
+                    }
+                }
+            });
+        }
+    }
 }
 
