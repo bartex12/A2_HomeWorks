@@ -64,17 +64,17 @@ public class BackgroundWeatherService extends IntentService {
             //если надо получить сразу WeatherRequestRestModel, то надо .execute().body()
             response = getWeatherLatLonResponse(lat, lon);
         }
-
         //если телефон не может посылать запросы, response=null, обрабатываем эту ситуацию
         if (response!=null){
             //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
             if (response.body() != null && response.isSuccessful()) {
                 Log.d(TAG, "BackgroundWeatherService loadWeather OK");
                 String name = response.body().name;
+                String country = response.body().sys.country;
                 String latit = String.valueOf(response.body().coordinates.lat);
                 String longit = String.valueOf(response.body().coordinates.lon);
-                Log.d(TAG, "BackgroundWeatherService loadWeather " +
-                        " lat = " + latit + " lon = " + longit + " name = " + name);
+                Log.d(TAG, "BackgroundWeatherService loadWeather " + " lat = " + latit +
+                        " lon = " + longit + " name = " + name + " country = " + country);
 
                 //делаем запрос о прогнозе погоды и получаем ответ от сервера
                 Response<ForecastRequestRestModel> responseForecast =

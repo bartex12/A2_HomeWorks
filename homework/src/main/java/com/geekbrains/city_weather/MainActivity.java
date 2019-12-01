@@ -227,8 +227,7 @@ public class MainActivity extends AppCompatActivity implements
                 getResources().getString(R.string.saint_petersburg));
         String latitude = prefSetting.getString(LATITUDE, "0");
         String longitude = prefSetting.getString(LONGITUDE, "0");
-        Log.d(TAG, "MainActivity initSingletons befor LAST_CITY =" + cityCurrent +
-                " latitude = " + latitude + " longitude = " + longitude);
+
         if (Double.parseDouble(latitude) > 0) {
             //инициализируем значение  синглтона CityLab последним городом из Preferences
             CityCoordLab.setCurrentCity(cityCurrent,
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             CityCoordLab.setCityDefault();
         }
-        Log.d(TAG, "MainActivity initSingletons afterv LAST_CITY =" + CityCoordLab.getCity()
+        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + CityCoordLab.getCity()
                 + " latitude = " + CityCoordLab.getLatitude()
                 + " longitude = " + CityCoordLab.getLongitude());
     }

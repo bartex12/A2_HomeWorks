@@ -44,6 +44,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
@@ -59,6 +60,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     private TextView textTempHere;
     private TextView textHumidity;
     private SQLiteDatabase database;
+    //private ServiceCoordsReceiver receiver = new ServiceCoordsReceiver();
 
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
@@ -97,6 +99,8 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onStart() {
         super.onStart();
         EventBus.getBus().register(this);
+//        Objects.requireNonNull(getActivity())
+//                .registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
     }
 
     @Override
@@ -114,6 +118,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     @Override
     public void onStop() {
         EventBus.getBus().unregister(this);
+//        Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         super.onStop();
     }
 
@@ -322,6 +327,17 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         ft.commit();
     }
 
+    // создаем новый фрагмент со списком ранее выбранных городов
+    //его нельзя сделать  статическим чтобы использовать во фрагменте - getFragmentManager не даёт
+    private void setChooseCityFrag() {
+        Log.d(TAG, "MainActivity setChooseCityFrag");
+        ChooseCityFrag chooseCityFrag = ChooseCityFrag.newInstance();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content_super, chooseCityFrag, CITY_FRAFMENT_TAG);  // замена фрагмента
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);// эффект
+        ft.commit();
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -386,5 +402,56 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
     }
+
+//    private class ServiceCoordsReceiver extends BroadcastReceiver {
+//
+//        @Override
+//        public void onReceive(Context context, final Intent intent) {
+//            Log.d(TAG, "ChooseCityFrag ServiceCoordsReceiver onReceive" );
+//            //переходим в поток GUI
+//            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //сначала смотрим, а удалось ли сервису получить JAVA объект
+//                    boolean is_JSON_null =  intent.getBooleanExtra(IS_JSON_NULL, true);
+//                    boolean isResponceNull =  intent.getBooleanExtra(IS_RESPONS_NULL, false);
+//                    //сначала смотрим, ответ от сервера равен null или нет
+//                    if (isResponceNull){
+//                        Toast.makeText(getActivity(), getActivity().getResources()
+//                                .getString(R.string.tlf_problems),Toast.LENGTH_LONG).show();
+//                        Log.e(TAG, "ServiceFinishedReceiver: Возникли проблемы " +
+//                                "с отправкой запроса. Возможно нет интернета");
+//                    }else {
+//                        //если не удалось, то is_JSON_null = true
+//                        if (is_JSON_null){
+//                            Toast.makeText(getActivity(), R.string.place_not_found,
+//                                    Toast.LENGTH_LONG).show();
+//                            //делаем текущим город Saint Petersburg
+//                            CityCoordLab.setCityDefault();
+//                            // показываем погоду в городе с учётом ориентации экрана
+//                            showCityWhetherWithOrientation();
+//                            //если JAVA объект получен, то получаем данные
+//                        }else {
+//                            //десериализуем объект WeatherRequestRestModel
+//                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
+//                                    Objects.requireNonNull(intent.getExtras())
+//                                            .getSerializable(JAVA_OBJECT);
+//
+//                            String curentCity = modelWeather.name;
+//                            double latitude = modelWeather.coordinates.lat;
+//                            double longitude = modelWeather.coordinates.lon;
+//                            CityCoordLab.setCurrentCity(modelWeather.name,
+//                                    modelWeather.coordinates.lat, modelWeather.coordinates.lon);
+//                            Log.d(TAG, "ChooseCityFrag ServiceCoordsReceiver " +
+//                                    " lat = " + latitude + " lon = " + longitude +
+//                                    " name = " + curentCity);
+//                            // показываем погоду в городе с учётом ориентации экрана
+//                            showCityWhetherWithOrientation();
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//    }
 }
 
