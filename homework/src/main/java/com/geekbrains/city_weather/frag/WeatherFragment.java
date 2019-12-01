@@ -27,7 +27,6 @@ import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityCoordLab;
-import com.geekbrains.city_weather.singltones.CityLab;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -187,7 +186,9 @@ public class WeatherFragment extends Fragment {
 
     private void saveLastCity(SharedPreferences preferences){
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(LAST_CITY, CityLab.getCity());
+        editor.putString(LAST_CITY, CityCoordLab.getCity());
+        editor.putString(LATITUDE, String.valueOf(CityCoordLab.getLatitude()));
+        editor.putString(LONGITUDE, String.valueOf(CityCoordLab.getLongitude()));
         editor.apply();
     }
 
@@ -343,7 +344,8 @@ public class WeatherFragment extends Fragment {
             addOrReplaceCityWeather(modelWeather, lastUpdate, windSpeed, pressure, temperature);
 
             //записываем город в синглтон - делаем его текущим
-            CityLab.setCurrentCity(modelWeather.name);
+            CityCoordLab.setCurrentCity(modelWeather.name,
+                    modelWeather.coordinates.lat, modelWeather.coordinates.lon);
 
         } catch (Exception exc) {
             exc.printStackTrace();
@@ -700,15 +702,15 @@ public class WeatherFragment extends Fragment {
                                     " lat = " + Objects.requireNonNull(modelWeather).coordinates.lat +
                                     " lon = " + Objects.requireNonNull(modelWeather).coordinates.lon +
                                     " name = " + Objects.requireNonNull(modelWeather).name);
-
                             //обрабатываем данные и выводим на экран если всё OK, заносим данные в базу
                             renderWeather(modelWeather);
 
                             ForecastRequestRestModel modelForecast =(ForecastRequestRestModel)
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT_FORECAST);
-                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelForecast =" +
-                                    modelForecast);
+                            Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelForecast.city.name =" +
+                                    modelForecast.city.name);
+                            //обрабатываем данные и выводим на экран если всё OK, заносим данные в базу
                             renderForecast(modelForecast);
                         }
                     }

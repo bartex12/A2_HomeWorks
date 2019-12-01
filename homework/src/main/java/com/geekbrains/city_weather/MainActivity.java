@@ -28,9 +28,8 @@ import com.geekbrains.city_weather.dialogs.MessageDialog;
 import com.geekbrains.city_weather.frag.ChooseCityFrag;
 import com.geekbrains.city_weather.frag.WeatherFragment;
 import com.geekbrains.city_weather.preferences.SettingsActivity;
-import com.geekbrains.city_weather.services.BackgroundCityByCoordService;
+import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityCoordLab;
-import com.geekbrains.city_weather.singltones.CityLab;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d(TAG, "MainActivity onCreate savedInstanceState = null");
                 //если это запуск приложения, а не поворот экрана то определяем местоположение
                 getMyLocationLatLon();
-                //getMyLocation();
             }
         }
         Log.d(TAG, "MainActivity onCreate после блока разрешений");
@@ -129,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements
         if (isGeo) {
             Log.d(TAG, "MainActivity onResume isGeo = true");
             getMyLocationLatLon();
-            //getMyLocation();
             initSingletons();
             doOrientationBasedActions();
         } else {
@@ -217,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, "MainActivity getMyLocationLatLon " +
                     " Широта = " + latitude + "  Долгота = " + longitude);
 
-            Intent intent = new Intent(MainActivity.this, BackgroundCityByCoordService.class);
+            Intent intent = new Intent(MainActivity.this, BackgroundWeatherService.class);
             intent.putExtra(LATITUDE, latitude);
             intent.putExtra(LONGITUDE, longitude);
             this.startService(intent);
@@ -241,11 +238,20 @@ public class MainActivity extends AppCompatActivity implements
         //это последний запомненный город из Preferences
         String cityCurrent = prefSetting.getString(LAST_CITY,
                 getResources().getString(R.string.saint_petersburg));
-        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + cityCurrent);
-        //инициализируем значение  синглтона CityLab последним городом из Preferences
-        //*****!!!!это была ошибка1- вместо setCurrentCity было getInstance
-        CityLab.setCurrentCity(cityCurrent);
-        Log.d(TAG, "MainActivity initSingletons CityLab.setCurrentCity =" + CityLab.getCity());
+        String latitude = prefSetting.getString(LATITUDE, "0");
+        String longitude = prefSetting.getString(LONGITUDE, "0");
+        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + cityCurrent +
+                " latitude = " + latitude + " longitude = " + longitude);
+        if (Double.parseDouble(latitude) > 0) {
+            //инициализируем значение  синглтона CityLab последним городом из Preferences
+            CityCoordLab.setCurrentCity(cityCurrent,
+                    Double.parseDouble(latitude), Double.parseDouble(longitude));
+        } else {
+            CityCoordLab.setCityDefault();
+        }
+        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + CityCoordLab.getCity()
+                + " latitude = " + CityCoordLab.getLatitude()
+                + " longitude = " + CityCoordLab.getLongitude());
     }
 
     //действия с фрагментами в зависимости от ориентации телефона
@@ -498,9 +504,7 @@ public class MainActivity extends AppCompatActivity implements
                         if (is_JSON_null) {
                             Toast.makeText(MainActivity.this, R.string.place_not_found,
                                     Toast.LENGTH_LONG).show();
-
-                            //CityLab.setCityDefault();  //делаем текущим город Saint Petersburg
-
+                            //делаем текущим город Saint Petersburg
                             CityCoordLab.setCityDefault();
                             //действия в зависимости от ориентации телефона
                             doOrientationBasedActions();
