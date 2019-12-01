@@ -356,8 +356,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         recyclerViewCityAdapter.addElement(event.city);
     }
 
-    //приёмник широковещательнфх сообщений с фильтром BROADCAST_WEATHER_ACTION - регистр в onStart
+    //приёмник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION - регистр в onStart
     //приёмник работает, когда фрагмент активен, так как в onStop регистрация снимается
+    //если принудительно вызывать нужный фрагмент - WeatherFragment - возникает состояние гонки
+    // сервисов с разными значениями текущих городов - кто бмедленнее, тот и на экране будет
+    //поэтому пока сделал два приёмника но так при нажатии на строку списка приложение тупит
+    //видимо надо искать способ вызывать WeatherFragment безопасно
     private class ServiceCoordsReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, final Intent intent) {
