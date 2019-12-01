@@ -172,15 +172,15 @@ public class WeatherFragment extends Fragment {
     public void onStop() {
         Log.d(TAG, "WeatherFragment onStop");
         Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
+        SharedPreferences defaultPrefs =
+                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
+        saveLastCity(defaultPrefs);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
         Log.d(TAG, "WeatherFragment onDestroy");
-        SharedPreferences defaultPrefs =
-                PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
-        saveLastCity(defaultPrefs);
         super.onDestroy();
     }
 
@@ -229,6 +229,7 @@ public class WeatherFragment extends Fragment {
 
         //если текущий город есть в базе
         if (isCityInDatabase){
+            Log.d(TAG, "WeatherFragment getActualDataOfCityWeather текущий город есть в базе");
             //получаем время последнего обновления погоды по этому городу
             long lastUpdateOfCityWeather = WeatherTable.getLastUpdate(database, currentCity);
             //вычисляем разницу в мс между текущим временем и  временем последнего обновления
@@ -241,6 +242,8 @@ public class WeatherFragment extends Fragment {
 
             //  если прошло больше заданного времени (1 час) с последнего обновления
             if (delta>3600){
+                Log.d(TAG, "WeatherFragment getActualDataOfCityWeather " +
+                        "текущий город есть в базе  но delta>3600 - запускаем сервис");
                 //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
                 //для получения погодных данных
                 Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
@@ -249,12 +252,15 @@ public class WeatherFragment extends Fragment {
                 Objects.requireNonNull(getActivity()).startService(intent);
                 //иначе  берём данные из базы
             }else{
-                Log.d(TAG, "***********  WeatherFragment getDataOfCityWeather  ************");
+                Log.d(TAG, "WeatherFragment getActualDataOfCityWeather " +
+                        "текущий город есть в базе - получаем из базы погодные данные");
                 // получаем из базы погодные данные для текущего города
                 getDataWetherForCity(currentCity);
                 getDataforecastForCity(currentCity);
             }
         }else {
+            Log.d(TAG, "WeatherFragment getActualDataOfCityWeather текущего города нет в базе" +
+                    " - запускаем сервис,");
             //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
             //для получения погодных данных
             Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
@@ -709,7 +715,7 @@ public class WeatherFragment extends Fragment {
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT_FORECAST);
                             Log.d(TAG, "WeatherFragment ServiceFinishedReceiver modelForecast.city.name =" +
-                                    modelForecast.city.name);
+                                    Objects.requireNonNull(modelForecast).city.name);
                             //обрабатываем данные и выводим на экран если всё OK, заносим данные в базу
                             renderForecast(modelForecast);
                         }

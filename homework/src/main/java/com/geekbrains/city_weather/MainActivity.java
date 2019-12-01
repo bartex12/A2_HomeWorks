@@ -2,10 +2,7 @@ package com.geekbrains.city_weather;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -34,7 +31,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -47,14 +43,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
-import rest.weather_model.WeatherRequestRestModel;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.geekbrains.city_weather.constants.AppConstants.BROADCAST_CITY_ACTION;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
-import static com.geekbrains.city_weather.constants.AppConstants.IS_JSON_NULL;
-import static com.geekbrains.city_weather.constants.AppConstants.IS_RESPONS_NULL;
-import static com.geekbrains.city_weather.constants.AppConstants.JAVA_OBJECT;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.LATITUDE;
 import static com.geekbrains.city_weather.constants.AppConstants.LONGITUDE;
@@ -71,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements
     LocationManager mLocManager = null;
     boolean isGeo = false;
     boolean isLatLon = true;
-
-    ServiceCityReceiver receiver = new ServiceCityReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onStart() {
         Log.d(TAG, "MainActivity onStart");
-        //регистрируем примник широковещательных сообщений с фильтром BROADCAST_CITY_ACTION
-        registerReceiver(receiver, new IntentFilter(BROADCAST_CITY_ACTION));
         super.onStart();
     }
 
@@ -125,11 +112,12 @@ public class MainActivity extends AppCompatActivity implements
 
         // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
         if (isGeo) {
-            Log.d(TAG, "MainActivity onResume isGeo = true");
+            Log.d(TAG, "MainActivity onResume isGeo = true - делаем локацию");
             getMyLocationLatLon();
             initSingletons();
             doOrientationBasedActions();
         } else {
+            Log.d(TAG, "MainActivity onResume isGeo = false - без локации");
             initSingletons();
             doOrientationBasedActions();
         }
@@ -138,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onStop() {
         Log.d(TAG, "MainActivity onStop");
-        unregisterReceiver(receiver);
         super.onStop();
     }
 
@@ -240,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements
                 getResources().getString(R.string.saint_petersburg));
         String latitude = prefSetting.getString(LATITUDE, "0");
         String longitude = prefSetting.getString(LONGITUDE, "0");
-        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + cityCurrent +
+        Log.d(TAG, "MainActivity initSingletons befor LAST_CITY =" + cityCurrent +
                 " latitude = " + latitude + " longitude = " + longitude);
         if (Double.parseDouble(latitude) > 0) {
             //инициализируем значение  синглтона CityLab последним городом из Preferences
@@ -249,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             CityCoordLab.setCityDefault();
         }
-        Log.d(TAG, "MainActivity initSingletons LAST_CITY =" + CityCoordLab.getCity()
+        Log.d(TAG, "MainActivity initSingletons afterv LAST_CITY =" + CityCoordLab.getCity()
                 + " latitude = " + CityCoordLab.getLatitude()
                 + " longitude = " + CityCoordLab.getLongitude());
     }
@@ -472,66 +459,12 @@ public class MainActivity extends AppCompatActivity implements
                 // в onCreate - в ветке "если есть разрешения"
                 isGeo = true;
                 //разрешение получено- перегружаем активити - вроде начинает с onResume
-                recreate();
+                //вроде перезагрузка происходит автоматически и не нужно делать recreate()
+                //recreate();
             } else {
                 Toast.makeText(this, getResources().getString(R.string.notPermission),
                         Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    //приёмник широковещательного сообщения с фильтром BROADCAST_CITY_ACTION (см onStart)
-    private class ServiceCityReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, final Intent intent) {
-            Log.d(TAG, "MainActivity ServiceCityReceiver onReceive");
-            //переходим в поток GUI
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //сначала смотрим, а удалось ли сервису получить JAVA объект
-                    boolean is_JSON_null = intent.getBooleanExtra(IS_JSON_NULL, true);
-                    boolean isResponceNull = intent.getBooleanExtra(IS_RESPONS_NULL, false);
-                    //сначала смотрим, ответ от сервера равен null или нет
-                    if (isResponceNull) {
-                        Toast.makeText(MainActivity.this, R.string.tlf_problems,
-                                Toast.LENGTH_LONG).show();
-                        Log.e(TAG, "ServiceCityReceiver: Возникли проблемы " +
-                                "с отправкой запроса. Возможно нет интернета");
-                    } else {
-                        //если не удалось, то is_JSON_null = true
-                        if (is_JSON_null) {
-                            Toast.makeText(MainActivity.this, R.string.place_not_found,
-                                    Toast.LENGTH_LONG).show();
-                            //делаем текущим город Saint Petersburg
-                            CityCoordLab.setCityDefault();
-                            //действия в зависимости от ориентации телефона
-                            doOrientationBasedActions();
-
-                            //если JAVA объект получен, то получаем данные
-                        } else {
-                            //десериализуем объект WeatherRequestRestModel
-                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
-                                    Objects.requireNonNull(intent.getExtras())
-                                            .getSerializable(JAVA_OBJECT);
-                            String name = Objects.requireNonNull(modelWeather).name;
-                            String country = Objects.requireNonNull(modelWeather).sys.country;
-                            double latitude = modelWeather.coordinates.lat;
-                            double longitude = modelWeather.coordinates.lon;
-                            //получаем город
-                            String currentCity = String.format(Locale.getDefault(),
-                                    "%s, %s", name, country);
-                            Log.d(TAG, "MainActivity ServiceCityReceiver currentCity =" +
-                                    currentCity);
-
-                            CityCoordLab.setCurrentCity(currentCity, latitude, longitude);
-
-                            doOrientationBasedActions();
-                        }
-                    }
-                }
-            });
         }
     }
 }
