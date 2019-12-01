@@ -21,18 +21,14 @@ import android.widget.TextView;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
-import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
-import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
-import com.geekbrains.city_weather.singltones.CityCoordLab;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -240,29 +236,34 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                     @Override
                     public void onCityClick(String newCity) {
                         Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick");
-                        //получаем список городов из базы
-                        ArrayList<String> ara = WeatherTable.getAllCitys(database);
-                        Log.d(TAG, "ChooseCityFrag getActualDataOfCityWeather ara = " + ara.toString());
-                        boolean isCityInDatabase = ara.contains(newCity);
 
-                        //если текущий город есть в базе
-                        if (isCityInDatabase) {
-                            Log.d(TAG, "ChooseCityFrag initRecycledView берём из базы");
-                            //получаем объект с погодными данными
-                            DataWeather dataWeather = WeatherTable.getOneCityWeatherLine(database, newCity);
-                            double latitude = Double.parseDouble(dataWeather.getLatitude());
-                            double longitude = Double.parseDouble(dataWeather.getLongitude());
-                            //делаем город текущим
-                            CityCoordLab.setCurrentCity(newCity, latitude, longitude);
-                            // показываем погоду в городе с учётом ориентации экрана
-                            showCityWhetherWithOrientation();
-                        } else {
-                            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
-                            //для получения погодных данных
-                            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-                            intent.putExtra(CURRENT_CITY, newCity);
-                            Objects.requireNonNull(getActivity()).startService(intent);
-                        }
+                        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+                        intent.putExtra(CURRENT_CITY, newCity);
+                        Objects.requireNonNull(getActivity()).startService(intent);
+                        
+//                        //получаем список городов из базы
+//                        ArrayList<String> ara = WeatherTable.getAllCitys(database);
+//                        Log.d(TAG, "ChooseCityFrag getActualDataOfCityWeather ara = " + ara.toString());
+//                        boolean isCityInDatabase = ara.contains(newCity);
+//
+//                        //если текущий город есть в базе
+//                        if (isCityInDatabase) {
+//                            Log.d(TAG, "ChooseCityFrag initRecycledView берём из базы");
+//                            //получаем объект с погодными данными
+//                            DataWeather dataWeather = WeatherTable.getOneCityWeatherLine(database, newCity);
+//                            double latitude = Double.parseDouble(dataWeather.getLatitude());
+//                            double longitude = Double.parseDouble(dataWeather.getLongitude());
+//                            //делаем город текущим
+//                            CityCoordLab.setCurrentCity(newCity, latitude, longitude);
+//                            // показываем погоду в городе с учётом ориентации экрана
+//                            showCityWhetherWithOrientation();
+//                        } else {
+//                            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+//                            //для получения погодных данных
+//                            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+//                            intent.putExtra(CURRENT_CITY, newCity);
+//                            Objects.requireNonNull(getActivity()).startService(intent);
+//                        }
                     }
                 };
 
@@ -368,30 +369,34 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         // удалится при обновлении списка из базы данных в конструкторе адаптера
         recyclerViewCityAdapter.addElement(event.city);
 
-        //получаем список городов из базы
-        ArrayList<String> ara = WeatherTable.getAllCitys(database);
-        Log.d(TAG, "ChooseCityFrag onChangeEvent ara = " + ara.toString());
-        boolean isCityInDatabase = ara.contains(event.city);
-        //если текущий город есть в базе
-        if (isCityInDatabase) {
-            Log.d(TAG, "ChooseCityFrag onChangeEvent текущий город есть в базе");
-            //получаем объект с погодными данными
-            DataWeather dataWeather = WeatherTable.getOneCityWeatherLine(database, event.city);
-            double latitude = Double.parseDouble(dataWeather.getLatitude());
-            double longitude = Double.parseDouble(dataWeather.getLongitude());
-            //делаем город текущим
-            CityCoordLab.setCurrentCity(event.city, latitude, longitude);
-            // показываем погоду в городе с учётом ориентации экрана
-            showCityWhetherWithOrientation();
+        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+        intent.putExtra(CURRENT_CITY, event.city);
+        Objects.requireNonNull(getActivity()).startService(intent);
 
-        } else {
-            Log.d(TAG, "ChooseCityFrag onChangeEvent города нет в базе");
-            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
-            //для получения погодных данных
-            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-            intent.putExtra(CURRENT_CITY, event.city);
-            Objects.requireNonNull(getActivity()).startService(intent);
-        }
+//        //получаем список городов из базы
+//        ArrayList<String> ara = WeatherTable.getAllCitys(database);
+//        Log.d(TAG, "ChooseCityFrag onChangeEvent ara = " + ara.toString());
+//        boolean isCityInDatabase = ara.contains(event.city);
+//        //если текущий город есть в базе
+//        if (isCityInDatabase) {
+//            Log.d(TAG, "ChooseCityFrag onChangeEvent текущий город есть в базе");
+//            //получаем объект с погодными данными
+//            DataWeather dataWeather = WeatherTable.getOneCityWeatherLine(database, event.city);
+//            double latitude = Double.parseDouble(dataWeather.getLatitude());
+//            double longitude = Double.parseDouble(dataWeather.getLongitude());
+//            //делаем город текущим
+//            CityCoordLab.setCurrentCity(event.city, latitude, longitude);
+//            // показываем погоду в городе с учётом ориентации экрана
+//            showCityWhetherWithOrientation();
+//
+//        } else {
+//            Log.d(TAG, "ChooseCityFrag onChangeEvent города нет в базе");
+//            //запускаем сервис, работающий в отдельном потоке, передаём туда текущий город
+//            //для получения погодных данных
+//            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+//            intent.putExtra(CURRENT_CITY, event.city);
+//            Objects.requireNonNull(getActivity()).startService(intent);
+//        }
     }
 
     //реакция на событие AddItemEvent Событие создаётся в DialogCityAdd
