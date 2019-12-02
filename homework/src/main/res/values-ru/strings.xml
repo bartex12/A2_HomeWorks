@@ -58,5 +58,7 @@
     <string name="byAdress">Погодный запрос по адресу</string>
     <string name="byCoord">Погодный запрос по координатам</string>
     <string name="weatherInLocation">Погода в местоположении</string>
+    <string name="fromSite">Загружено с сайта</string>
+    <string name="fromDatabase">Загружено из базы данных</string>
 
 </resources>

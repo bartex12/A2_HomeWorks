@@ -24,7 +24,9 @@ import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.adapter.RecyclerViewCityAdapter;
+import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
+import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
@@ -33,6 +35,7 @@ import com.geekbrains.city_weather.singltones.CityCoordLab;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -68,6 +71,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "ChooseCityFrag onAttach");
     }
 
     @Override
@@ -120,10 +129,25 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "ChooseCityFrag onPause");
+        // Если приложение свернуто, отключаем слушатели
+        sensorManager.unregisterListener(this, sensorTemp);
+        sensorManager.unregisterListener(this, sensorHumidity);
+    }
+
+    @Override
     public void onStop() {
+        super.onStop();
         EventBus.getBus().unregister(this);
         Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
-        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "ChooseCityFrag onDestroy");
     }
 
     private void registerListenersOfSensors() {
@@ -154,21 +178,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
             textTempHere.setVisibility(View.GONE);
             textHumidity.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "ChooseCityFrag onPause");
-        // Если приложение свернуто, отключаем слушатели
-        sensorManager.unregisterListener(this, sensorTemp);
-        sensorManager.unregisterListener(this, sensorHumidity);
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "ChooseCityFrag onDestroy");
-        super.onDestroy();
     }
 
     //********************************** Жесть **************************************************
@@ -245,9 +254,31 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                     public void onCityClick(String newCity) {
                         Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick");
 
-                        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
-                        intent.putExtra(CURRENT_CITY, newCity);
-                        Objects.requireNonNull(getActivity()).startService(intent);
+                        //получаем список городов из базы
+                        ArrayList<String> ara = WeatherTable.getAllCitys(database);
+                        Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick ara = " +
+                                ara.toString());
+                        boolean isCityInDatabase = ara.contains(newCity);
+                        Log.d(TAG, "ChooseCityFrag initRecycledView onCityClick isCityInDatabase = " +
+                                isCityInDatabase);
+
+                        if (isCityInDatabase) {
+                            //так как город есть в базе,
+                            DataWeather dataWeather = WeatherTable
+                                    .getOneCityWeatherLine(database, newCity);
+                            double latitude = Double.parseDouble(dataWeather.getLatitude());
+                            double longitude = Double.parseDouble(dataWeather.getLongitude());
+                            //делаем его текущим
+                            CityCoordLab.setCurrentCity(newCity, latitude, longitude);
+                            //и передаём управление в WeatherFragment
+                            showCityWhetherWithOrientation();
+
+                            //будем получать погоду по названию города, так как координат пока нет
+                        } else {
+                            Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+                            intent.putExtra(CURRENT_CITY, newCity);
+                            Objects.requireNonNull(getActivity()).startService(intent);
+                        }
                     }
                 };
 
@@ -292,6 +323,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         //если альбомная ориентация,то
         if (isExistWhetherFrag) {
             Log.d(TAG, "ChooseCityFrag showCityWhetherWithOrientation альбомная");
+            //TODO сюда добавить обновление спискового фрагмента
             setWeatherFragment(R.id.content_super_r);
             //а если портретная, то
         } else {
@@ -342,6 +374,8 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         // удалится при обновлении списка из базы данных в конструкторе адаптера
         recyclerViewCityAdapter.addElement(event.city);
 
+        //поскольку город новый, его в базе данных нет, поэтому сразу делаем запрос
+        // в отличие от просто щелчка по строке списка, когда сначала смотрели - есть ли в базе
         Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
         intent.putExtra(CURRENT_CITY, event.city);
         Objects.requireNonNull(getActivity()).startService(intent);
@@ -358,8 +392,8 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     //приёмник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION - регистр в onStart
     //приёмник работает, когда фрагмент активен, так как в onStop регистрация снимается
-    //если принудительно вызывать нужный фрагмент - WeatherFragment - возникает состояние гонки
-    // сервисов с разными значениями текущих городов - кто бмедленнее, тот и на экране будет
+    //если же принудительно вызывать нужный фрагмент - WeatherFragment - возникает состояние гонки
+    // сервисов с разными значениями текущих городов - кто медленнее, тот и на экране будет
     //поэтому пока сделал два приёмника но так при нажатии на строку списка приложение тупит
     //видимо надо искать способ вызывать WeatherFragment безопасно
     private class ServiceCoordsReceiver extends BroadcastReceiver {

@@ -58,5 +58,7 @@
     <string name="byAdress">Weather request by address</string>
     <string name="byCoord">Weather request by coordinates</string>
     <string name="weatherInLocation">Weather at location</string>
+    <string name="fromDatabase">Loaded from database</string>
+    <string name="fromSite">Downloaded from the site</string>
 
 </resources>

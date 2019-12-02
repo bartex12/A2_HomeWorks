@@ -121,17 +121,17 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "WeatherFragment onAttach");
+    }
+
+    @Override
     @SuppressLint("Recycle")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "WeatherFragment onCreateView");
         return inflater.inflate(R.layout.fragment_whether, container, false);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Log.d(TAG, "WeatherFragment onAttach" );
     }
 
     @Override
@@ -146,11 +146,11 @@ public class WeatherFragment extends Fragment {
 
     @Override
     public void onStart() {
+        super.onStart();
         Log.d(TAG, "WeatherFragment onStart");
         //регистрируем примник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION
         Objects.requireNonNull(getActivity())
                 .registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
-        super.onStart();
     }
 
     @Override
@@ -170,18 +170,18 @@ public class WeatherFragment extends Fragment {
 
     @Override
     public void onStop() {
+        super.onStop();
         Log.d(TAG, "WeatherFragment onStop");
         Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         SharedPreferences defaultPrefs =
                 PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
         saveLastCity(defaultPrefs);
-        super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "WeatherFragment onDestroy");
         super.onDestroy();
+        Log.d(TAG, "WeatherFragment onDestroy");
     }
 
     private void saveLastCity(SharedPreferences preferences){
@@ -234,11 +234,11 @@ public class WeatherFragment extends Fragment {
             long lastUpdateOfCityWeather = WeatherTable.getLastUpdate(database, currentCity);
             //вычисляем разницу в мс между текущим временем и  временем последнего обновления
             long delta = System.currentTimeMillis()/1000 - lastUpdateOfCityWeather;
-            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather /1000 = "
-                    + System.currentTimeMillis()/1000);
-            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather lastUpdateOfCityWeather = "
-                    + lastUpdateOfCityWeather);
-            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather delta = " + delta);
+//            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather /1000 = "
+//                    + System.currentTimeMillis()/1000);
+//            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather lastUpdateOfCityWeather = "
+//                    + lastUpdateOfCityWeather);
+//            Log.d(TAG, "*** WeatherFragment getDataOfCityWeather delta = " + delta);
 
             //  если прошло больше заданного времени (1 час) с последнего обновления
             if (delta>3600){
@@ -257,6 +257,9 @@ public class WeatherFragment extends Fragment {
                 // получаем из базы погодные данные для текущего города
                 getDataWetherForCity(currentCity);
                 getDataforecastForCity(currentCity);
+
+                Toast.makeText(getActivity(), R.string.fromDatabase,
+                        Toast.LENGTH_SHORT).show();
             }
         }else {
             Log.d(TAG, "WeatherFragment getActualDataOfCityWeather текущего города нет в базе" +
@@ -346,8 +349,18 @@ public class WeatherFragment extends Fragment {
             Drawable drawable = getIconFromIconCod(modelWeather.weather[0].icon);
             imageView.setImageDrawable(drawable);
 
+            Toast.makeText(getActivity(), R.string.fromSite,
+                    Toast.LENGTH_LONG).show();
+
             //добавляем или заменяем погодные данные для города modelWeather.name
             addOrReplaceCityWeather(modelWeather, lastUpdate, windSpeed, pressure, temperature);
+
+            //перегружаем фрагмент со списком для обновления списка если альбомная ориентация
+            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
+                    .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //перегружаем фрагмент со списком для обновления списка
+                setChooseCityFrag();
+            }
 
             //записываем город в синглтон - делаем его текущим
             CityCoordLab.setCurrentCity(modelWeather.name,
@@ -694,7 +707,7 @@ public class WeatherFragment extends Fragment {
                                 showCityWhetherLand();
                                 //перегружаем фрагмент со списком для обновления списка
                                 //поскольку в базу данных город не заносился, в списке его не будет
-                                setChooseCityFrag();
+                                //setChooseCityFrag();
                             }else {
                                 //показываем фрагмент со списком
                                 setChooseCityFrag();

@@ -44,7 +44,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
-import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.geekbrains.city_weather.constants.AppConstants.CITY_FRAFMENT_TAG;
 import static com.geekbrains.city_weather.constants.AppConstants.LAST_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.LATITUDE;
@@ -101,8 +100,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onStart() {
-        Log.d(TAG, "MainActivity onStart");
         super.onStart();
+        Log.d(TAG, "MainActivity onStart");
+
     }
 
     @Override
@@ -112,12 +112,14 @@ public class MainActivity extends AppCompatActivity implements
 
         // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
         if (isGeo) {
-            Log.d(TAG, "MainActivity onResume isGeo = true - делаем локацию");
+            Log.d(TAG, "MainActivity onResume isGeo = true -" +
+                    " делаем локацию после получения разрешений");
             getMyLocationLatLon();
             initSingletons();
             doOrientationBasedActions();
         } else {
-            Log.d(TAG, "MainActivity onResume isGeo = false - без локации");
+            Log.d(TAG, "MainActivity onResume isGeo = false -" +
+                    " без локации - не первая загрузка или поворот");
             initSingletons();
             doOrientationBasedActions();
         }
@@ -125,8 +127,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onStop() {
-        Log.d(TAG, "MainActivity onStop");
         super.onStop();
+        Log.d(TAG, "MainActivity onStop");
+
     }
 
     @Override
@@ -279,9 +282,6 @@ public class MainActivity extends AppCompatActivity implements
         //устанавливаем из настроек значения по умолчанию для первой загрузки
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         PreferenceManager.setDefaultValues(this, R.xml.pref_setting, false);
-        SharedPreferences prefSetting = getDefaultSharedPreferences(this);
-        //получаем из файла настроек состояние чекбоксов (Ключ не менять!)
-        isLatLon = prefSetting.getBoolean("chooseLocationType", true);
     }
 
     private void showMessageDialogFfagment(String message) {
