@@ -341,6 +341,13 @@ public class WeatherFragment extends Fragment {
             //записываем город в синглтон - делаем его текущим
             CityLab.setCurrentCity(modelWeather.name);
 
+            //перегружаем фрагмент со списком для обновления списка если альбомная ориентация
+            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration()
+                    .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //перегружаем фрагмент со списком для обновления списка
+                setChooseCityFrag();
+            }
+
         } catch (Exception exc) {
             exc.printStackTrace();
             Log.e(TAG, "One or more fields not found in the JSON data");
