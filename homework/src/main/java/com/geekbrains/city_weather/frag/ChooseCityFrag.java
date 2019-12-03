@@ -429,7 +429,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                                     Objects.requireNonNull(intent.getExtras())
                                             .getSerializable(JAVA_OBJECT);
 
-                            String curentCity = modelWeather.name;
+                            String curentCity = Objects.requireNonNull(modelWeather).name;
                             double latitude = modelWeather.coordinates.lat;
                             double longitude = modelWeather.coordinates.lon;
 

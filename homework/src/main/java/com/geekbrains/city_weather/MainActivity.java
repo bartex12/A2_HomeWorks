@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements
     boolean isGeo = false;
     boolean isLatLon = true;
     Bundle savedInstanceState;
-    // ServiceLocalReceiver receiver = new ServiceLocalReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         Log.d(TAG, "MainActivity onStart");
-        //registerReceiver(receiver, new IntentFilter(BROADCAST_WEATHER_ACTION));
     }
 
     @Override
@@ -129,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onStop() {
         super.onStop();
         Log.d(TAG, "MainActivity onStop");
-        // unregisterReceiver(receiver);
     }
 
     @Override
@@ -467,66 +464,5 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
-
-//    //приёмник широковещательных сообщений с фильтром BROADCAST_WEATHER_ACTION - регистр в onStart
-//    //приёмник работает, когда фрагмент активен, так как в onStop регистрация снимается
-//    //если же принудительно вызывать нужный фрагмент - WeatherFragment - возникает состояние гонки
-//    // сервисов с разными значениями текущих городов - кто медленнее, тот и на экране будет
-//    //поэтому пока сделал два приёмника но так при нажатии на строку списка приложение тупит
-//    //видимо надо искать способ вызывать WeatherFragment безопасно
-//    private class ServiceLocalReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, final Intent intent) {
-//            Log.d(TAG, "MainActivity ServiceLocalReceiver onReceive");
-//            //переходим в поток GUI
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //сначала смотрим, а удалось ли сервису получить JAVA объект
-//                    boolean is_JSON_null = intent.getBooleanExtra(IS_JSON_NULL, true);
-//                    boolean isResponceNull = intent.getBooleanExtra(IS_RESPONS_NULL, false);
-//                    //сначала смотрим, ответ от сервера равен null или нет
-//                    if (isResponceNull) {
-//                        Toast.makeText(MainActivity.this,
-//                                R.string.tlf_problems, Toast.LENGTH_LONG).show();
-//                        Log.e(TAG, " MainActivity ServiceLocalReceiver: Возникли проблемы " +
-//                                "с отправкой запроса. Возможно нет интернета");
-//                    } else {
-//                        //если не удалось, то is_JSON_null = true
-//                        if (is_JSON_null) {
-//                            Toast.makeText(MainActivity.this, R.string.place_not_found,
-//                                    Toast.LENGTH_LONG).show();
-//                            //делаем текущим город Saint Petersburg
-//                            CityCoordLab.setCityDefault();
-//                            // показываем погоду в городе с учётом ориентации экрана
-//                            initSingletons();
-//                            doOrientationBasedActions();
-//
-//                            //если JAVA объект получен, то получаем данные
-//                        } else {
-//                            //десериализуем объект WeatherRequestRestModel
-//                            WeatherRequestRestModel modelWeather = (WeatherRequestRestModel)
-//                                    Objects.requireNonNull(intent.getExtras())
-//                                            .getSerializable(JAVA_OBJECT);
-//
-//                            String curentCity = modelWeather.name;
-//                            double latitude = modelWeather.coordinates.lat;
-//                            double longitude = modelWeather.coordinates.lon;
-//
-//                            CityCoordLab.setCurrentCity(modelWeather.name,
-//                                    modelWeather.coordinates.lat, modelWeather.coordinates.lon);
-//                            Log.d(TAG, "MainActivity ServiceLocalReceiver " +
-//                                    " lat = " + latitude + " lon = " + longitude +
-//                                    " name = " + curentCity);
-//                            // показываем погоду в городе с учётом ориентации экрана
-//                            initSingletons();
-//                            doOrientationBasedActions();
-//
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
 
 }
