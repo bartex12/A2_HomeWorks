@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity implements
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
         } else {
+            //если это запуск приложения, а не поворот экрана то определяем местоположение
+            if (savedInstanceState == null) {
+                Log.d(TAG, "MainActivity onResume  savedInstanceState = null");
+
+                getMyLocationLatLon();
+            }
             Log.d(TAG, "MainActivity onCreate Yes Permitions");
         }
         initDB();
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "MainActivity onResume");
 
         // isGeo =true в одном случае -  если только что выданы разрешения и вызван метод recreate
-        if (isGeo || (savedInstanceState == null)) {
+        if (isGeo) {
             Log.d(TAG, "MainActivity onResume isGeo = true  или  savedInstanceState = null");
             //если это запуск приложения, а не поворот экрана то определяем местоположение
             getMyLocationLatLon();
