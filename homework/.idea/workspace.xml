@@ -18,9 +18,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="542f984b-6456-4317-8c20-ccec589a7b16" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/termo50x100.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/InsertInBase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_city_choose.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_city_choose.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,7 +33,7 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_19" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="cb42dafb9804" />
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
@@ -44,30 +46,129 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/AddItemEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="40">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/ChangeItemEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="3" column="4" lean-forward="true" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="205" lean-forward="true" selection-start-line="205" selection-end-line="205" />
+            <state relative-caret-position="238">
+              <caret line="344" column="71" selection-start-line="344" selection-start-column="71" selection-end-line="344" selection-end-column="71" />
+              <folding>
+                <element signature="e#2265#2266#0" expanded="true" />
+                <element signature="e#2309#2310#0" expanded="true" />
+                <element signature="e#8849#8964#0" expanded="true" />
+                <element signature="e#9047#9159#0" expanded="true" />
+                <element signature="e#9704#10228#0" expanded="true" />
+                <element signature="e#10227#10228#0" expanded="true" />
+                <element signature="e#13138#13247#0" expanded="true" />
+                <element signature="e#13481#13596#0" expanded="true" />
+                <element signature="e#13889#13916#0" expanded="true" />
+                <element signature="e#14573#14600#0" expanded="true" />
+                <element signature="e#14855#14882#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/res/xml/pref_setting.xml">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/dialogs/DialogCityChange.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
+            <state relative-caret-position="-748">
+              <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
             </state>
           </provider>
-          <provider editor-type-id="android-designer2" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/preferences/SettingsFragment.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/singltones/EventBus.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="10" column="49" selection-start-line="10" selection-start-column="49" selection-end-line="10" selection-end-column="49" />
+            <state relative-caret-position="80">
+              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/res/layout/fragment_city_choose.xml">
+          <provider selected="true" editor-type-id="android-designer2" />
+          <provider editor-type-id="text-editor">
+            <state relative-caret-position="453">
+              <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
+              <folding>
+                <element signature="e#1733#1755#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/InsertInBase.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="40">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+              <folding>
+                <element signature="e#136#137#0" expanded="true" />
+                <element signature="e#168#169#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/adapter/RecyclerViewCityAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1589">
+              <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2019#2093#0" expanded="true" />
+                <element signature="e#3881#3931#0" expanded="true" />
+                <element signature="e#4429#4915#0" expanded="true" />
+                <element signature="e#4914#4915#0" expanded="true" />
+                <element signature="e#5054#5247#0" expanded="true" />
+                <element signature="e#5246#5247#0" expanded="true" />
+                <element signature="e#5604#5605#0" expanded="true" />
+                <element signature="e#5638#5639#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="445">
+              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-130">
+              <caret line="326" column="17" selection-start-line="326" selection-start-column="17" selection-end-line="326" selection-end-column="17" />
+              <folding>
+                <element signature="docComment;class#WeatherFragment#0" />
+                <element signature="e#5457#5458#0" expanded="true" />
+                <element signature="e#5501#5502#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -79,8 +180,8 @@
       <list>
         <option value="layoutResourceFile" />
         <option value="layoutResourceFile_vertical" />
-        <option value="Class" />
         <option value="resourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -110,7 +211,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/res/menu/test.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/TestActivity.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout-land/activity_main.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/dialogs/AboutDialog.java" />
@@ -125,7 +225,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/dialogs/MessageDialog.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/dialog_message.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/DetailActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/item_list_forecast.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/adapter/DataForecastNew.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/adapter/WeatherCardAdapter.java" />
@@ -134,7 +233,6 @@
         <option value="$PROJECT_DIR$/src/main/java/rest/IOpenWeather.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/database/ForecastTable.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" />
-        <option value="$PROJECT_DIR$/src/main/res/layout/fragment_city_choose.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/item_list_forecast_new.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/border.xml" />
         <option value="$PROJECT_DIR$/src/main/res/menu/navigation_toolbar.xml" />
@@ -155,12 +253,15 @@
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/app_bar_main.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values-ru/strings.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/constants/AppConstants.java" />
         <option value="$PROJECT_DIR$/src/main/res/raw/weather_help.txt" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java" />
         <option value="$PROJECT_DIR$/src/main/res/xml/pref_setting.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/InsertInBase.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/fragment_city_choose.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java" />
       </list>
     </option>
   </component>
@@ -176,9 +277,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -199,12 +299,79 @@
             </path>
             <path>
               <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="adapter" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="constants" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="database" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="dialogs" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="events" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="frag" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="singltones" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
+              <item name="homework" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+              <item name="strings" type="c431d0b8:AndroidResGroupNode" />
+            </path>
+            <path>
+              <item name="A1_Whether" type="1abcf292:AndroidViewProjectNode" />
               <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -676,8 +843,8 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.46714032" visible="true" weight="0.19190283" />
-      <window_info id="Structure" order="2" sideWeight="0.5328597" side_tool="true" weight="0.20647773" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.46181172" visible="true" weight="0.19190283" />
+      <window_info id="Structure" order="2" sideWeight="0.5381883" side_tool="true" weight="0.19190283" />
       <window_info id="Favorites" order="3" sideWeight="0.5301205" side_tool="true" weight="0.20809716" />
       <window_info id="Build Variants" order="4" side_tool="true" />
       <window_info id="Image Layers" order="5" />
@@ -692,9 +859,9 @@
       <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50040483" side_tool="true" weight="0.4742451" />
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.3285968" />
       <window_info anchor="bottom" id="Build" order="7" weight="0.25577265" />
-      <window_info anchor="bottom" id="Android Profiler" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Android Profiler" order="8" />
       <window_info anchor="bottom" id="Messages" order="9" weight="0.3285968" />
-      <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.49959514" weight="0.6554174" />
+      <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.49959514" weight="0.687389" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.36056837" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
       <window_info anchor="right" id="Gradle" order="1" />
@@ -739,24 +906,6 @@
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/res/values/arrays.xml" />
-    <entry file="file://$PROJECT_DIR$/src/main/res/values-ru/arrays.xml" />
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/dialog_bottom.xml" />
-    <entry file="file://$PROJECT_DIR$/src/main/res/drawable/ic_list__red_24dp.xml" />
-    <entry file="file://$PROJECT_DIR$/src/main/res/drawable/map_marker_plus.xml" />
-    <entry file="file://$PROJECT_DIR$/src/main/res/mipmap-hdpi/ic_launcher_round.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="android-dummy://D:/AndroidStudioProjects/Android_2/A2_HomeWorks/homework/homework/Translations Editor">
-      <provider selected="true" editor-type-id="string-resource-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/values/styles.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/rest/weather_model/WeatherRequestRestModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -768,6 +917,7 @@
       <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_help.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
           <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
@@ -776,7 +926,6 @@
           </folding>
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://D:/AndroidSDK/sources/android-24/android/app/IntentService.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -803,16 +952,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="95">
           <caret line="92" selection-start-line="92" selection-end-line="92" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="339" column="5" lean-forward="true" selection-start-line="339" selection-start-column="5" selection-end-line="339" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -884,23 +1023,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/adapter/RecyclerViewCityAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="69" column="32" selection-start-line="69" selection-start-column="32" selection-end-line="69" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/app_bar_main.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="580">
           <caret line="29" column="50" selection-start-line="29" selection-start-column="50" selection-end-line="29" selection-end-column="50" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/drawable/ic_my_location_white_24dp.xml">
       <provider selected="true" editor-type-id="text-editor" />
@@ -913,12 +1042,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/nav_header_main.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="640">
           <caret line="32" column="38" selection-start-line="32" selection-start-column="38" selection-end-line="32" selection-end-column="38" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/values-ru/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -950,8 +1079,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/services/BackgroundWeatherService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="45" column="47" lean-forward="true" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
+        <state relative-caret-position="200">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -966,30 +1095,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
           <caret line="11" column="26" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/singltones/EventBus.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/constants/AppConstants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="3" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="65" />
+        <state>
+          <caret line="24" column="43" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/singltones/CityLab.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
+        <state relative-caret-position="372">
           <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
           <folding>
             <element signature="e#589#590#0" expanded="true" />
@@ -1007,28 +1129,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1180">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/raw/weather_help.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="160">
           <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3080">
-          <caret line="215" column="17" selection-start-line="215" selection-start-column="17" selection-end-line="215" selection-end-column="17" />
-          <folding>
-            <element signature="e#5457#5458#0" expanded="true" />
-            <element signature="e#5501#5502#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1040,17 +1144,149 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/xml/pref_setting.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
           <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="205" lean-forward="true" selection-start-line="205" selection-end-line="205" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/adapter/RecyclerViewCityAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1589">
+          <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2019#2093#0" expanded="true" />
+            <element signature="e#3881#3931#0" expanded="true" />
+            <element signature="e#4429#4915#0" expanded="true" />
+            <element signature="e#4914#4915#0" expanded="true" />
+            <element signature="e#5054#5247#0" expanded="true" />
+            <element signature="e#5246#5247#0" expanded="true" />
+            <element signature="e#5604#5605#0" expanded="true" />
+            <element signature="e#5638#5639#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/AndroidSDK/sources/android-29/java/util/ArrayList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="465" column="19" selection-start-line="465" selection-start-column="19" selection-end-line="465" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/singltones/EventBus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Users/Public/.gradle/caches/modules-2/files-2.1/androidx.recyclerview/recyclerview/1.0.0/2151d26c3b241f0a887f2dadb9ab091649fcf020/recyclerview-1.0.0-sources.jar!/androidx/recyclerview/widget/RecyclerView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="7069" column="33" lean-forward="true" selection-start-line="7069" selection-start-column="33" selection-end-line="7069" selection-end-column="33" />
+          <folding>
+            <element signature="e#305127#305128#0" expanded="true" />
+            <element signature="e#305178#305179#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/database/WeatherTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/AddItemEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/ChangeItemEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="3" column="4" lean-forward="true" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/events/InsertInBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding>
+            <element signature="e#136#137#0" expanded="true" />
+            <element signature="e#168#169#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/dialogs/DialogCityChange.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-748">
+          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/WeatherFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-130">
+          <caret line="326" column="17" selection-start-line="326" selection-start-column="17" selection-end-line="326" selection-end-column="17" />
+          <folding>
+            <element signature="docComment;class#WeatherFragment#0" />
+            <element signature="e#5457#5458#0" expanded="true" />
+            <element signature="e#5501#5502#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/fragment_city_choose.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
+          <folding>
+            <element signature="e#1733#1755#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/geekbrains/city_weather/frag/ChooseCityFrag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="344" column="71" selection-start-line="344" selection-start-column="71" selection-end-line="344" selection-end-column="71" />
+          <folding>
+            <element signature="e#2265#2266#0" expanded="true" />
+            <element signature="e#2309#2310#0" expanded="true" />
+            <element signature="e#8849#8964#0" expanded="true" />
+            <element signature="e#9047#9159#0" expanded="true" />
+            <element signature="e#9704#10228#0" expanded="true" />
+            <element signature="e#10227#10228#0" expanded="true" />
+            <element signature="e#13138#13247#0" expanded="true" />
+            <element signature="e#13481#13596#0" expanded="true" />
+            <element signature="e#13889#13916#0" expanded="true" />
+            <element signature="e#14573#14600#0" expanded="true" />
+            <element signature="e#14855#14882#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

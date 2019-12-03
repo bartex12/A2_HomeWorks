@@ -1,6 +1,7 @@
 package com.geekbrains.city_weather.frag;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,6 +24,8 @@ import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
+import com.geekbrains.city_weather.events.InsertInBase;
+import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
@@ -38,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
 public class ChooseCityFrag extends Fragment implements SensorEventListener {
@@ -337,6 +341,18 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         Log.d(TAG, "ChooseCityFrag onAddEvent event.city =" + event.city);
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
+
+        //вызываем сервис чтобы город в списке обновился а не потерялся
+        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+        intent.putExtra(CURRENT_CITY, event.city);
+        Objects.requireNonNull(getActivity()).startService(intent);
+    }
+
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onInsertInBase(InsertInBase event) {
+        Log.d(TAG, "ChooseCityFrag onInsertInBase event.city =" + event.city);
+        recyclerViewCityAdapter.notifyDataSetChanged();
     }
 }
 

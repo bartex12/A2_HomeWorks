@@ -19,16 +19,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.060000002">
 
-        <com.geekbrains.city_weather.custom_views.CustomSlogan
+        <!--        <com.geekbrains.city_weather.custom_views.CustomSlogan-->
+        <!--            android:id="@+id/customViewSlogan"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="50dp"-->
+        <!--            android:layout_gravity="center_horizontal"-->
+        <!--            android:layout_marginStart="10dp"-->
+        <!--            android:layout_marginTop="12dp"-->
+        <!--            android:layout_marginEnd="5dp"-->
+        <!--            app:cv_Color="@color/colorPrimaryDark"-->
+        <!--            app:cv_Radius="60" />-->
+
+        <TextView
             android:id="@+id/customViewSlogan"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="5dp"
-            app:cv_Color="@color/colorPrimaryDark"
-            app:cv_Radius="60" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal"
+            android:text="@string/will_be_fine"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp" />
+
 
         <TextView
             android:id="@+id/textTempHere"
