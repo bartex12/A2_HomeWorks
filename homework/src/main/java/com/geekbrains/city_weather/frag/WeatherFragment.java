@@ -346,7 +346,6 @@ public class WeatherFragment extends Fragment {
                     .orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //перегружаем фрагмент со списком для обновления списка
                 setChooseCityFrag();
-                //EventBus.getBus().post(new InsertInBase(modelWeather.name));
             }
 
         } catch (Exception exc) {

@@ -346,12 +346,5 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         intent.putExtra(CURRENT_CITY, event.city);
         Objects.requireNonNull(getActivity()).startService(intent);
     }
-
-//    @Subscribe
-//    @SuppressWarnings("unused")
-//    public void onInsertInBase(InsertInBase event) {
-//        Log.d(TAG, "############ ChooseCityFrag onInsertInBase event.city =" + event.city);
-//        recyclerViewCityAdapter.notifyDataSetChanged();
-//    }
 }
 
