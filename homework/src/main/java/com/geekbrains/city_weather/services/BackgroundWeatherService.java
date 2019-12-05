@@ -54,44 +54,44 @@ public class BackgroundWeatherService extends IntentService {
         if (response!=null){
             //если удалось получить ответ от сервера делаем запрос прогноза и посылаем интент с ответом
             if (response.body() != null && response.isSuccessful()) {
-                Log.d(TAG, "BackgroundWeatherService loadWeatherEng OK" );
-                Log.d(TAG, "BackgroundWeatherService loadWeatherEng response.body().dt = "+
-                        response.body().dt);
+                Log.d(TAG, "BackgroundWeatherService loadWeather OK");
+                Log.d(TAG, "BackgroundWeatherService loadWeather response.body().name = " +
+                        response.body().name);
                 //делаем запрос о прогнозе погоды и получаем ответ от сервера
                 Response<ForecastRequestRestModel> responseForecast = getForecastResponse(currentCity);
-
+                // посылаем интент и ловим его в WeatherFragment
                 if (responseForecast.body() != null && responseForecast.isSuccessful()) {
-                    Log.d(TAG, "BackgroundWeatherService loadForecastEng OK" );
+                    Log.d(TAG, "BackgroundWeatherService loadForecast OK");
                     broadcastIntent.putExtra(JAVA_OBJECT_FORECAST, responseForecast.body());
                     broadcastIntent.putExtra(JAVA_OBJECT, response.body());
                     broadcastIntent.putExtra(IS_JSON_NULL, false);
                     broadcastIntent.putExtra(IS_RESPONS_NULL, false);
                     sendBroadcast(broadcastIntent);
-                    Log.d(TAG, "///////1");
+                    Log.d(TAG, "Всё хорошо ///////1");
                     //а если не удалось получить ответ для прогноза- посылаем интент для
                     // обработки ошибки ловим его в WeatherFragment
                 } else {
-                    Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO");
+                    Log.d(TAG, "BackgroundWeatherService loadWeather NO");
                     broadcastIntent.putExtra(IS_JSON_NULL, true);
                     broadcastIntent.putExtra(IS_RESPONS_NULL, false);
                     sendBroadcast(broadcastIntent);
-                    Log.d(TAG, "///////2");
+                    Log.d(TAG, "Нет прогноза ///////2");
                 }
                 //а если не удалось получить ответ для погоды- город не существует, обычно
                 // посылаем интент для обработки ошибки  ловим его в WeatherFragment
             } else {
-                Log.d(TAG, "BackgroundWeatherService loadWeatherEng NO" );
+                Log.d(TAG, "BackgroundWeatherService loadWeather NO");
                 broadcastIntent.putExtra(IS_JSON_NULL, true);
                 broadcastIntent.putExtra(IS_RESPONS_NULL, false);
                 sendBroadcast(broadcastIntent);
-                Log.d(TAG, "///////3");
+                Log.d(TAG, "города нет ///////3");
             }
             //если телефон не может посылать запросы, response=null
         }else {
             Log.d(TAG, "BackgroundWeatherService response = null" );
             broadcastIntent.putExtra(IS_RESPONS_NULL, true);
             sendBroadcast(broadcastIntent);
-            Log.d(TAG, "///////4");
+            Log.d(TAG, " response = null ///////4");
         }
     }
 
@@ -100,11 +100,13 @@ public class BackgroundWeatherService extends IntentService {
         Response<ForecastRequestRestModel> responseForecast = null;
         try {
             if (Locale.getDefault().getLanguage().equals("ru")) {
+                Log.d(TAG, "BackgroundWeatherService loadForecastRu");
                 responseForecast = OpenWeatherRepo.getSingleton()
                         .getAPI().loadForecastRu(currentCity,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
                         .execute();
             } else {
+                Log.d(TAG, "BackgroundWeatherService loadForecastEng");
                 responseForecast = OpenWeatherRepo.getSingleton()
                         .getAPI().loadForecastEng(currentCity,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric")
@@ -122,11 +124,13 @@ public class BackgroundWeatherService extends IntentService {
 
         try {
             if (Locale.getDefault().getLanguage().equals("ru")) {
+                Log.d(TAG, "BackgroundWeatherService loadWeatherRu");
                 response = OpenWeatherRepo.getSingleton()
                         .getAPI().loadWeatherRu(currentCity,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric", "ru")
                         .execute();
             } else {
+                Log.d(TAG, "BackgroundWeatherService loadWeatherEng");
                 response = OpenWeatherRepo.getSingleton()
                         .getAPI().loadWeatherEng(currentCity,
                                 "80bb32e4a0db84762bb04ab2bd724646", "metric")

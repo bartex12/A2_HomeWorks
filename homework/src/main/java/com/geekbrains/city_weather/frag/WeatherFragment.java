@@ -25,10 +25,8 @@ import com.geekbrains.city_weather.database.DataWeather;
 import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.database.WeatherTable;
-import com.geekbrains.city_weather.events.InsertInBase;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
-import com.geekbrains.city_weather.singltones.EventBus;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -348,7 +346,7 @@ public class WeatherFragment extends Fragment {
                     .orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //перегружаем фрагмент со списком для обновления списка
                 setChooseCityFrag();
-                EventBus.getBus().post(new InsertInBase(modelWeather.name));
+                //EventBus.getBus().post(new InsertInBase(modelWeather.name));
             }
 
         } catch (Exception exc) {

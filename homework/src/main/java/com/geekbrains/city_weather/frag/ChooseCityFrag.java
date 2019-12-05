@@ -24,7 +24,6 @@ import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
-import com.geekbrains.city_weather.events.InsertInBase;
 import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.EventBus;
@@ -348,11 +347,11 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         Objects.requireNonNull(getActivity()).startService(intent);
     }
 
-    @Subscribe
-    @SuppressWarnings("unused")
-    public void onInsertInBase(InsertInBase event) {
-        Log.d(TAG, "ChooseCityFrag onInsertInBase event.city =" + event.city);
-        recyclerViewCityAdapter.notifyDataSetChanged();
-    }
+//    @Subscribe
+//    @SuppressWarnings("unused")
+//    public void onInsertInBase(InsertInBase event) {
+//        Log.d(TAG, "############ ChooseCityFrag onInsertInBase event.city =" + event.city);
+//        recyclerViewCityAdapter.notifyDataSetChanged();
+//    }
 }
 
