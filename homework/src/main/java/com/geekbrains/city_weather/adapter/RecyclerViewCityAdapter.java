@@ -1,6 +1,5 @@
 package com.geekbrains.city_weather.adapter;
 
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 
 import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.database.DataWeather;
+import com.geekbrains.city_weather.database.ForecastTable;
 import com.geekbrains.city_weather.database.WeatherTable;
 import com.geekbrains.city_weather.singltones.CityLab;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import static com.geekbrains.city_weather.constants.AppConstants.DEFAULT_CITY;
-
 
 public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCityAdapter.ViewHolder>{
     private static final String TAG = "33333";
@@ -71,7 +70,10 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
                 CityLab.setCityDefault();
             }
             Log.d(TAG, "RecyclerViewCityAdapter removeElement city = " + data.get(posItem));
+            //удаляем погоду для строки с городом с именем data.get(posItem)
             WeatherTable.deleteCityWeatherByCity(data.get(posItem), database);
+            //удаляем прогноз погоды на 5 дней для строки с городом с именем data.get(posItem)
+            ForecastTable.deleteCityForecastByCity(data.get(posItem), database);
             data.remove(posItem);
             notifyDataSetChanged();
         }
@@ -79,10 +81,12 @@ public class RecyclerViewCityAdapter extends RecyclerView.Adapter<RecyclerViewCi
 
     public void clearList() {
         data.clear();
+        //удаляем всезаписи из таблицы для погоды
         WeatherTable.deleteAllDataFromCityWeather(database);
         //добавляем в список город по умолчанию -Санкт-Петербург -  и в базу - параметры по умолчанию
         addCityDefault();
-
+        //удаляем все записи из таблицы для прогноза погоды на 5 дней
+        ForecastTable.deleteAllDataFromCityForecast(database);
         notifyDataSetChanged();
     }
 

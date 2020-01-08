@@ -1,6 +1,7 @@
 package com.geekbrains.city_weather.frag;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,11 +24,13 @@ import com.geekbrains.city_weather.database.WeatherDataBaseHelper;
 import com.geekbrains.city_weather.dialogs.DialogCityAdd;
 import com.geekbrains.city_weather.events.AddItemEvent;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
+import com.geekbrains.city_weather.services.BackgroundWeatherService;
 import com.geekbrains.city_weather.singltones.CityLab;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.squareup.otto.Subscribe;
 
 import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -36,27 +39,22 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static androidx.preference.PreferenceManager.*;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+import static com.geekbrains.city_weather.constants.AppConstants.CURRENT_CITY;
 import static com.geekbrains.city_weather.constants.AppConstants.WEATHER_FRAFMENT_TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- *
- */
 public class ChooseCityFrag extends Fragment implements SensorEventListener {
+
     private static final String TAG = "33333";
     private boolean isExistWhetherFrag;  // Можно ли расположить рядом фрагмент с погодой
     private RecyclerView recyclerViewMarked; //RecyclerView для списка ранее выбранных городов
     private RecyclerViewCityAdapter recyclerViewCityAdapter; //адаптер для RecyclerView
-
     private SensorManager sensorManager;
     private Sensor sensorTemp;
     private Sensor sensorHumidity;
     private TextView textTempHere;
     private TextView textHumidity;
-
     private SQLiteDatabase database;
-
 
     public static ChooseCityFrag newInstance() {
         return  new ChooseCityFrag();
@@ -92,6 +90,12 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getBus().register(this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         initRecycledView();
@@ -99,14 +103,8 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         if (recyclerViewCityAdapter!= null){
             recyclerViewCityAdapter.notifyDataSetChanged();
         }
-        getPreferensis();
+        getPreferences();
         registerListenersOfSensors();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getBus().register(this);
     }
 
     @Override
@@ -124,7 +122,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private void getPreferensis() {
+    private void getPreferences() {
         //  !!!!  имя папки в телефоне com.geekbrains.a1l1_helloworld   !!!
         SharedPreferences prefSetting =
                 getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
@@ -158,7 +156,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
     public void onDestroy() {
         Log.d(TAG, "ChooseCityFrag onDestroy");
         super.onDestroy();
-
     }
 
     //********************************** Жесть **************************************************
@@ -267,9 +264,7 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
                 recyclerViewCityAdapter.clearList();
                 break;
             }
-
             case R.id.menu_cancel: {
-                //TODO
                 break;
             }
         }
@@ -322,7 +317,6 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     //реакция на событие ChangeItemEvent Событие создаётся в DialogCityChange
@@ -346,6 +340,11 @@ public class ChooseCityFrag extends Fragment implements SensorEventListener {
         Log.d(TAG, "ChooseCityFrag onAddEvent event.city =" + event.city);
         //добавляем город в список адаптера
         recyclerViewCityAdapter.addElement(event.city);
+
+        //вызываем сервис чтобы город в списке обновился а не потерялся
+        Intent intent = new Intent(getActivity(), BackgroundWeatherService.class);
+        intent.putExtra(CURRENT_CITY, event.city);
+        Objects.requireNonNull(getActivity()).startService(intent);
     }
 }
 

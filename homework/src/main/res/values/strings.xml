@@ -3,7 +3,6 @@
     <string name="press">Pressure</string>
     <string name="about">About</string>
     <string name="settings">Settings</string>
-    <string name="about_me">The app is made on relax</string>
     <string name="show">Show wind pressure and speed</string>
     <string name="NotShow">Do not show pressure and wind speed</string>
     <string name="addParam">Advanced options</string>
@@ -12,16 +11,8 @@
     <string name="ok">OK</string>
     <string name="connecting">Connecting…</string>
     <string name="hPa">hPa</string>
-    <string name="weather_sunny" translatable="false">&#xf00d;</string>
-    <string name="weather_foggy" translatable="false">&#xf014;</string>
-    <string name="weather_cloudy" translatable="false">&#xf013;</string>
-    <string name="weather_rainy" translatable="false">&#xf019;</string>
-    <string name="weather_snowy" translatable="false">&#xf01b;</string>
-    <string name="weather_thunder" translatable="false">&#xf01e;</string>
-    <string name="weather_drizzle" translatable="false">&#xf01c;</string>
-    <string name="lastUpdate">Last update:</string>
+    <string name="lastUpdate">Last update: </string>
     <string name="inputCitiName">Input city name</string>
-    <string name="add">add</string>
     <string name="clear">Clear list</string>
     <string name="cancel">cancel</string>
     <string name="show_city">Show city</string>
@@ -31,18 +22,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="help">Help</string>
-    <string name="willBeHelp">There will be help here</string>
-    <string name="aboutAppMessage">GeekBrains weather app Android advanced level</string>
+    <string name="aboutAppMessage">The application is designed to receive current weather,
+        as well as a five-day weather forecast for any city in the world</string>
     <string name="saint_petersburg">Saint Petersburg</string>
     <string name="addision">Additionally</string>
     <string name="share">Share</string>
     <string name="send">Estimate</string>
-    <string name="willBeLink">There will be a link to the application in PlayMarket
- 
-</string>
-    <string name="willBeEstimate">There will be a link to the application page in PlayMarket
- 
-</string>
     <string name="weather_application">Weather application</string>
     <string name="geekbrains">GeekBrains Android Advanced</string>
     <string name="addParamTempHumid">Show data from sensors</string>
@@ -51,13 +36,24 @@
     <string name="will_be_fine">ALL WILL BE ALRIGHT</string>
     <string name="No_temperature_sensor">No temperature sensor</string>
     <string name="No_humidity_sensor">No humidity sensor</string>
-    <string name="temperature">Temperature</string>
-    <string name="Relative_humidity">Relative humidity</string>
+    <string name="temperature">Temperature: </string>
+    <string name="Relative_humidity">Relative humidity: </string>
     <string name="forExit">Please click BACK again to exit</string>
     <string name="txt">text</string>
     <string name="is_in_list">Such a city is already on the list</string>
     <string name="remove_city">Remove city</string>
-    <string name="tlf_problems">There were problems sending the request. Phone restart may be required</string>
+    <string name="tlf_problems">There were problems sending the request. Maybe no internet</string>
     <string name="avtoAdd">Default city added automatically</string>
+    <string name="sunny">Sunny</string>
+    <string name="_18">November 18th</string>
+    <string name="icon_descr">icon</string>
+
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBU-yFz18nPaBwqBDedSGvUkfBgDYEQ0zc</string>
+    <string name="permission">Permission received</string>
+    <string name="notPermission">The app does not have permission to locate</string>
+    <string name="weather_forecast">Weather - forecast</string>
+    <string name="Help">Help</string>
+    <string name="help2">HELP</string>
+    <string name="let_be_sun">Only the weather, nothing more.</string>
 
 </resources>

@@ -1,4 +1,5 @@
 package com.geekbrains.city_weather.database;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -15,7 +16,9 @@ public class WeatherDataBaseHelper  extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         WeatherTable.createTable(db);
+        ForecastTable.createTable(db);
     }
 
     @Override

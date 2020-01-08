@@ -14,10 +14,13 @@ import com.geekbrains.city_weather.R;
 import com.geekbrains.city_weather.events.ChangeItemEvent;
 import com.geekbrains.city_weather.singltones.EventBus;
 import com.google.android.material.snackbar.Snackbar;
+
 import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
 import static com.geekbrains.city_weather.MainActivity.toUpperCaseForFirstLetter;
 
 public class DialogCityChange extends DialogFragment {
@@ -38,16 +41,31 @@ public class DialogCityChange extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_choose_city, null);
+
+        final EditText etCity = initEditText(view);
+        setBuilder(builder, view);
+        initButtonOk(view, etCity);
+
+        return builder.create();
+    }
+
+    private EditText initEditText(View view) {
         final EditText etCity = view.findViewById(R.id.editTextCity);
         //почему то это не работает, пришлось сделать отдельную функцию toUpperCaseForFirstLetter()
         etCity.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        final Button buttonOk = view.findViewById(R.id.buttonOk);
         etCity.requestFocus();
         etCity.setInputType(InputType.TYPE_CLASS_TEXT);
+        return etCity;
+    }
+
+    private void setBuilder(AlertDialog.Builder builder, View view) {
         builder.setView(view);
         builder.setTitle(R.string.show_city);
         builder.setIcon(R.drawable.ic_my_location_red_24dp);
+    }
 
+    private void initButtonOk(View view, final EditText etCity) {
+        final Button buttonOk = view.findViewById(R.id.buttonOk);
         //действия при нажатии кнопки OK
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +84,6 @@ public class DialogCityChange extends DialogFragment {
                 }
             }
         });
-        return builder.create();
     }
 
 }
